@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function ConsentPage() {
-  const { num, promptId } = useParams();
+  const { condition, promptId } = useParams();
   const navigate = useNavigate();
 
   // On form submit, do whatever you need with the data
@@ -12,7 +12,7 @@ export default function ConsentPage() {
     e.preventDefault();
 
     // Now route to the correct interface
-    navigate(`/presurvey/${num}/${promptId}`);
+    navigate(`/presurvey/${condition}/${promptId}`);
   };
 
   return (

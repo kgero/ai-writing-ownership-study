@@ -13,14 +13,6 @@ Ensure you have the following installed on your Mac:
   brew install node
   ```
 
-## .env
-
-The `.env.` file need to have an OpenAI key. It should look something like:
-
-```
-OPENAI_API_KEY=sk-proj-bunchofrandomlettersandnumbersquitelong
-```
-
 ## App structure
 
 
@@ -48,6 +40,14 @@ minimal-react-app/
 │   ├── .gitignore           # Git ignore file
 │
 │── README.md                # Documentation
+```
+
+## .env
+
+The `.env` file need to have an OpenAI key. It should look something like:
+
+```
+OPENAI_API_KEY=sk-proj-bunchofrandomlettersandnumbersquitelong
 ```
 
 ## Run app

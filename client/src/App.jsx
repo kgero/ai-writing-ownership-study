@@ -5,10 +5,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Landing from "./Landing";
 import PreSurvey from "./PreSurvey";
 import InformedConsent from "./InformedConsent";
-import ConditionOne from "./ConditionOne";
-import ConditionTwo from "./ConditionTwo";
-import ConditionThree from "./ConditionThree";
-import ConditionFour from "./ConditionFour";
+import OutlineStage from "./stages/OutlineStage";
+import DraftStage from "./stages/DraftStage";
+import RevisionStage from "./stages/RevisionStage";
 
 function App() {
   return (
@@ -17,16 +16,15 @@ function App() {
         {/* Landing page for user to enter the number */}
         <Route path="/" element={<Landing />} />
 
-        <Route path="/consent/:num/:promptId" element={<InformedConsent />} />
+        <Route path="/consent/:condition/:promptId" element={<InformedConsent />} />
 
-        {/* A single form page for all users, identified by :num */}
-        <Route path="/presurvey/:num/:promptId" element={<PreSurvey />} />
+        {/* A single form page for all users, identified by condition */}
+        <Route path="/presurvey/:condition/:promptId" element={<PreSurvey />} />
 
-        {/* Different writing interfaces by route */}
-        <Route path="/1/:promptId" element={<ConditionOne />} />
-        <Route path="/2/:promptId" element={<ConditionTwo />} />
-        <Route path="/3/:promptId" element={<ConditionThree />} />
-        <Route path="/4/:promptId" element={<ConditionFour />} />
+        {/* Three writing stages */}
+        <Route path="/outline/:condition/:promptId" element={<OutlineStage />} />
+        <Route path="/draft/:condition/:promptId" element={<DraftStage />} />
+        <Route path="/revision/:condition/:promptId" element={<RevisionStage />} />
 
         {/* Optional: a fallback route for invalid URLs */}
         <Route path="*" element={<div>Not Found</div>} />

@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 export default function FormPage() {
-  const { num, promptId } = useParams();
+  const { condition, promptId } = useParams();
   const navigate = useNavigate();
 
   // For dev toggling "required" off, set devMode = true
@@ -27,7 +27,7 @@ export default function FormPage() {
     // e.g. You could also do an axios POST here to save in your database
 
     // Then navigate to the appropriate interface route
-    navigate(`/${num}/${promptId}`);
+    navigate(`/outline/${condition}/${promptId}`);
   };
 
   const statements = [
