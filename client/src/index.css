@@ -1,4 +1,6 @@
-/* New styles for ideas list in outline stage */
+/* index.css - Adding new styles for the revision tools */
+
+/* Existing styles */
 .ideas-list {
   list-style: none;
   padding: 0;
@@ -56,7 +58,7 @@
   padding: 10px 15px;
   background-color: #fff;
   border-top: 1px solid #ddd;
-}/* index.css */
+}
 
 body {
   margin: 0;
@@ -92,6 +94,8 @@ body {
 
 .sidebar {
   width: 30%;
+  overflow-y: auto; /* Make sidebar scrollable */
+  max-height: 100vh; /* Limit height to viewport height */
 }
 
 /* Full width editor when sidebar is not displayed */
@@ -162,11 +166,12 @@ button:disabled {
   font-style: italic;
 }
 
-/* New styles for revision tools */
+/* Improved styles for revision tools */
 .revision-button {
   width: 100%;
   margin-bottom: 10px;
   transition: background-color 0.3s;
+  position: relative;
 }
 
 .revision-button.active {
@@ -180,4 +185,111 @@ button:disabled {
 .revision-section h3 {
   margin-bottom: 15px;
   text-align: center;
+}
+
+/* Make blockquotes stand out in revision suggestions */
+.revision-results-content blockquote {
+  margin: 0 0 10px 0;
+  padding: 8px 12px;
+  border-left: 3px solid #007bff;
+  background-color: #f8f9fa;
+  font-style: normal;
+}
+
+.revision-results-content blockquote p {
+  font-style: normal;
+}
+
+.revision-results-content blockquote p strong {
+  font-style: normal;
+  text-decoration: underline;
+/*  font-weight: bold;*/
+}
+
+/* Tooltip styling */
+.tooltip-container {
+  position: relative;
+  width: 100%;
+}
+
+.tooltip-container button {
+  width: 100%;
+}
+
+/* Loading indicator */
+.loading-indicator {
+  margin-left: 8px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+/* Revision results styling */
+.revision-results {
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.revision-results-header {
+  background-color: #f0f0f0;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  border: 1px solid #ddd;
+}
+
+.revision-results-content {
+  padding: 12px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  font-size: 14px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Make blockquotes stand out in revision suggestions */
+.revision-results-content blockquote {
+  margin: 0 0 10px 0;
+  padding: 8px 12px;
+  border-left: 3px solid #007bff;
+  background-color: #f8f9fa;
+  font-style: italic;
+}
+
+.revision-results-content p {
+  margin: 8px 0;
+}
+
+/* Responsive adjustment for smaller screens */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .editor, .sidebar {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .sidebar {
+    margin-top: 0;
+  }
+}
+
+/* Revision tools container */
+.revision-tools-container {
+  width: 100%;
+  margin-bottom: 20px;
 }
