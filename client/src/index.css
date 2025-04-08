@@ -1,4 +1,4 @@
-/* index.css - Adding new styles for the revision tools */
+/* index.css - Enhanced with revision tool highlighting styles */
 
 /* Existing styles */
 .ideas-list {
@@ -170,12 +170,14 @@ button:disabled {
 .revision-button {
   width: 100%;
   margin-bottom: 10px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
   position: relative;
+  border-left-width: 5px;
+  border-left-style: solid;
 }
 
 .revision-button.active {
-  background-color: #005596;
+  color: white;
 }
 
 .revision-section {
@@ -187,13 +189,82 @@ button:disabled {
   text-align: center;
 }
 
+/* NEW: Enhanced styles for highlighted text */
+.highlighted-textarea-container {
+  position: relative;
+  width: 100%;
+}
+
+.highlighted-textarea-container {
+  position: relative;
+  width: 100%;
+}
+
+.highlighted-textarea-container textarea {
+  background-color: transparent !important; /* Override any other styles */
+  position: relative;
+  z-index: 2; /* Ensure it's above the highlight layer */
+  color: black; /* Text color */
+  caret-color: black; /* Ensure cursor is visible */
+  font-family: inherit; /* Same font as parent */
+  font-size: inherit; /* Same font size as parent */
+  line-height: inherit; /* Same line height as parent */
+  resize: none; /* Disable textarea resizing */
+}
+
+.highlight-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Allow clicking through to textarea */
+  white-space: pre-wrap;
+  overflow: hidden;
+  color: transparent; /* Hide text since we want to show the textarea text */
+  z-index: 1; /* Below the textarea */
+  font-family: inherit; /* Same font as textarea */
+  font-size: inherit; /* Same font size as textarea */
+  line-height: inherit; /* Same line height as textarea */
+  padding: inherit; /* Same padding as textarea */
+  border: none; /* No border on the highlight layer */
+  box-sizing: border-box;
+}
+
+/* Issue number badge styling */
+.issue-number {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  color: white;
+  z-index: 2;
+}
+
 /* Make blockquotes stand out in revision suggestions */
 .revision-results-content blockquote {
-  margin: 0 0 10px 0;
-  padding: 8px 12px;
-  border-left: 3px solid #007bff;
-  background-color: #f8f9fa;
+  margin: 0 0 15px 0;
+  padding: 10px 15px;
+  border-left-width: 3px;
+  border-left-style: solid;
+  background-color: rgba(0, 0, 0, 0.03);
   font-style: normal;
+  position: relative;
+  transition: opacity 0.3s, background-color 0.3s;
+}
+
+.revision-results-content blockquote.fixed {
+  opacity: 0.6;
+  background-color: #f0f0f0;
 }
 
 .revision-results-content blockquote p {
@@ -202,8 +273,35 @@ button:disabled {
 
 .revision-results-content blockquote p strong {
   font-style: normal;
-  text-decoration: underline;
-/*  font-weight: bold;*/
+  font-weight: bold;
+}
+
+/* NEW: Revision tools legend */
+.revision-legend {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  margin-right: 8px;
+  opacity: 0.6;
+  border-radius: 2px;
+}
+
+.legend-label {
+  font-size: 12px;
 }
 
 /* Tooltip styling */
@@ -239,7 +337,6 @@ button:disabled {
 }
 
 .revision-results-header {
-  background-color: #f0f0f0;
   padding: 8px 12px;
   cursor: pointer;
   display: flex;
@@ -247,6 +344,11 @@ button:disabled {
   align-items: center;
   font-weight: bold;
   border: 1px solid #ddd;
+  transition: background-color 0.2s;
+}
+
+.revision-results-header:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .revision-results-content {
@@ -259,17 +361,27 @@ button:disabled {
   overflow-y: auto;
 }
 
-/* Make blockquotes stand out in revision suggestions */
-.revision-results-content blockquote {
-  margin: 0 0 10px 0;
-  padding: 8px 12px;
-  border-left: 3px solid #007bff;
-  background-color: #f8f9fa;
-  font-style: italic;
-}
-
 .revision-results-content p {
   margin: 8px 0;
+}
+
+/* Highlight colors for different tools */
+.highlight-proofreader {
+  background-color: rgba(255, 193, 7, 0.3); /* Yellow for proofreading */
+}
+
+.highlight-contentpolisher {
+  background-color: rgba(76, 175, 80, 0.3); /* Green for content issues */
+}
+
+.highlight-writingclarity {
+  background-color: rgba(33, 150, 243, 0.3); /* Blue for clarity issues */
+}
+
+/* Fixed issue styling */
+.highlight-fixed {
+  background-color: rgba(200, 200, 200, 0.3) !important;
+  text-decoration: line-through;
 }
 
 /* Responsive adjustment for smaller screens */
@@ -291,5 +403,4 @@ button:disabled {
 /* Revision tools container */
 .revision-tools-container {
   width: 100%;
-  margin-bottom: 20px;
 }

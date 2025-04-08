@@ -26,7 +26,7 @@ export const stageConfig = {
     draft: false,
     revision: true
   },
-  
+
   // Essay prompts (moved from writingprompts.js)
   prompts: {
     a: "Should universities require standardized testing for admissions?",
@@ -34,12 +34,12 @@ export const stageConfig = {
     c: "Should remote work become the standard for office jobs?",
     d: "Should high schools make personal finance education mandatory?"
   },
-  
+
   // Stage-specific instructions
   instructions: {
-    outline: "Write an outline for an essay on the following topic:",
-    draft: "Write a draft essay based on your outline for the following topic:",
-    revision: "Review and revise your draft essay on the following topic:"
+    outline: "Please write an outline for an essay on the topic below. This outline is for your own use, so you can use bullet points, notes or whatever style of planning you prefer. The final essay should be about 300 words, so your outline should likely be less than 100 words. (Note the word count in the bottom lefthand corner of the textbox.) Your outline will be shown to you when you move to the drafting stage.",
+    draft: "Please write a draft essay based on your outline; your topic has been copied below and your outline has been put in the righthand sidebar. Your essay should be about 300 words.",
+    revision: "Please review and revise your draft essay; your topic has been copied below and your draft is in the textbox."
   }
 };
 

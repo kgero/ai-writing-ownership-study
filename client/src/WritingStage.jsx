@@ -30,6 +30,11 @@ export default function WritingStage({ stageName, nextStage }) {
   const [revisionResults, setRevisionResults] = useState({});
   const [showRevisionResults, setShowRevisionResults] = useState({});
   
+  // NEW: Track problematic text and their status
+  const [issueMap, setIssueMap] = useState({});
+  const [highlightedText, setHighlightedText] = useState([]);
+  const textareaRef = useRef(null);
+  
   // Get previous stage content from localStorage if available
   useEffect(() => {
     // Load current stage content if available
@@ -55,7 +60,199 @@ export default function WritingStage({ stageName, nextStage }) {
     if (input) {
       localStorage.setItem(`${stageName.toLowerCase()}_content`, input);
     }
+    
+    // NEW: Check if issues have been resolved when input changes
+    checkIssueResolution();
   }, [input, stageName]);
+
+  // Process issues after revision results change
+  // FIX: Modified to ensure highlighting happens immediately when revision results are added
+  useEffect(() => {
+    if (Object.keys(revisionResults).length > 0) {
+      processRevisionResults();
+    }
+  }, [revisionResults]);
+
+  // FIX: Update highlights when showRevisionResults changes
+  useEffect(() => {
+    updateHighlightsBasedOnVisibility();
+  }, [showRevisionResults, issueMap]);
+
+  useEffect(() => {
+    // every keystroke re‑evaluates the segment list
+    if (stageName === "Revision" && hasAISupport) {
+      updateHighlightsBasedOnVisibility();   // uses the new algorithm above
+    }
+  }, [input, issueMap, showRevisionResults]);
+
+  // NEW: Function to update highlights based on which result panels are visible
+  const updateHighlightsBasedOnVisibility = () => {
+    // Make a copy of the issue map to work with
+    const visibleIssueMap = {};
+    
+    // Only include issues from visible revision result panels
+    Object.entries(issueMap).forEach(([id, issue]) => {
+      if (showRevisionResults[issue.toolType]) {
+        visibleIssueMap[id] = issue;
+      }
+    });
+    
+    // Update highlighting with only the visible issues
+    highlightIssuesInTextarea(visibleIssueMap);
+  };
+
+  // IMPROVED: Function to process revision results and extract issues
+  const processRevisionResults = () => {
+    const newIssueMap = { ...issueMap };
+    
+    Object.entries(revisionResults).forEach(([toolType, results]) => {
+      if (!results) return;
+      
+      // Clear previous issues for this tool
+      Object.keys(newIssueMap).forEach(id => {
+        if (id.startsWith(toolType)) {
+          delete newIssueMap[id];
+        }
+      });
+      
+      // We'll try multiple regex patterns to make extraction more robust
+      
+      // First approach: Look for markdown blockquotes that contain quoted text
+      const blockquoteRegex = />[\s\*]*["']([^"']+)["'][\s\*]*/g;
+      let match;
+      let issueNumber = 1;
+      
+      while ((match = blockquoteRegex.exec(results)) !== null) {
+        const problematicText = match[1].trim();
+        if (problematicText && problematicText.length > 0 && input.includes(problematicText)) {
+          // Create a unique ID for each issue
+          const issueId = `${toolType}-${issueNumber}`;
+          
+          // Add to the issue map
+          newIssueMap[issueId] = {
+            text: problematicText,
+            toolType: toolType,
+            fixed: false,
+            number: issueNumber
+          };
+          issueNumber++;
+        }
+      }
+      
+      // If we didn't find any issues with the first approach, try a different pattern
+      if (issueNumber === 1) {
+        // Look for text between quotes in the results
+        const quoteRegex = /["']([^"']{5,})["']/g;
+        while ((match = quoteRegex.exec(results)) !== null) {
+          const problematicText = match[1].trim();
+          // Verify this text actually exists in the input to avoid false positives
+          if (problematicText && problematicText.length > 0 && input.includes(problematicText)) {
+            const issueId = `${toolType}-${issueNumber}`;
+            newIssueMap[issueId] = {
+              text: problematicText,
+              toolType: toolType,
+              fixed: false,
+              number: issueNumber
+            };
+            issueNumber++;
+          }
+        }
+      }
+      
+      console.log(`Extracted ${issueNumber-1} issues for ${toolType}`);
+    });
+    
+    // Update the issue map with our newly extracted issues
+    setIssueMap(newIssueMap);
+    
+    // FIX: Directly call highlightIssuesInTextarea with the new issue map
+    // This ensures highlights appear immediately when a tool is run
+    highlightIssuesInTextarea(newIssueMap);
+  };
+
+  // IMPROVED: Function to highlight issues in the textarea
+  const highlightIssuesInTextarea = (currentIssueMap) => {
+    // Only proceed if we have text to highlight
+    if (!input || input.length === 0) {
+      setHighlightedText([]);
+      return;
+    }
+    
+    const newHighlightedText = [];
+    
+    // Sort issues by their position in the text to handle overlapping issues
+    const issues = Object.entries(currentIssueMap).map(([id, issue]) => {
+      const startIndex = input.indexOf(issue.text);
+      return { 
+        id, 
+        issue, 
+        startIndex: startIndex >= 0 ? startIndex : -1, 
+        endIndex: startIndex >= 0 ? startIndex + issue.text.length : -1 
+      };
+    }).filter(item => item.startIndex >= 0)
+      .sort((a, b) => a.startIndex - b.startIndex);
+    
+    if (issues.length === 0) {
+      // No valid issues found, just return the plain text
+      newHighlightedText.push({
+        text: input,
+        isIssue: false
+      });
+    } else {
+      let lastIndex = 0;
+      
+      // Create segments of regular text and highlighted issues
+      issues.forEach(({ id, issue, startIndex, endIndex }) => {
+        if (startIndex > lastIndex) {
+          newHighlightedText.push({
+            text: input.substring(lastIndex, startIndex),
+            isIssue: false
+          });
+        }
+        
+        newHighlightedText.push({
+          text: issue.text,
+          isIssue: true,
+          issueId: id,
+          toolType: issue.toolType,
+          number: issue.number,
+          fixed: issue.fixed
+        });
+        
+        lastIndex = endIndex;
+      });
+      
+      // Add the remaining text
+      if (lastIndex < input.length) {
+        newHighlightedText.push({
+          text: input.substring(lastIndex),
+          isIssue: false
+        });
+      }
+    }
+    
+    setHighlightedText(newHighlightedText);
+  };
+
+  // IMPROVED: Function to check if issues have been resolved
+  const checkIssueResolution = () => {
+    const updatedIssueMap = { ...issueMap };
+    let hasChanges = false;
+    
+    Object.entries(updatedIssueMap).forEach(([id, issue]) => {
+      const isTextPresent = input.includes(issue.text);
+      if (issue.fixed !== !isTextPresent) {
+        updatedIssueMap[id].fixed = !isTextPresent;
+        hasChanges = true;
+      }
+    });
+    
+    if (hasChanges) {
+      setIssueMap(updatedIssueMap);
+      // Only update highlights for visible result panels
+      updateHighlightsBasedOnVisibility();
+    }
+  };
 
   // Keypress recording
   const handleKeyDown = (event) => {
@@ -116,31 +313,34 @@ export default function WritingStage({ stageName, nextStage }) {
     }
   };
 
-  // Modified AI REVISION TOOL HANDLER for more concise responses
+  // IMPROVED: AI REVISION TOOL HANDLER with better formatting instructions
   const handleRevisionTool = async (toolType) => {
     try {
       setRevisionLoading(true);
       setActiveRevisionType(toolType);
       
-      // Create modified prompts that ask for shorter responses
+      // UPDATED: Enhanced prompts that explicitly number issues and use consistent formatting
       const shortProofreader = (draft) => `
         Please briefly review the following essay for the most critical typos, grammatical mistakes, and punctuation issues:
         
         ${draft}
         
         Identify only 2-3 of the most important issues. For each issue:
-        1. Quote only the problematic phrase (keep it under 10 words).
-        2. Very briefly explain the problem in 5-10 words.
-        3. Suggest a concise fix.
+        1. Number the issue (Issue 1, Issue 2, etc.)
+        2. Quote the problematic phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
+        3. Very briefly explain the problem in 5-10 words.
+        4. Suggest a concise fix.
         
         Format as:
-        > *"problematic text"*
+        ### Issue 1
+        > "problematic text"
         >
         > **Issue**: Brief explanation
         >
-        > **Fix**: *"corrected version"*
+        > **Fix**: "corrected version"
         
         Be extremely concise. Only identify actual errors.
+        The quoted "problematic text" must appear EXACTLY as written in the original text - this is critical.
       `;
       
       const shortContentPolisher = (draft) => `
@@ -149,18 +349,21 @@ export default function WritingStage({ stageName, nextStage }) {
         ${draft}
         
         Identify only 2-3 of the most important issues. For each issue:
-        1. Quote only the relevant phrase (keep it under 10 words).
-        2. Very briefly explain the weakness in 5-10 words.
-        3. Suggest a specific, concise improvement.
+        1. Number the issue (Issue 1, Issue 2, etc.)
+        2. Quote the relevant phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
+        3. Very briefly explain the weakness in 5-10 words.
+        4. Suggest a specific, concise improvement.
         
         Format as:
-        > *"weak argument"*
+        ### Issue 1
+        > "weak argument"
         >
         > **Issue**: Brief explanation
         >
-        > **Fix**: Suggested fix
+        > **Fix**: Suggested improvement
         
         Be extremely concise. Focus only on substantive improvements.
+        The quoted "weak argument" must appear EXACTLY as written in the original text - this is critical.
       `;
       
       const shortWritingClarity = (draft) => `
@@ -169,18 +372,21 @@ export default function WritingStage({ stageName, nextStage }) {
         ${draft}
         
         Identify only 2-3 of the most problematic passages. For each issue:
-        1. Quote only the unclear phrase (keep it under 10 words).
-        2. Very briefly explain the clarity issue in 5-10 words.
-        3. Suggest a clearer alternative.
+        1. Number the issue (Issue 1, Issue 2, etc.)
+        2. Quote the unclear phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
+        3. Very briefly explain the clarity issue in 5-10 words.
+        4. Suggest a clearer alternative.
         
         Format as:
-        > *"unclear text"*
+        ### Issue 1
+        > "unclear text"
         >
         > **Issue**: Brief explanation
         >
-        > **Fix**: *"clearer version"*
+        > **Fix**: "clearer version"
         
         Be extremely concise. Focus only on clarity issues.
+        The quoted "unclear text" must appear EXACTLY as written in the original text - this is critical.
       `;
       
       // Map the tool type to the corresponding prompt
@@ -203,10 +409,13 @@ export default function WritingStage({ stageName, nextStage }) {
       });
       
       // Store the results for this tool type
-      setRevisionResults(prev => ({
-        ...prev,
-        [toolType]: response.data.completion
-      }));
+      setRevisionResults(prev => {
+        const newResults = {
+          ...prev,
+          [toolType]: response.data.completion
+        };
+        return newResults;
+      });
       
       // Automatically show the results
       setShowRevisionResults(prev => ({
@@ -226,12 +435,16 @@ export default function WritingStage({ stageName, nextStage }) {
     }
   };
 
-  // Toggle revision results visibility
+  // IMPROVED: Toggle revision results visibility and update highlights
   const toggleRevisionResults = (toolType) => {
-    setShowRevisionResults(prev => ({
-      ...prev,
-      [toolType]: !prev[toolType]
-    }));
+    setShowRevisionResults(prev => {
+      const newState = {
+        ...prev,
+        [toolType]: !prev[toolType]
+      };
+      
+      return newState;
+    });
   };
 
   // NEXT STAGE BUTTON HANDLER
@@ -319,21 +532,30 @@ export default function WritingStage({ stageName, nextStage }) {
     backgroundColor: "white"
   };
   
-  // Define revision tools with descriptions for tooltips
+  // Define revision tools with descriptions for tooltips and highlight colors
   const revisionTools = [
     {
       id: "Proof-reader",
-      description: "Find typos, grammatical mistakes, and misplaced punctuation"
+      description: "Find typos, grammatical mistakes, and misplaced punctuation",
+      color: "#FFC107" // Yellow for proofreading issues
     },
     {
       id: "Content polisher",
-      description: "Identify weak arguments and confusing points"
+      description: "Identify weak arguments and confusing points",
+      color: "#4CAF50" // Green for content issues
     },
     {
       id: "Writing clarity",
-      description: "Highlight unclear or hard to follow passages"
+      description: "Highlight unclear or hard to follow passages",
+      color: "#2196F3" // Blue for clarity issues
     }
   ];
+  
+  // Get the color for a specific tool type
+  const getToolColor = (toolType) => {
+    const tool = revisionTools.find(t => t.id === toolType);
+    return tool ? tool.color : "#999";
+  };
   
   return (
     <div className="container">
@@ -343,14 +565,93 @@ export default function WritingStage({ stageName, nextStage }) {
         <p style={{ fontStyle: "italic" }}>{promptText}</p>
         
         <div style={{ position: "relative" }}>
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={`Type your ${stageName.toLowerCase()} here...`}
-            rows={25}
-            style={{ width: "100%", boxSizing: "border-box" }}
-          />
+          {/* Replace the textarea with a div for highlighting when in Revision stage */}
+          {stageName === "Revision" && hasAISupport ? (
+            <div className="highlighted-textarea-container">
+              <div 
+                className="highlight-layer"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  boxSizing: "border-box",
+                  padding: "8px",
+                  pointerEvents: "none",
+                  whiteSpace: "pre-wrap",
+                  overflow: "hidden",
+                  backgroundColor: "transparent",
+                  color: "transparent"
+                }}
+              >
+                {highlightedText.map((segment, index) => (
+                  segment.isIssue ? (
+                    <span 
+                      key={index}
+                      style={{
+                        backgroundColor: segment.fixed ? 'rgba(200, 200, 200, 0.3)' : `${getToolColor(segment.toolType)}66`,
+                        position: 'relative',
+                        textDecoration: segment.fixed ? 'line-through' : 'none',
+                        color: 'transparent'
+                      }}
+                      data-issue-id={segment.issueId}
+                    >
+                      {segment.text}
+                      {!segment.fixed && (
+                        <span 
+                          style={{
+                            position: 'absolute',
+                            top: '-14px',
+                            right: '-10px',
+                            backgroundColor: getToolColor(segment.toolType),
+                            color: 'white',
+                            borderRadius: '50%',
+                            width: '16px',
+                            height: '16px',
+                            fontSize: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          {segment.number}
+                        </span>
+                      )}
+                    </span>
+                  ) : (
+                    <span key={index}>{segment.text}</span>
+                  )
+                ))}
+              </div>
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={`Type your ${stageName.toLowerCase()} here...`}
+                rows={25}
+                style={{ 
+                  width: "100%", 
+                  boxSizing: "border-box",
+                  backgroundColor: "transparent",
+                  position: "relative",
+                  zIndex: 1
+                }}
+              />
+            </div>
+          ) : (
+            // Regular textarea for non-revision stages
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={`Type your ${stageName.toLowerCase()} here...`}
+              rows={25}
+              style={{ width: "100%", boxSizing: "border-box" }}
+            />
+          )}
 
           <div
             style={{
@@ -485,6 +786,31 @@ export default function WritingStage({ stageName, nextStage }) {
           <>
             <h3>Revision Tools</h3>
             
+            {/* Display a legend for the highlighting colors */}
+            <div className="revision-legend" style={{ marginBottom: "15px" }}>
+              {revisionTools.map(tool => (
+                <div 
+                  key={tool.id} 
+                  style={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    marginBottom: "5px" 
+                  }}
+                >
+                  <div 
+                    style={{ 
+                      width: "15px", 
+                      height: "15px", 
+                      backgroundColor: tool.color, 
+                      marginRight: "8px",
+                      opacity: 0.4
+                    }}
+                  ></div>
+                  <span style={{ fontSize: "12px" }}>{tool.id}</span>
+                </div>
+              ))}
+            </div>
+            
             {/* Render revision tools with tooltips */}
             <div className="revision-tools-container">
               {revisionTools.map((tool) => (
@@ -495,6 +821,10 @@ export default function WritingStage({ stageName, nextStage }) {
                       disabled={revisionLoading}
                       className={`revision-button ${activeRevisionType === tool.id ? "active" : ""}`}
                       title={tool.description}
+                      style={{ 
+                        borderLeft: `5px solid ${tool.color}`,
+                        backgroundColor: activeRevisionType === tool.id ? tool.color : undefined
+                      }}
                     >
                       {revisionResults[tool.id] ? `Rerun ${tool.id}` : tool.id}
                       {activeRevisionType === tool.id && revisionLoading && (
@@ -513,7 +843,8 @@ export default function WritingStage({ stageName, nextStage }) {
                           display: "flex", 
                           justifyContent: "space-between",
                           padding: "8px",
-                          backgroundColor: "#f0f0f0",
+                          backgroundColor: `${tool.color}22`,
+                          borderLeft: `4px solid ${tool.color}`,
                           cursor: "pointer",
                           borderRadius: "4px 4px 0 0"
                         }}
@@ -535,7 +866,55 @@ export default function WritingStage({ stageName, nextStage }) {
                             overflowY: "auto"
                           }}
                         >
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          <ReactMarkdown 
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                              blockquote: ({node, children, ...props}) => {
+                                // Safe check if this is a blockquote with an issue
+                                let quoteText = "";
+                                let issueFixed = false;
+                                
+                                // Safely extract the text from the markdown
+                                try {
+                                  const blockquoteContent = node.children
+                                    .map(child => child.children || [])
+                                    .flat()
+                                    .map(item => item.value || "")
+                                    .join("");
+                                  
+                                  // Try to find quoted text
+                                  const quoteMatch = blockquoteContent.match(/["']([^"']+)["']/);
+                                  if (quoteMatch) {
+                                    quoteText = quoteMatch[1];
+                                    
+                                    // Check if this issue is fixed
+                                    const issue = Object.values(issueMap).find(issue => 
+                                      issue.toolType === tool.id && issue.text === quoteText
+                                    );
+                                    
+                                    issueFixed = issue?.fixed || false;
+                                  }
+                                } catch (err) {
+                                  console.log("Error parsing blockquote:", err);
+                                }
+                                
+                                return (
+                                  <blockquote 
+                                    {...props} 
+                                    style={{
+                                      borderColor: tool.color,
+                                      backgroundColor: issueFixed ? '#f0f0f0' : `${tool.color}11`,
+                                      opacity: issueFixed ? 0.6 : 1,
+                                      transition: 'opacity 0.3s, background-color 0.3s'
+                                    }}
+                                  >
+                                    {children}
+                                  </blockquote>
+                                );
+                              },
+                              strong: ({node, ...props}) => <strong {...props} style={{ color: tool.color }} />
+                            }}
+                          >
                             {revisionResults[tool.id]}
                           </ReactMarkdown>
                         </div>
@@ -548,6 +927,39 @@ export default function WritingStage({ stageName, nextStage }) {
           </>
         )}
       </div>
+
+      {/* Add CSS for the highlighted text area */}
+      <style>
+        {`
+          .highlighted-textarea-container {
+            position: relative;
+            width: 100%;
+          }
+          
+          /* Make textarea and highlight layer have the same font metrics */
+          .highlighted-textarea-container textarea,
+          .highlight-layer {
+            font-family: inherit;
+            font-size: inherit;
+            line-height: inherit;
+            letter-spacing: inherit;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            overflow-y: auto;
+          }
+          
+          /* Hide scrollbar from the highlight layer */
+          .highlight-layer::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+          }
+        `}
+      </style>
     </div>
   );
 }
