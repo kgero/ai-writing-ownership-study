@@ -189,9 +189,17 @@ export default function WritingStage({ stageName, nextStage }) {
         startIndex: startIndex >= 0 ? startIndex : -1, 
         endIndex: startIndex >= 0 ? startIndex + issue.text.length : -1 
       };
-    }).filter(item => item.startIndex >= 0)
-      .sort((a, b) => a.startIndex - b.startIndex);
-    
+    }).filter(item => item.startIndex >= 0);
+
+    // ** New: Sort by startIndex and then by length or priority
+    issues.sort((a, b) => {
+      if (a.startIndex === b.startIndex) {
+        // Secondary sort criterion: by length (longer issues first)
+        return b.endIndex - b.startIndex - (a.endIndex - a.startIndex);
+      }
+      return a.startIndex - b.startIndex;
+    });
+        
     if (issues.length === 0) {
       // No valid issues found, just return the plain text
       newHighlightedText.push({
