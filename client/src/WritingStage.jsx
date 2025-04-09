@@ -28,13 +28,22 @@ export default function WritingStage({ stageName, nextStage }) {
   
   // Add state for revision results and UI
   const [revisionResults, setRevisionResults] = useState({});
-  const [showRevisionResults, setShowRevisionResults] = useState({});
+  
+  // FIX: Remove showRevisionResults toggling - always show all results
+  // const [showRevisionResults, setShowRevisionResults] = useState({});
   
   // NEW: Track problematic text and their status
   const [issueMap, setIssueMap] = useState({});
   const [highlightedText, setHighlightedText] = useState([]);
+  const [hoveredIssueId, setHoveredIssueId] = useState(null);
   const textareaRef = useRef(null);
+  const sidebarRef = useRef(null);
   
+  // For improved revision highlighting/underlining
+  // highlight / navigation helpers
+  const [activeIssueId, setActiveIssueId] = useState(null);   // ← clicked item
+  const [collapseResolved, setCollapseResolved] = useState(false); // sidebar filter
+
   // Get previous stage content from localStorage if available
   useEffect(() => {
     // Load current stage content if available
@@ -73,31 +82,24 @@ export default function WritingStage({ stageName, nextStage }) {
     }
   }, [revisionResults]);
 
-  // FIX: Update highlights when showRevisionResults changes
+  // FIX: Update highlights when issueMap changes
   useEffect(() => {
     updateHighlightsBasedOnVisibility();
-  }, [showRevisionResults, issueMap]);
+  }, [issueMap, hoveredIssueId]);
 
   useEffect(() => {
     // every keystroke re‑evaluates the segment list
     if (stageName === "Revision" && hasAISupport) {
       updateHighlightsBasedOnVisibility();   // uses the new algorithm above
     }
-  }, [input, issueMap, showRevisionResults]);
+  }, [input, issueMap, hoveredIssueId]);
 
-  // NEW: Function to update highlights based on which result panels are visible
+  // FIX: Modified to always display all results
   const updateHighlightsBasedOnVisibility = () => {
     // Make a copy of the issue map to work with
-    const visibleIssueMap = {};
+    const visibleIssueMap = { ...issueMap };
     
-    // Only include issues from visible revision result panels
-    Object.entries(issueMap).forEach(([id, issue]) => {
-      if (showRevisionResults[issue.toolType]) {
-        visibleIssueMap[id] = issue;
-      }
-    });
-    
-    // Update highlighting with only the visible issues
+    // Update highlighting with all issues
     highlightIssuesInTextarea(visibleIssueMap);
   };
 
@@ -117,8 +119,11 @@ export default function WritingStage({ stageName, nextStage }) {
       
       // We'll try multiple regex patterns to make extraction more robust
       
-      // First approach: Look for markdown blockquotes that contain quoted text
-      const blockquoteRegex = />[\s\*]*["']([^"']+)["'][\s\*]*/g;
+      // First approach: Look for markdown blockquotes that contain quoted text.
+      // The back‑reference \1 makes sure we stop only at the *matching* quote,
+      // so apostrophes *inside* the phrase are kept (e.g. “students' academic…”).
+      const blockquoteRegex = />[\s\*]*(["'])([\s\S]*?)\1[\s\*]*/g;
+
       let match;
       let issueNumber = 1;
       
@@ -170,7 +175,7 @@ export default function WritingStage({ stageName, nextStage }) {
     highlightIssuesInTextarea(newIssueMap);
   };
 
-  // IMPROVED: Function to highlight issues in the textarea
+  // MODIFIED: Function to highlight issues in the textarea - now using underlines instead of highlights
   const highlightIssuesInTextarea = (currentIssueMap) => {
     // Only proceed if we have text to highlight
     if (!input || input.length === 0) {
@@ -182,19 +187,41 @@ export default function WritingStage({ stageName, nextStage }) {
     
     // Sort issues by their position in the text to handle overlapping issues
     const issues = Object.entries(currentIssueMap).map(([id, issue]) => {
-      const startIndex = input.indexOf(issue.text);
-      return { 
-        id, 
-        issue, 
-        startIndex: startIndex >= 0 ? startIndex : -1, 
-        endIndex: startIndex >= 0 ? startIndex + issue.text.length : -1 
-      };
-    }).filter(item => item.startIndex >= 0);
+      // Find all occurrences of the text in the input
+      const allMatches = [];
+      let pos = input.indexOf(issue.text);
+      while (pos !== -1) {
+        allMatches.push({
+          startIndex: pos,
+          endIndex: pos + issue.text.length
+        });
+        pos = input.indexOf(issue.text, pos + 1);
+      }
+      
+      // If we found any matches, create an issue for each occurrence
+      if (allMatches.length > 0) {
+        return allMatches.map((match, idx) => ({
+          id: `${id}-${idx}`,
+          issue,
+          startIndex: match.startIndex,
+          endIndex: match.endIndex
+        }));
+      }
+      
+      // No matches found
+      return [{
+        id,
+        issue,
+        startIndex: -1,
+        endIndex: -1
+      }];
+    })
+    .flat()
+    .filter(item => item.startIndex >= 0);
 
-    // ** New: Sort by startIndex and then by length or priority
+    // Sort by startIndex and then by length (longer issues first) 
     issues.sort((a, b) => {
       if (a.startIndex === b.startIndex) {
-        // Secondary sort criterion: by length (longer issues first)
         return b.endIndex - b.startIndex - (a.endIndex - a.startIndex);
       }
       return a.startIndex - b.startIndex;
@@ -209,7 +236,7 @@ export default function WritingStage({ stageName, nextStage }) {
     } else {
       let lastIndex = 0;
       
-      // Create segments of regular text and highlighted issues
+      // Create segments of regular text and underlined issues
       issues.forEach(({ id, issue, startIndex, endIndex }) => {
         if (startIndex > lastIndex) {
           newHighlightedText.push({
@@ -221,10 +248,11 @@ export default function WritingStage({ stageName, nextStage }) {
         newHighlightedText.push({
           text: issue.text,
           isIssue: true,
-          issueId: id,
+          issueId: id.split('-')[0], // Use the base ID for hover functionality
           toolType: issue.toolType,
           number: issue.number,
-          fixed: issue.fixed
+          fixed: issue.fixed,
+          isHovered: id.split('-')[0] === hoveredIssueId
         });
         
         lastIndex = endIndex;
@@ -261,6 +289,45 @@ export default function WritingStage({ stageName, nextStage }) {
       updateHighlightsBasedOnVisibility();
     }
   };
+
+  // FIX: Improved scroll function to position issue at 1/3 of sidebar height
+  const scrollSidebarToIssue = (issueId) => {
+    // Find the blockquote element for this issue
+    const blockquote = document.querySelector(`[data-sidebar-issue-id="${issueId}"]`);
+    if (!blockquote || !sidebarRef.current) return;
+    
+    // Get the positions
+    const sidebarRect = sidebarRef.current.getBoundingClientRect();
+    const blockquoteRect = blockquote.getBoundingClientRect();
+    
+    // Calculate the scroll position to place blockquote at 1/3 height
+    const oneThirdHeight = sidebarRect.height / 3;
+    const desiredScrollTop = blockquoteRect.top - sidebarRect.top - oneThirdHeight + sidebarRef.current.scrollTop;
+    
+    // Scroll the sidebar
+    sidebarRef.current.scrollTo({
+      top: desiredScrollTop,
+      behavior: "smooth"
+    });
+  };
+
+  // Scroll the editor so an issue is roughly centred
+  const scrollEditorToIssue = (issue) => {
+    const pos = input.indexOf(issue.text);
+    if (pos === -1 || !textareaRef.current) return;
+    textareaRef.current.focus();
+    textareaRef.current.setSelectionRange(pos, pos + issue.text.length);
+    textareaRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  // Pulse a sidebar card once for visual feedback
+  const pulseSidebarCard = (issueId) => {
+    const card = document.querySelector(`[data-sidebar-issue-id="${issueId}"]`);
+    if (!card) return;
+    card.classList.add("pulse-border");
+    setTimeout(() => card.classList.remove("pulse-border"), 600);
+  };
+
 
   // Keypress recording
   const handleKeyDown = (event) => {
@@ -425,12 +492,6 @@ export default function WritingStage({ stageName, nextStage }) {
         return newResults;
       });
       
-      // Automatically show the results
-      setShowRevisionResults(prev => ({
-        ...prev,
-        [toolType]: true
-      }));
-      
     } catch (error) {
       console.error(`Error with ${toolType}:`, error);
       setRevisionResults(prev => ({
@@ -443,16 +504,13 @@ export default function WritingStage({ stageName, nextStage }) {
     }
   };
 
-  // IMPROVED: Toggle revision results visibility and update highlights
-  const toggleRevisionResults = (toolType) => {
-    setShowRevisionResults(prev => {
-      const newState = {
-        ...prev,
-        [toolType]: !prev[toolType]
-      };
-      
-      return newState;
-    });
+  // NEW: Handle mouse enter for blockquote to highlight text in the textarea
+  const handleBlockquoteHover = (issueId, isEnter) => {
+    if (isEnter) {
+      setHoveredIssueId(issueId);
+    } else if (hoveredIssueId === issueId) {
+      setHoveredIssueId(null);
+    }
   };
 
   // NEXT STAGE BUTTON HANDLER
@@ -595,39 +653,40 @@ export default function WritingStage({ stageName, nextStage }) {
               >
                 {highlightedText.map((segment, index) => (
                   segment.isIssue ? (
-                    <span 
+                    <span
                       key={index}
-                      style={{
-                        backgroundColor: segment.fixed ? 'rgba(200, 200, 200, 0.3)' : `${getToolColor(segment.toolType)}66`,
-                        position: 'relative',
-                        textDecoration: segment.fixed ? 'line-through' : 'none',
-                        color: 'transparent'
-                      }}
                       data-issue-id={segment.issueId}
+                      onClick={() => {
+                        // ① mark as active
+                        setActiveIssueId(segment.issueId);
+                        // ② scroll the editor so the text is centred
+                        const issue = issueMap[segment.issueId];
+                        if (issue) scrollEditorToIssue(issue);
+                        // ③ pulse the sidebar card
+                        pulseSidebarCard(segment.issueId);
+                        // ④ scroll sidebar to position issue at 1/3
+                        scrollSidebarToIssue(segment.issueId);
+                      }}
+                      style={{
+                        cursor: 'pointer',
+                        backgroundColor:
+                          segment.isHovered || activeIssueId === segment.issueId
+                            ? `${getToolColor(segment.toolType)}33`
+                            : 'transparent',
+                        borderBottomWidth: '2px',
+                        borderBottomStyle: segment.multi ? 'dotted' : 'solid',   // ← dotted if overlap
+                        borderBottomColor: segment.fixed
+                          ? '#999'
+                          : getToolColor(segment.toolType),
+                        textDecoration: segment.fixed ? 'line-through' : 'none',
+                        textUnderlineOffset: segment.multi ? '3px' : '0',
+                        color: 'transparent',
+                        transition: 'background-color 0.2s',
+                      }}
                     >
                       {segment.text}
-                      {!segment.fixed && (
-                        <span 
-                          style={{
-                            position: 'absolute',
-                            top: '-14px',
-                            right: '-10px',
-                            backgroundColor: getToolColor(segment.toolType),
-                            color: 'white',
-                            borderRadius: '50%',
-                            width: '16px',
-                            height: '16px',
-                            fontSize: '10px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          {segment.number}
-                        </span>
-                      )}
                     </span>
+
                   ) : (
                     <span key={index}>{segment.text}</span>
                   )
@@ -730,7 +789,7 @@ export default function WritingStage({ stageName, nextStage }) {
       </div>
       
       {/* Always render sidebar with same width for consistent layout */}
-      <div className="sidebar">
+      <div className="sidebar" ref={sidebarRef}>
         {/* Previous content display for "no support" condition */}
         {showPreviousContent && (
           <>
@@ -789,12 +848,12 @@ export default function WritingStage({ stageName, nextStage }) {
           </>
         )}
         
-        {/* AI Revision support - UPDATED IMPLEMENTATION */}
+        {/* AI Revision support - UPDATED IMPLEMENTATION WITH FIXES */}
         {hasAISupport && stageName === "Revision" && (
           <>
             <h3>Revision Tools</h3>
             
-            {/* Display a legend for the highlighting colors */}
+            {/* Display a legend for the underline colors */}
             <div className="revision-legend" style={{ marginBottom: "15px" }}>
               {revisionTools.map(tool => (
                 <div 
@@ -808,10 +867,9 @@ export default function WritingStage({ stageName, nextStage }) {
                   <div 
                     style={{ 
                       width: "15px", 
-                      height: "15px", 
+                      height: "2px", 
                       backgroundColor: tool.color, 
-                      marginRight: "8px",
-                      opacity: 0.4
+                      marginRight: "8px"
                     }}
                   ></div>
                   <span style={{ fontSize: "12px" }}>{tool.id}</span>
@@ -841,11 +899,10 @@ export default function WritingStage({ stageName, nextStage }) {
                     </button>
                   </div>
                   
-                  {/* Results for this tool */}
+                  {/* FIX: Always show results if they exist, no toggle needed */}
                   {revisionResults[tool.id] && (
                     <div className="revision-results">
                       <div 
-                        onClick={() => toggleRevisionResults(tool.id)}
                         className="revision-results-header"
                         style={{
                           display: "flex", 
@@ -853,80 +910,94 @@ export default function WritingStage({ stageName, nextStage }) {
                           padding: "8px",
                           backgroundColor: `${tool.color}22`,
                           borderLeft: `4px solid ${tool.color}`,
-                          cursor: "pointer",
                           borderRadius: "4px 4px 0 0"
                         }}
                       >
-                        <span>Suggestions</span>
-                        <span>{showRevisionResults[tool.id] ? "▼" : "▶"}</span>
                       </div>
                       
-                      {showRevisionResults[tool.id] && (
-                        <div 
-                          className="revision-results-content"
-                          style={{
-                            padding: "10px",
-                            backgroundColor: "#fff",
-                            border: "1px solid #ddd",
-                            borderTop: "none",
-                            borderRadius: "0 0 4px 4px",
-                            maxHeight: "300px",
-                            overflowY: "auto"
+                      <div 
+                        className="revision-results-content"
+                        style={{
+                          padding: "10px",
+                          backgroundColor: "#fff",
+                          border: "1px solid #ddd",
+                          borderTop: "none",
+                          borderRadius: "0 0 4px 4px",
+                          maxHeight: "300px",
+                          overflowY: "auto"
+                        }}
+                      >
+                        <ReactMarkdown 
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            h3: () => null,
+                            blockquote: ({node, children, ...props}) => {
+                              // Safe check if this is a blockquote with an issue
+                              let quoteText = "";
+                              let issueFixed = false;
+                              let issueId = null;
+                              
+                              // Safely extract the text from the markdown
+                              try {
+                                const blockquoteContent = node.children
+                                  .map(child => child.children || [])
+                                  .flat()
+                                  .map(item => item.value || "")
+                                  .join("");
+                                
+                                // Try to find quoted text
+                                const quoteMatch = blockquoteContent.match(/["""']([^"""']+)["""']/);
+                                if (quoteMatch) {
+                                  quoteText = quoteMatch[1];
+                                  
+                                  // Find the issue in our issue map
+                                  const issue = Object.entries(issueMap).find(([id, issue]) => 
+                                    issue.toolType === tool.id && issue.text === quoteText
+                                  );
+                                  
+                                  if (issue) {
+                                    issueId = issue[0];
+                                    issueFixed = issue[1].fixed || false;
+                                  }
+                                }
+                              } catch (err) {
+                                console.log("Error parsing blockquote:", err);
+                              }
+                              
+                              return (
+                                <blockquote
+                                  {...props}
+                                  data-sidebar-issue-id={issueId}
+                                  onMouseEnter={() => issueId && handleBlockquoteHover(issueId, true)}
+                                  onMouseLeave={() => issueId && handleBlockquoteHover(issueId, false)}
+                                  onClick={() => {
+                                    if (!issueId) return;
+                                    setActiveIssueId(issueId);
+                                    // Scroll the text area to the issue
+                                    scrollEditorToIssue(issueMap[issueId]);
+                                    // Also highlight in the sidebar (pulse animation)
+                                    pulseSidebarCard(issueId);
+                                  }}
+                                  style={{
+                                    borderColor: tool.color,
+                                    backgroundColor: issueFixed ? '#f0f0f0' : `${tool.color}11`,
+                                    opacity: issueFixed ? 0.6 : 1,
+                                    boxShadow:
+                                      activeIssueId === issueId ? `0 0 0 2px ${tool.color}` : 'none',
+                                    transition: 'opacity 0.3s, background-color 0.3s, box-shadow 0.2s',
+                                    cursor: 'pointer'
+                                  }}
+                                >
+                                  {children}
+                                </blockquote>
+                              );
+                            },
+                            strong: ({node, ...props}) => <strong {...props} style={{ color: tool.color }} />
                           }}
                         >
-                          <ReactMarkdown 
-                            remarkPlugins={[remarkGfm]}
-                            components={{
-                              blockquote: ({node, children, ...props}) => {
-                                // Safe check if this is a blockquote with an issue
-                                let quoteText = "";
-                                let issueFixed = false;
-                                
-                                // Safely extract the text from the markdown
-                                try {
-                                  const blockquoteContent = node.children
-                                    .map(child => child.children || [])
-                                    .flat()
-                                    .map(item => item.value || "")
-                                    .join("");
-                                  
-                                  // Try to find quoted text
-                                  const quoteMatch = blockquoteContent.match(/["']([^"']+)["']/);
-                                  if (quoteMatch) {
-                                    quoteText = quoteMatch[1];
-                                    
-                                    // Check if this issue is fixed
-                                    const issue = Object.values(issueMap).find(issue => 
-                                      issue.toolType === tool.id && issue.text === quoteText
-                                    );
-                                    
-                                    issueFixed = issue?.fixed || false;
-                                  }
-                                } catch (err) {
-                                  console.log("Error parsing blockquote:", err);
-                                }
-                                
-                                return (
-                                  <blockquote 
-                                    {...props} 
-                                    style={{
-                                      borderColor: tool.color,
-                                      backgroundColor: issueFixed ? '#f0f0f0' : `${tool.color}11`,
-                                      opacity: issueFixed ? 0.6 : 1,
-                                      transition: 'opacity 0.3s, background-color 0.3s'
-                                    }}
-                                  >
-                                    {children}
-                                  </blockquote>
-                                );
-                              },
-                              strong: ({node, ...props}) => <strong {...props} style={{ color: tool.color }} />
-                            }}
-                          >
-                            {revisionResults[tool.id]}
-                          </ReactMarkdown>
-                        </div>
-                      )}
+                          {revisionResults[tool.id]}
+                        </ReactMarkdown>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -965,6 +1036,15 @@ export default function WritingStage({ stageName, nextStage }) {
           .highlight-layer::-webkit-scrollbar {
             width: 0;
             height: 0;
+          }
+          
+          /* FIX: Hover effects for blockquotes */
+          .revision-results-content blockquote {
+            transition: background-color 0.3s, box-shadow 0.3s;
+          }
+          
+          .revision-results-content blockquote:hover {
+            background-color: rgba(0, 0, 0, 0.05);
           }
         `}
       </style>

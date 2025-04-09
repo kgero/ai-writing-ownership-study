@@ -404,3 +404,62 @@ button:disabled {
 .revision-tools-container {
   width: 100%;
 }
+
+@keyframes pulseBorder {
+  0% { box-shadow: 0 0 0 0 rgba(0,0,0,.35); }
+  100% { box-shadow: 0 0 0 6px rgba(0,0,0,0); }
+}
+.pulse-border { animation: pulseBorder 0.6s ease-out; }
+
+/* keep legend visible */
+.revision-legend { position: sticky; top: 0; z-index: 1; background: #fff; }
+
+/* Right‑rail suggestion cards */
+.revision-results {
+  margin: 4px 0;           /* was ~15‑20 px */
+}
+
+/* Content area inside each card – let the sidebar do the scrolling */
+.revision-results-content {
+  max-height: none;        /* kill per‑card scrollbar                */
+  overflow-y: visible !important;     /* idem                                   */
+  padding: 8px 10px;       /* a little tighter                       */
+}
+
+/* Trim space between individual block‑quotes (issues) */
+.revision-results-content blockquote {
+  margin: 4px 0;
+}
+
+
+/* Add these CSS rules to your stylesheet */
+
+/* Ensure proper spacing for underlines */
+.highlight-layer span {
+  position: relative;
+  display: inline;
+}
+
+/* Better handling for overlapping underlines */
+.highlight-layer span[data-issue-id] {
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+}
+
+/* Dotted style for overlaps */
+.highlight-layer span[data-issue-id].multi {
+  border-bottom-style: dotted;
+  text-underline-offset: 3px; /* Shift down overlapping underlines */
+}
+
+/* Ensures no horizontal shifting */
+.highlight-layer span[data-issue-id] {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Improved hover effect */
+.highlight-layer span[data-issue-id]:hover {
+  border-bottom-width: 3px; /* Slightly thicker on hover for better visibility */
+}
+
