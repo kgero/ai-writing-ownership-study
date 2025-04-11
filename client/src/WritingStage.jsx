@@ -121,7 +121,6 @@ export default function WritingStage({ stageName, nextStage }) {
       let issueNumber = 1;
 
       issueSections.forEach(section => {
-        console.log("IssueSection", section)
         const lines = section.trim().split('\n').map(line => line.trim());
         let problematicText = null;
         let issueDescription = null;
@@ -154,7 +153,7 @@ export default function WritingStage({ stageName, nextStage }) {
 
         if (problematicText && problematicText.length > 0 && input.includes(problematicText)) {
           const issueId = `${toolType}-${issueNumber}`;
-          console.log(`Found issue ${issueId}: "${problematicText}" | Issue: ${issueDescription} | Fix: ${fix}`);
+          // console.log(`Found issue ${issueId}: "${problematicText}" | Issue: ${issueDescription} | Fix: ${fix}`);
           newIssueMap[issueId] = {
             text: problematicText,
             issueDescription: issueDescription || '',
@@ -174,6 +173,87 @@ export default function WritingStage({ stageName, nextStage }) {
     highlightIssuesInTextarea(newIssueMap);
   };
 
+  // Helper functions for highlightIssuesInTextarea
+  const generateCharMap = (input, issueMap) => {
+    // Initialize character array
+    const charMap = input.split('').map((char, index) => ({
+      char,
+      index,
+      issues: [],        // List of issue IDs this char belongs to
+      toolTypes: [],     // Optional: for rendering styles
+      fixedFlags: []     // Optional: if some issues are already fixed
+    }));
+
+    // Loop through each issue and mark character positions
+    Object.entries(issueMap).forEach(([issueId, issue]) => {
+      const { text, toolType, fixed } = issue;
+
+      // Find all matching positions of the problematic text
+      let pos = input.indexOf(text);
+      while (pos !== -1) {
+        const end = pos + text.length;
+
+        for (let i = pos; i < end; i++) {
+          if (!charMap[i]) continue; // skip out-of-bounds (shouldn't happen)
+
+          charMap[i].issues.push(issueId);
+          charMap[i].toolTypes.push(toolType);
+          charMap[i].fixedFlags.push(fixed);
+        }
+
+        pos = input.indexOf(text, pos + 1);
+      }
+    });
+
+    return charMap;
+  };
+
+  const groupCharMapIntoSpans = (charMap) => {
+    if (charMap.length === 0) return [];
+
+    const spans = [];
+    let currentSpan = {
+      text: charMap[0].char,
+      issues: [...charMap[0].issues],
+      toolTypes: [...charMap[0].toolTypes],
+      fixedFlags: [...charMap[0].fixedFlags]
+    };
+
+    for (let i = 1; i < charMap.length; i++) {
+      const charData = charMap[i];
+
+      const sameIssues = arraysEqual(currentSpan.issues, charData.issues);
+      const sameTools = arraysEqual(currentSpan.toolTypes, charData.toolTypes);
+      const sameFixed = arraysEqual(currentSpan.fixedFlags, charData.fixedFlags);
+
+      if (sameIssues && sameTools && sameFixed) {
+        currentSpan.text += charData.char;
+      } else {
+        spans.push(currentSpan);
+        currentSpan = {
+          text: charData.char,
+          issues: [...charData.issues],
+          toolTypes: [...charData.toolTypes],
+          fixedFlags: [...charData.fixedFlags]
+        };
+      }
+    }
+
+    spans.push(currentSpan);
+    return spans;
+  };
+
+  // Helper: compare arrays for shallow equality
+  const arraysEqual = (a, b) => {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
+  };
+
+
+
 
   // MODIFIED: Function to highlight issues in the textarea - now using underlines instead of highlights
   const highlightIssuesInTextarea = (currentIssueMap) => {
@@ -183,91 +263,9 @@ export default function WritingStage({ stageName, nextStage }) {
       return;
     }
     
-    const newHighlightedText = [];
-    
-    // Sort issues by their position in the text to handle overlapping issues
-    const issues = Object.entries(currentIssueMap).map(([id, issue]) => {
-      // Find all occurrences of the text in the input
-      const allMatches = [];
-      let pos = input.indexOf(issue.text);
-      while (pos !== -1) {
-        allMatches.push({
-          startIndex: pos,
-          endIndex: pos + issue.text.length
-        });
-        pos = input.indexOf(issue.text, pos + 1);
-      }
-      
-      // If we found any matches, create an issue for each occurrence
-      if (allMatches.length > 0) {
-        return allMatches.map((match, idx) => ({
-          id: `${id}-${idx}`,
-          issue,
-          startIndex: match.startIndex,
-          endIndex: match.endIndex
-        }));
-      }
-      
-      // No matches found
-      return [{
-        id,
-        issue,
-        startIndex: -1,
-        endIndex: -1
-      }];
-    })
-    .flat()
-    .filter(item => item.startIndex >= 0);
-
-    // Sort by startIndex and then by length (longer issues first) 
-    issues.sort((a, b) => {
-      if (a.startIndex === b.startIndex) {
-        return b.endIndex - b.startIndex - (a.endIndex - a.startIndex);
-      }
-      return a.startIndex - b.startIndex;
-    });
-        
-    if (issues.length === 0) {
-      // No valid issues found, just return the plain text
-      newHighlightedText.push({
-        text: input,
-        isIssue: false
-      });
-    } else {
-      let lastIndex = 0;
-      
-      // Create segments of regular text and underlined issues
-      issues.forEach(({ id, issue, startIndex, endIndex }) => {
-        if (startIndex > lastIndex) {
-          newHighlightedText.push({
-            text: input.substring(lastIndex, startIndex),
-            isIssue: false
-          });
-        }
-        
-        newHighlightedText.push({
-          text: issue.text,
-          isIssue: true,
-          issueId: id.split('-')[0], // Use the base ID for hover functionality
-          toolType: issue.toolType,
-          number: issue.number,
-          fixed: issue.fixed,
-          isHovered: id.split('-')[0] === hoveredIssueId
-        });
-        
-        lastIndex = endIndex;
-      });
-      
-      // Add the remaining text
-      if (lastIndex < input.length) {
-        newHighlightedText.push({
-          text: input.substring(lastIndex),
-          isIssue: false
-        });
-      }
-    }
-    
-    setHighlightedText(newHighlightedText);
+    const charMap = generateCharMap(input, currentIssueMap);
+    const spans = groupCharMapIntoSpans(charMap);
+    setHighlightedText(spans);
   };
 
   // IMPROVED: Function to check if issues have been resolved
@@ -652,7 +650,7 @@ export default function WritingStage({ stageName, nextStage }) {
                 }}
               >
                 {highlightedText.map((segment, index) => (
-                  segment.isIssue ? (
+                  segment.issues.length > 0 ? (
                     <span
                       key={index}
                       data-issue-id={segment.issueId}
@@ -669,19 +667,11 @@ export default function WritingStage({ stageName, nextStage }) {
                       }}
                       style={{
                         cursor: 'pointer',
-                        backgroundColor:
-                          segment.isHovered || activeIssueId === segment.issueId
-                            ? `${getToolColor(segment.toolType)}33`
-                            : 'transparent',
-                        borderBottomWidth: '2px',
-                        borderBottomStyle: segment.multi ? 'dotted' : 'solid',   // ← dotted if overlap
-                        borderBottomColor: segment.fixed
-                          ? '#999'
-                          : getToolColor(segment.toolType),
-                        textDecoration: segment.fixed ? 'line-through' : 'none',
-                        textUnderlineOffset: segment.multi ? '3px' : '0',
-                        color: 'transparent',
-                        transition: 'background-color 0.2s',
+                        whiteSpace: 'pre-wrap',
+                        boxShadow: segment.toolTypes.map(
+                          (toolType, i) => `inset 0 -${2 + i * 3}px 0 0 ${getToolColor(toolType)}`
+                        ).join(', '),
+                        color: 'transparent'
                       }}
                     >
                       {segment.text}
