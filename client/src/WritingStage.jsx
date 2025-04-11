@@ -103,77 +103,77 @@ export default function WritingStage({ stageName, nextStage }) {
     highlightIssuesInTextarea(visibleIssueMap);
   };
 
-  // IMPROVED: Function to process revision results and extract issues
+  // Parse LLM response from revision tool to extract issues w essay
   const processRevisionResults = () => {
     const newIssueMap = { ...issueMap };
-    
+
     Object.entries(revisionResults).forEach(([toolType, results]) => {
       if (!results) return;
-      
+
       // Clear previous issues for this tool
       Object.keys(newIssueMap).forEach(id => {
         if (id.startsWith(toolType)) {
           delete newIssueMap[id];
         }
       });
-      
-      // We'll try multiple regex patterns to make extraction more robust
-      
-      // First approach: Look for markdown blockquotes that contain quoted text.
-      // The back‑reference \1 makes sure we stop only at the *matching* quote,
-      // so apostrophes *inside* the phrase are kept (e.g. “students' academic…”).
-      const blockquoteRegex = />[\s\*]*(["'])([\s\S]*?)\1[\s\*]*/g;
 
-      let match;
+      const issueSections = results.split(/### Issue \d+/g).slice(1);
       let issueNumber = 1;
-      
-      while ((match = blockquoteRegex.exec(results)) !== null) {
-        const problematicText = match[1].trim();
+
+      issueSections.forEach(section => {
+        console.log("IssueSection", section)
+        const lines = section.trim().split('\n').map(line => line.trim());
+        let problematicText = null;
+        let issueDescription = null;
+        let fix = null;
+
+        // Extract problematic text (first line that starts with > and includes a quote)
+        for (let line of lines) {
+          if (line.startsWith('>') && (line.includes('"') || line.includes('“'))) {
+            problematicText = line.replace(/^>\s*/, '').trim();
+            if ((problematicText.startsWith('"') && problematicText.endsWith('"')) ||
+                (problematicText.startsWith('“') && problematicText.endsWith('”'))) {
+              problematicText = problematicText.slice(1, -1).trim();
+            }
+            break;
+          }
+        }
+
+        // Extract issue and fix lines
+        for (let line of lines) {
+          if (line.toLowerCase().startsWith('**issue**') || line.toLowerCase().startsWith('> **issue**')) {
+            issueDescription = line.replace(/^>?\s*\*\*issue\*\*[:：]?\s*/i, '').trim();
+          } else if (line.toLowerCase().startsWith('**fix**') || line.toLowerCase().startsWith('> **fix**')) {
+            fix = line.replace(/^>?\s*\*\*fix\*\*[:：]?\s*/i, '').trim();
+            if ((fix.startsWith('"') && fix.endsWith('"')) ||
+                (fix.startsWith('“') && fix.endsWith('”'))) {
+              fix = fix.slice(1, -1).trim();
+            }
+          }
+        }
+
         if (problematicText && problematicText.length > 0 && input.includes(problematicText)) {
-          // Create a unique ID for each issue
           const issueId = `${toolType}-${issueNumber}`;
-          
-          // Add to the issue map
+          console.log(`Found issue ${issueId}: "${problematicText}" | Issue: ${issueDescription} | Fix: ${fix}`);
           newIssueMap[issueId] = {
             text: problematicText,
+            issueDescription: issueDescription || '',
+            fix: fix || '',
             toolType: toolType,
             fixed: false,
             number: issueNumber
           };
           issueNumber++;
         }
-      }
-      
-      // If we didn't find any issues with the first approach, try a different pattern
-      if (issueNumber === 1) {
-        // Look for text between quotes in the results
-        const quoteRegex = /["']([^"']{5,})["']/g;
-        while ((match = quoteRegex.exec(results)) !== null) {
-          const problematicText = match[1].trim();
-          // Verify this text actually exists in the input to avoid false positives
-          if (problematicText && problematicText.length > 0 && input.includes(problematicText)) {
-            const issueId = `${toolType}-${issueNumber}`;
-            newIssueMap[issueId] = {
-              text: problematicText,
-              toolType: toolType,
-              fixed: false,
-              number: issueNumber
-            };
-            issueNumber++;
-          }
-        }
-      }
-      
-      console.log(`Extracted ${issueNumber-1} issues for ${toolType}`);
+      });
+
+      console.log(`Extracted ${issueNumber - 1} issues for ${toolType}`);
     });
-    
-    // Update the issue map with our newly extracted issues
+
     setIssueMap(newIssueMap);
-    
-    // FIX: Directly call highlightIssuesInTextarea with the new issue map
-    // This ensures highlights appear immediately when a tool is run
     highlightIssuesInTextarea(newIssueMap);
   };
+
 
   // MODIFIED: Function to highlight issues in the textarea - now using underlines instead of highlights
   const highlightIssuesInTextarea = (currentIssueMap) => {
@@ -343,7 +343,7 @@ export default function WritingStage({ stageName, nextStage }) {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      console.log(`${stageName} snapshot at`, new Date().toISOString(), ":", inputRef.current);
+      console.log(`${stageName} snapshot at`, new Date().toISOString());
     }, 30000);
 
     return () => clearInterval(intervalId);
@@ -927,76 +927,45 @@ export default function WritingStage({ stageName, nextStage }) {
                           overflowY: "auto"
                         }}
                       >
-                        <ReactMarkdown 
-                          remarkPlugins={[remarkGfm]}
-                          components={{
-                            h3: () => null,
-                            blockquote: ({node, children, ...props}) => {
-                              // Safe check if this is a blockquote with an issue
-                              let quoteText = "";
-                              let issueFixed = false;
-                              let issueId = null;
-                              
-                              // Safely extract the text from the markdown
-                              try {
-                                const blockquoteContent = node.children
-                                  .map(child => child.children || [])
-                                  .flat()
-                                  .map(item => item.value || "")
-                                  .join("");
-                                
-                                // Try to find quoted text
-                                const quoteMatch = blockquoteContent.match(/["""']([^"""']+)["""']/);
-                                if (quoteMatch) {
-                                  quoteText = quoteMatch[1];
-                                  
-                                  // Find the issue in our issue map
-                                  const issue = Object.entries(issueMap).find(([id, issue]) => 
-                                    issue.toolType === tool.id && issue.text === quoteText
-                                  );
-                                  
-                                  if (issue) {
-                                    issueId = issue[0];
-                                    issueFixed = issue[1].fixed || false;
-                                  }
-                                }
-                              } catch (err) {
-                                console.log("Error parsing blockquote:", err);
-                              }
-                              
-                              return (
-                                <blockquote
-                                  {...props}
-                                  data-sidebar-issue-id={issueId}
-                                  onMouseEnter={() => issueId && handleBlockquoteHover(issueId, true)}
-                                  onMouseLeave={() => issueId && handleBlockquoteHover(issueId, false)}
-                                  onClick={() => {
-                                    if (!issueId) return;
-                                    setActiveIssueId(issueId);
-                                    // Scroll the text area to the issue
-                                    scrollEditorToIssue(issueMap[issueId]);
-                                    // Also highlight in the sidebar (pulse animation)
-                                    pulseSidebarCard(issueId);
-                                  }}
-                                  style={{
-                                    borderColor: tool.color,
-                                    backgroundColor: issueFixed ? '#f0f0f0' : `${tool.color}11`,
-                                    opacity: issueFixed ? 0.6 : 1,
-                                    boxShadow:
-                                      activeIssueId === issueId ? `0 0 0 2px ${tool.color}` : 'none',
-                                    transition: 'opacity 0.3s, background-color 0.3s, box-shadow 0.2s',
-                                    cursor: 'pointer'
-                                  }}
-                                >
-                                  {children}
-                                </blockquote>
-                              );
-                            },
-                            strong: ({node, ...props}) => <strong {...props} style={{ color: tool.color }} />
-                          }}
-                        >
-                          {revisionResults[tool.id]}
-                        </ReactMarkdown>
+                        <div className="revision-results-content">
+                          {Object.entries(issueMap)
+                            .filter(([id, issue]) => issue.toolType === tool.id)
+                            .map(([id, issue]) => (
+                              <blockquote
+                                key={id}
+                                data-sidebar-issue-id={id}
+                                onMouseEnter={() => handleBlockquoteHover(id, true)}
+                                onMouseLeave={() => handleBlockquoteHover(id, false)}
+                                onClick={() => {
+                                  setActiveIssueId(id);
+                                  scrollEditorToIssue(issue);
+                                  pulseSidebarCard(id);
+                                }}
+                                style={{
+                                  borderLeft: `4px solid ${tool.color}`,
+                                  backgroundColor: issue.fixed ? '#f0f0f0' : `${tool.color}11`,
+                                  opacity: issue.fixed ? 0.6 : 1,
+                                  boxShadow: activeIssueId === id ? `0 0 0 2px ${tool.color}` : 'none',
+                                  cursor: 'pointer',
+                                  padding: '10px',
+                                  marginBottom: '8px',
+                                  borderRadius: '4px',
+                                  transition: 'background-color 0.3s, box-shadow 0.2s'
+                                }}
+                              >
+                                <p style={{ marginBottom: '4px' }}>
+                                  <strong style={{ color: tool.color }}>Problem:</strong> "{issue.text}"
+                                </p>
+                                <p style={{ marginBottom: '4px' }}>
+                                  <strong style={{ color: tool.color }}>Issue:</strong> {issue.issueDescription}
+                                </p>
+                                <p>
+                                  <strong style={{ color: tool.color }}>Fix:</strong> "{issue.fix}"
+                                </p>
+                              </blockquote>
+                            ))}
+                        </div>
+
                       </div>
                     </div>
                   )}
