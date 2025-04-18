@@ -44,6 +44,14 @@ export default function WritingStage({ stageName, nextStage }) {
   const [activeIssueId, setActiveIssueId] = useState(null);   // ← clicked item
   const [collapseResolved, setCollapseResolved] = useState(false); // sidebar filter
 
+  // For dealing with timers and time warnings
+  const [timeRemaining, setTimeRemaining] = useState(null);
+  const [isTimedOut, setIsTimedOut] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
+  const [warningMessage, setWarningMessage] = useState("");
+  const timerRef = useRef(null);
+  const warningsGivenRef = useRef([]);
+
   // Get previous stage content from localStorage if available
   useEffect(() => {
     // Load current stage content if available
@@ -94,84 +102,141 @@ export default function WritingStage({ stageName, nextStage }) {
     }
   }, [input, issueMap, hoveredIssueId]);
 
-  // FIX: Modified to always display all results
-  const updateHighlightsBasedOnVisibility = () => {
-    // Make a copy of the issue map to work with
-    const visibleIssueMap = { ...issueMap };
+  // Set up timer for the stage
+  useEffect(() => {
+    // Get time limit for current stage in milliseconds
+    const stageTimeLimit = stageConfig.stageTimes[stageName.toLowerCase()] * 60 * 1000;
     
-    // Update highlighting with all issues
-    highlightIssuesInTextarea(visibleIssueMap);
-  };
-
-  // Parse LLM response from revision tool to extract issues w essay
-  const processRevisionResults = () => {
-    const newIssueMap = { ...issueMap };
-
-    Object.entries(revisionResults).forEach(([toolType, results]) => {
-      if (!results) return;
-
-      // Clear previous issues for this tool
-      Object.keys(newIssueMap).forEach(id => {
-        if (id.startsWith(toolType)) {
-          delete newIssueMap[id];
+    // Initialize timeRemaining when component mounts
+    setTimeRemaining(stageTimeLimit);
+    
+    // Set up interval to update timeRemaining
+    const intervalId = setInterval(() => {
+      setTimeRemaining(prev => {
+        const newTime = prev - 1000;
+        
+        // Check for warnings
+        stageConfig.warningTimes.forEach(warningTime => {
+          const warningTimeMs = warningTime * 1000;
+          if (newTime <= warningTimeMs && newTime > warningTimeMs - 1000 && 
+              !warningsGivenRef.current.includes(warningTime)) {
+            // Show warning
+            warningsGivenRef.current.push(warningTime);
+            setWarningMessage(`You have ${Math.floor(warningTime / 60)} minute${warningTime >= 120 ? 's' : ''} ${warningTime % 60 > 0 ? `and ${warningTime % 60} seconds` : ''} remaining.`);
+            setShowWarning(true);
+            
+            // Hide warning after 5 seconds
+            setTimeout(() => {
+              setShowWarning(false);
+            }, 5000);
+          }
+        });
+        
+        // Check for timeout
+        if (newTime <= 0) {
+          clearInterval(intervalId);
+          setIsTimedOut(true);
+          return 0;
         }
+        
+        return newTime;
+      });
+    }, 1000);
+    
+    timerRef.current = intervalId;
+    
+    // Clean up timer on unmount
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [stageName]);
+
+  // Save progress when timed out
+  useEffect(() => {
+    if (isTimedOut) {
+      // Save current progress
+      localStorage.setItem(`${stageName.toLowerCase()}_content`, input);
+    }
+  }, [isTimedOut, stageName, input]);
+
+    // FIX: Modified to always display all results
+    const updateHighlightsBasedOnVisibility = () => {
+      // Make a copy of the issue map to work with
+      const visibleIssueMap = { ...issueMap };
+      
+      // Update highlighting with all issues
+      highlightIssuesInTextarea(visibleIssueMap);
+    };
+
+    // Parse LLM response from revision tool to extract issues w essay
+    const processRevisionResults = () => {
+      const newIssueMap = { ...issueMap };
+
+      Object.entries(revisionResults).forEach(([toolType, results]) => {
+        if (!results) return;
+
+        // Clear previous issues for this tool
+        Object.keys(newIssueMap).forEach(id => {
+          if (id.startsWith(toolType)) {
+            delete newIssueMap[id];
+          }
+        });
+
+        const issueSections = results.split(/### Issue \d+/g).slice(1);
+        let issueNumber = 1;
+
+        issueSections.forEach(section => {
+          const lines = section.trim().split('\n').map(line => line.trim());
+          let problematicText = null;
+          let issueDescription = null;
+          let fix = null;
+
+          // Extract problematic text (first line that starts with > and includes a quote)
+          for (let line of lines) {
+            if (line.startsWith('>') && (line.includes('"') || line.includes('“'))) {
+              problematicText = line.replace(/^>\s*/, '').trim();
+              if ((problematicText.startsWith('"') && problematicText.endsWith('"')) ||
+                  (problematicText.startsWith('“') && problematicText.endsWith('”'))) {
+                problematicText = problematicText.slice(1, -1).trim();
+              }
+              break;
+            }
+          }
+
+          // Extract issue and fix lines
+          for (let line of lines) {
+            if (line.toLowerCase().startsWith('**issue**') || line.toLowerCase().startsWith('> **issue**')) {
+              issueDescription = line.replace(/^>?\s*\*\*issue\*\*[:：]?\s*/i, '').trim();
+            } else if (line.toLowerCase().startsWith('**fix**') || line.toLowerCase().startsWith('> **fix**')) {
+              fix = line.replace(/^>?\s*\*\*fix\*\*[:：]?\s*/i, '').trim();
+              if ((fix.startsWith('"') && fix.endsWith('"')) ||
+                  (fix.startsWith('“') && fix.endsWith('”'))) {
+                fix = fix.slice(1, -1).trim();
+              }
+            }
+          }
+
+          if (problematicText && problematicText.length > 0 && input.includes(problematicText)) {
+            const issueId = `${toolType}-${issueNumber}`;
+            // console.log(`Found issue ${issueId}: "${problematicText}" | Issue: ${issueDescription} | Fix: ${fix}`);
+            newIssueMap[issueId] = {
+              text: problematicText,
+              issueDescription: issueDescription || '',
+              fix: fix || '',
+              toolType: toolType,
+              fixed: false,
+              number: issueNumber
+            };
+            issueNumber++;
+          }
+        });
+
+        console.log(`Extracted ${issueNumber - 1} issues for ${toolType}`);
       });
 
-      const issueSections = results.split(/### Issue \d+/g).slice(1);
-      let issueNumber = 1;
-
-      issueSections.forEach(section => {
-        const lines = section.trim().split('\n').map(line => line.trim());
-        let problematicText = null;
-        let issueDescription = null;
-        let fix = null;
-
-        // Extract problematic text (first line that starts with > and includes a quote)
-        for (let line of lines) {
-          if (line.startsWith('>') && (line.includes('"') || line.includes('“'))) {
-            problematicText = line.replace(/^>\s*/, '').trim();
-            if ((problematicText.startsWith('"') && problematicText.endsWith('"')) ||
-                (problematicText.startsWith('“') && problematicText.endsWith('”'))) {
-              problematicText = problematicText.slice(1, -1).trim();
-            }
-            break;
-          }
-        }
-
-        // Extract issue and fix lines
-        for (let line of lines) {
-          if (line.toLowerCase().startsWith('**issue**') || line.toLowerCase().startsWith('> **issue**')) {
-            issueDescription = line.replace(/^>?\s*\*\*issue\*\*[:：]?\s*/i, '').trim();
-          } else if (line.toLowerCase().startsWith('**fix**') || line.toLowerCase().startsWith('> **fix**')) {
-            fix = line.replace(/^>?\s*\*\*fix\*\*[:：]?\s*/i, '').trim();
-            if ((fix.startsWith('"') && fix.endsWith('"')) ||
-                (fix.startsWith('“') && fix.endsWith('”'))) {
-              fix = fix.slice(1, -1).trim();
-            }
-          }
-        }
-
-        if (problematicText && problematicText.length > 0 && input.includes(problematicText)) {
-          const issueId = `${toolType}-${issueNumber}`;
-          // console.log(`Found issue ${issueId}: "${problematicText}" | Issue: ${issueDescription} | Fix: ${fix}`);
-          newIssueMap[issueId] = {
-            text: problematicText,
-            issueDescription: issueDescription || '',
-            fix: fix || '',
-            toolType: toolType,
-            fixed: false,
-            number: issueNumber
-          };
-          issueNumber++;
-        }
-      });
-
-      console.log(`Extracted ${issueNumber - 1} issues for ${toolType}`);
-    });
-
-    setIssueMap(newIssueMap);
-    highlightIssuesInTextarea(newIssueMap);
-  };
+      setIssueMap(newIssueMap);
+      highlightIssuesInTextarea(newIssueMap);
+    };
 
   // Helper functions for highlightIssuesInTextarea
   const generateCharMap = (input, issueMap) => {
@@ -497,7 +562,7 @@ export default function WritingStage({ stageName, nextStage }) {
     
     // Navigate to completion page (which we'd need to create)
     alert("Thank you for completing the writing task!");
-    navigate("/");
+    navigate("/postsurvey");
   };
 
   // Use AI draft if available
@@ -554,9 +619,9 @@ export default function WritingStage({ stageName, nextStage }) {
   return (
     <div className="container">
       <div className="editor" style={editorStyle}>
-        <h1>{stageName} Stage</h1>
-        <p>{stageConfig.instructions[stageName.toLowerCase()]}</p>
-        <p style={{ fontStyle: "italic" }}>{promptText}</p>
+        <h1>{stageConfig.stageTitles[stageName.toLowerCase()]}</h1>
+        <p style={{ whiteSpace: "pre-wrap" }}>{stageConfig.instructions[stageName.toLowerCase()]}</p>
+        <p>Essay topic: <i>{promptText}</i></p>
         
         <div style={{ position: "relative" }}>
           {/* Replace the textarea with a div for highlighting when in Revision stage */}
@@ -610,6 +675,7 @@ export default function WritingStage({ stageName, nextStage }) {
                   position: "relative",
                   zIndex: 1
                 }}
+                disabled={isTimedOut}
               />
             </div>
           ) : (
@@ -621,6 +687,7 @@ export default function WritingStage({ stageName, nextStage }) {
               placeholder={`Type your ${stageName.toLowerCase()} here...`}
               rows={25}
               style={{ width: "100%", boxSizing: "border-box" }}
+              disabled={isTimedOut}
             />
           )}
 
@@ -636,6 +703,71 @@ export default function WritingStage({ stageName, nextStage }) {
             {wordCount} words
           </div>
         </div>
+
+        {/* Warning message */}
+        {showWarning && (
+          <div style={{
+            position: "fixed",
+            top: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: "#ff9800",
+            color: "white",
+            padding: "10px 20px",
+            borderRadius: "4px",
+            zIndex: 1000,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+            animation: "fadeIn 0.3s ease-out"
+          }}>
+            <strong>Time Warning:</strong> {warningMessage}
+          </div>
+        )}
+
+        {/* Timeout modal */}
+        {isTimedOut && (
+          <div style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000
+          }}>
+            <div style={{
+              backgroundColor: "white",
+              padding: "20px",
+              borderRadius: "8px",
+              maxWidth: "80%",
+              textAlign: "center"
+            }}>
+              <h2>Time's Up!</h2>
+              <p>You've reached the time limit for the {stageName} stage.</p>
+              <p>Your progress has been saved.</p>
+              <button 
+                onClick={nextStage ? handleNextStage : handleSubmit}
+                style={{
+                  marginTop: "20px",
+                  backgroundColor: "#4CAF50"
+                }}
+              >
+                {nextStage ? `Continue to ${nextStage}` : "Submit Final Essay"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        <style>
+          {`
+            @keyframes fadeIn {
+              from { opacity: 0; transform: translate(-50%, -20px); }
+              to { opacity: 1; transform: translate(-50%, 0); }
+            }
+          `}
+        </style>
 
         <div style={{ marginTop: "1rem" }}>
           {nextStage ? (

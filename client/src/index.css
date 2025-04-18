@@ -1,5 +1,9 @@
 /* index.css - Enhanced with revision tool highlighting styles */
 
+h1 {
+  font-size: 24px;
+}
+
 /* Existing styles */
 .ideas-list {
   list-style: none;

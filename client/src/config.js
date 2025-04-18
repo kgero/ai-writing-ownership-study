@@ -35,13 +35,36 @@ export const stageConfig = {
     d: "Should high schools make personal finance education mandatory?"
   },
 
+  stageTitles: {
+    outline: "Write an Outline for an Essay",
+    draft: "Write a First Draft for an Essay",
+    revision: "Revise your Essay"
+  },
+
   // Stage-specific instructions
   instructions: {
-    outline: "Please write an outline for an essay on the topic below. This outline is for your own use, so you can use bullet points, notes or whatever style of planning you prefer. The final essay should be about 300 words, so your outline should likely be less than 100 words. (Note the word count in the bottom lefthand corner of the textbox.) Your outline will be shown to you when you move to the drafting stage.",
-    draft: "Please write a draft essay based on your outline; your topic has been copied below and your outline has been put in the righthand sidebar. Your essay should be about 300 words.",
-    revision: "Please review and revise your draft essay; your topic has been copied below and your draft is in the textbox."
-  }
+    outline: `Please write an outline for an essay on the topic below. 
+
+This outline is for your own use, so you can use bullet points, notes or whatever style of planning you prefer. You will be asked to write a complete draft of the essay in the next step.
+
+The final essay should be about 300 words, so your outline should be less than 100 words. (Note the word count in the bottom lefthand corner of the textbox.) Your outline will be shown to you when you move to the drafting stage.`,
+    draft: `Please write a first draft for the essay based on your outline; your topic is below and your outline has been put in the righthand sidebar. 
+
+Remember, your essay should be about 300 words. A word count is in the bottom righthand corner of the textbox.`,
+    revision: `Please review and revise your essay below. Your draft is in the textbox.`
+  },
+
+  stageTimes: {
+    outline: 3,
+    draft: 3,
+    revision: 3
+  },
+
+  // Warning times in seconds before timeout
+  warningTimes: [120, 60, 30] // 5 min, 2 min, 30 sec
 };
+
+
 
 // LLM prompts for each stage
 export const llmPrompts = {
@@ -80,16 +103,6 @@ ${outline}
       
 Please create a well-structured essay of approximately 300 words that follows this outline.
 `,
-
-//   revision: (promptText, draft) => `
-// I've written a draft essay on the topic: ${promptText}.
-// Here's my draft:
-// ${draft}
-
-// Please suggest 3-4 specific improvements I could make to strengthen my essay.
-// Focus on clarity, organization, and persuasiveness.
-// Format your response in markdown with bullet points.
-// `,
 
   // New revision tool prompts
   proofreader: (draft) => `

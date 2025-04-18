@@ -31,8 +31,11 @@ export default function FormPage() {
   };
 
   const statements = [
-    "I am very confident in writing stuff (change later).",
-    "I love using AI (change later).",
+    "Statement/s about writing self-efficacy.",
+    "Statement/s about technology acceptance.",
+    "Statement/s about use of AI for writing support.",
+    "Statement/s about confidence or ability with AI.",
+    "Statement/s about need for cognition.",
   ];
 
   return (
@@ -41,8 +44,7 @@ export default function FormPage() {
 
       {/* "handleSubmit(onSubmit)" wraps your onSubmit logic 
           and also handles validation checking */}
-      <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: "400px", margin: "2rem auto" }}>
-        <h3>Example Form (React Hook Form)</h3>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ margin: "2rem auto" }}>
 
         {/* RADIO SELECT */}
         <div style={{ marginBottom: "2rem" }}>
@@ -101,7 +103,7 @@ export default function FormPage() {
 
               {/* Horizontal scale: Strongly Disagree ... 1 2 3 4 5 6 7 ... Strongly Agree */}
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                <span>Strongly Disagree</span>
+                <span style={{ fontSize: ".9em"}}>Strongly Disagree</span>
                 {Array.from({ length: 7 }, (_, i) => i + 1).map((numVal) => (
                   <label key={numVal} style={{ display: "flex", flexDirection: "column" }}>
                     <input
@@ -113,7 +115,7 @@ export default function FormPage() {
                     {numVal}
                   </label>
                 ))}
-                <span>Strongly Agree</span>
+                <span style={{ fontSize: ".9em"}}>Strongly Agree</span>
               </div>
 
               {/* If there's a validation error for this statement's likert */}
