@@ -647,9 +647,11 @@ export default function WritingStage({ stageName, nextStage }) {
                       style={{
                         cursor: 'pointer',
                         whiteSpace: 'pre-wrap',
-                        boxShadow: segment.toolTypes.map(
-                          (toolType, i) => `inset 0 -${2 + i * 3}px 0 0 ${getToolColor(toolType)}`
-                        ).join(', '),
+                        boxShadow: [
+                          segment.toolTypes.includes("Proof-reader") ? "inset 0 -2px 0 0 #FFC107" : "",
+                          segment.toolTypes.includes("Content polisher") ? "0 2px 0 #4CAF50" : "",
+                          segment.toolTypes.includes("Writing clarity") ? "inset 0 -4px 0 0 #2196F3" : ""
+                        ].filter(Boolean).join(', '),
                         color: 'transparent'
                       }}
                     >
