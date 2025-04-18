@@ -224,6 +224,7 @@ button:disabled {
   white-space: pre-wrap;
   overflow: hidden;
   color: transparent; /* Hide text since we want to show the textarea text */
+  background-color: transparent;
   z-index: 1; /* Below the textarea */
   font-family: inherit; /* Same font as textarea */
   font-size: inherit; /* Same font size as textarea */
@@ -256,6 +257,7 @@ button:disabled {
   padding: 10px 15px;
   border-left-width: 3px;
   border-left-style: solid;
+  border-radius: 4px;
   background-color: rgba(0, 0, 0, 0.03);
   font-style: normal;
   position: relative;
@@ -352,13 +354,13 @@ button:disabled {
 }
 
 .revision-results-content {
-  padding: 12px;
+  padding: 10px;
   background-color: white;
-  border: 1px solid #ddd;
   border-top: none;
   font-size: 14px;
   max-height: 300px;
   overflow-y: auto;
+  border-radius: 0 0 4px 4px
 }
 
 .revision-results-content p {
@@ -412,7 +414,12 @@ button:disabled {
 .pulse-border { animation: pulseBorder 0.6s ease-out; }
 
 /* keep legend visible */
-.revision-legend { position: sticky; top: 0; z-index: 1; background: #fff; }
+.revision-legend { 
+  position: sticky; 
+  top: 0; z-index: 1; 
+  background: #fff; 
+  margin-bottom: 15px;
+}
 
 /* Right‑rail suggestion cards */
 .revision-results {
@@ -461,5 +468,42 @@ button:disabled {
 /* Improved hover effect */
 .highlight-layer span[data-issue-id]:hover {
   border-bottom-width: 3px; /* Slightly thicker on hover for better visibility */
+}
+
+.highlighted-textarea-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Make textarea and highlight layer have the same font metrics */
+.highlighted-textarea-container textarea,
+.highlight-layer {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow-y: auto;
+}
+
+/* Hide scrollbar from the highlight layer */
+.highlight-layer::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* FIX: Hover effects for blockquotes */
+.revision-results-content blockquote {
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.revision-results-content blockquote:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 

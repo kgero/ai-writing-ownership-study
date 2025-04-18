@@ -81,72 +81,85 @@ ${outline}
 Please create a well-structured essay of approximately 300 words that follows this outline.
 `,
 
-  revision: (promptText, draft) => `
-I've written a draft essay on the topic: ${promptText}.
-Here's my draft:
-${draft}
+//   revision: (promptText, draft) => `
+// I've written a draft essay on the topic: ${promptText}.
+// Here's my draft:
+// ${draft}
 
-Please suggest 3-4 specific improvements I could make to strengthen my essay.
-Focus on clarity, organization, and persuasiveness.
-Format your response in markdown with bullet points.
-`,
+// Please suggest 3-4 specific improvements I could make to strengthen my essay.
+// Focus on clarity, organization, and persuasiveness.
+// Format your response in markdown with bullet points.
+// `,
 
   // New revision tool prompts
   proofreader: (draft) => `
-Please review the following essay for typos, grammatical mistakes, and misplaced punctuation:
+        Please briefly review the following essay for the most critical typos, grammatical mistakes, and punctuation issues:
+        
+        ${draft}
+        
+        Identify only 2-3 of the most important issues. For each issue:
+        1. Number the issue (Issue 1, Issue 2, etc.)
+        2. Quote the problematic phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
+        3. Very briefly explain the problem in 5-10 words.
+        4. Suggest a concise fix.
+        
+        Format as:
+        ### Issue 1
+        > "problematic text"
+        >
+        > **Issue**: Brief explanation
+        >
+        > **Fix**: "corrected version"
+        
+        Be extremely concise. Only identify actual errors.
+        The quoted "problematic text" must appear EXACTLY as written in the original text - this is critical.
 
-${draft}
-
-Identify 3-5 specific issues with the text. For each issue:
-1. Quote the problematic sentence or phrase.
-2. Briefly explain what the problem is (1-2 sentences maximum).
-3. Suggest a corrected version.
-
-Format each issue as follows:
-> "problematic text"
-Issue: Brief explanation of the problem
-Suggestion: Corrected version
-
-Only identify actual errors - do not suggest stylistic changes unless they are grammatically incorrect.
-If you find fewer than 3 issues, that's fine - only report actual problems.
 `,
 
   contentpolisher: (draft) => `
-Please review the following essay for weak arguments and confusing points:
-
-${draft}
-
-Identify 3-5 specific places where the argument could be strengthened. For each issue:
-1. Quote the relevant sentence or passage.
-2. Briefly explain why this argument is weak or how it could be improved (2-3 sentences maximum).
-3. Suggest a specific way to strengthen this point.
-
-Format each issue as follows:
-> "quoted text with weak argument"
-Issue: Brief explanation of the problem
-Suggestion: How to strengthen this point
-
-Focus only on the substance and persuasiveness of arguments, not on grammar or style.
-If you find fewer than 3 issues, that's fine - only report actual problems.
+        Please briefly review the following essay for the most significant weak arguments:
+        
+        ${draft}
+        
+        Identify only 2-3 of the most important issues. For each issue:
+        1. Number the issue (Issue 1, Issue 2, etc.)
+        2. Quote the relevant phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
+        3. Very briefly explain the weakness in 5-10 words.
+        4. Suggest a specific, concise improvement.
+        
+        Format as:
+        ### Issue 1
+        > "weak argument"
+        >
+        > **Issue**: Brief explanation
+        >
+        > **Fix**: Suggested improvement
+        
+        Be extremely concise. Focus only on substantive improvements.
+        The quoted "weak argument" must appear EXACTLY as written in the original text - this is critical.
 `,
 
   writingclarity: (draft) => `
-Please review the following essay for clarity and readability:
-
-${draft}
-
-Identify 3-5 specific passages that are unclear, hard to follow, or could be more concise. For each issue:
-1. Quote the unclear or complex passage.
-2. Briefly explain why this section is difficult to understand (1-2 sentences maximum).
-3. Suggest a clearer, more readable alternative.
-
-Format each issue as follows:
-> "quoted unclear text"
-Issue: Brief explanation of what makes this unclear
-Suggestion: Clearer alternative phrasing
-
-Focus only on clarity and readability, not on the substance of arguments or grammar.
-If you find fewer than 3 issues, that's fine - only report actual problems.
+        Please briefly review the following essay for the most unclear passages:
+        
+        ${draft}
+        
+        Identify only 2-3 of the most problematic passages. For each issue:
+        1. Number the issue (Issue 1, Issue 2, etc.)
+        2. Quote the unclear phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
+        3. Very briefly explain the clarity issue in 5-10 words.
+        4. Suggest a clearer alternative.
+        
+        Format as:
+        ### Issue 1
+        > "unclear text"
+        >
+        > **Issue**: Brief explanation
+        >
+        > **Fix**: "clearer version"
+        
+        Be extremely concise. Focus only on clarity issues.
+        The quoted "unclear text" must appear EXACTLY as written in the original text - this is critical.
 `,
 
   // For generating extra single idea sentences

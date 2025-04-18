@@ -392,81 +392,11 @@ export default function WritingStage({ stageName, nextStage }) {
       setRevisionLoading(true);
       setActiveRevisionType(toolType);
       
-      // UPDATED: Enhanced prompts that explicitly number issues and use consistent formatting
-      const shortProofreader = (draft) => `
-        Please briefly review the following essay for the most critical typos, grammatical mistakes, and punctuation issues:
-        
-        ${draft}
-        
-        Identify only 2-3 of the most important issues. For each issue:
-        1. Number the issue (Issue 1, Issue 2, etc.)
-        2. Quote the problematic phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
-        3. Very briefly explain the problem in 5-10 words.
-        4. Suggest a concise fix.
-        
-        Format as:
-        ### Issue 1
-        > "problematic text"
-        >
-        > **Issue**: Brief explanation
-        >
-        > **Fix**: "corrected version"
-        
-        Be extremely concise. Only identify actual errors.
-        The quoted "problematic text" must appear EXACTLY as written in the original text - this is critical.
-      `;
-      
-      const shortContentPolisher = (draft) => `
-        Please briefly review the following essay for the most significant weak arguments:
-        
-        ${draft}
-        
-        Identify only 2-3 of the most important issues. For each issue:
-        1. Number the issue (Issue 1, Issue 2, etc.)
-        2. Quote the relevant phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
-        3. Very briefly explain the weakness in 5-10 words.
-        4. Suggest a specific, concise improvement.
-        
-        Format as:
-        ### Issue 1
-        > "weak argument"
-        >
-        > **Issue**: Brief explanation
-        >
-        > **Fix**: Suggested improvement
-        
-        Be extremely concise. Focus only on substantive improvements.
-        The quoted "weak argument" must appear EXACTLY as written in the original text - this is critical.
-      `;
-      
-      const shortWritingClarity = (draft) => `
-        Please briefly review the following essay for the most unclear passages:
-        
-        ${draft}
-        
-        Identify only 2-3 of the most problematic passages. For each issue:
-        1. Number the issue (Issue 1, Issue 2, etc.)
-        2. Quote the unclear phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
-        3. Very briefly explain the clarity issue in 5-10 words.
-        4. Suggest a clearer alternative.
-        
-        Format as:
-        ### Issue 1
-        > "unclear text"
-        >
-        > **Issue**: Brief explanation
-        >
-        > **Fix**: "clearer version"
-        
-        Be extremely concise. Focus only on clarity issues.
-        The quoted "unclear text" must appear EXACTLY as written in the original text - this is critical.
-      `;
-      
       // Map the tool type to the corresponding prompt
       const promptMap = {
-        "Proof-reader": shortProofreader,
-        "Content polisher": shortContentPolisher,
-        "Writing clarity": shortWritingClarity
+        "Proof-reader": llmPrompts.proofreader,
+        "Content polisher": llmPrompts.contentpolisher,
+        "Writing clarity": llmPrompts.writingclarity
       };
       
       // Use the appropriate prompt from the map
@@ -632,23 +562,7 @@ export default function WritingStage({ stageName, nextStage }) {
           {/* Replace the textarea with a div for highlighting when in Revision stage */}
           {stageName === "Revision" && hasAISupport ? (
             <div className="highlighted-textarea-container">
-              <div 
-                className="highlight-layer"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  boxSizing: "border-box",
-                  padding: "8px",
-                  pointerEvents: "none",
-                  whiteSpace: "pre-wrap",
-                  overflow: "hidden",
-                  backgroundColor: "transparent",
-                  color: "transparent"
-                }}
-              >
+              <div className="highlight-layer">
                 {highlightedText.map((segment, index) => (
                   segment.issues.length > 0 ? (
                     <span
@@ -844,7 +758,7 @@ export default function WritingStage({ stageName, nextStage }) {
             <h3>Revision Tools</h3>
             
             {/* Display a legend for the underline colors */}
-            <div className="revision-legend" style={{ marginBottom: "15px" }}>
+            <div className="revision-legend">
               {revisionTools.map(tool => (
                 <div 
                   key={tool.id} 
@@ -905,18 +819,7 @@ export default function WritingStage({ stageName, nextStage }) {
                       >
                       </div>
                       
-                      <div 
-                        className="revision-results-content"
-                        style={{
-                          padding: "10px",
-                          backgroundColor: "#fff",
-                          border: "1px solid #ddd",
-                          borderTop: "none",
-                          borderRadius: "0 0 4px 4px",
-                          maxHeight: "300px",
-                          overflowY: "auto"
-                        }}
-                      >
+                      <div className="revision-results-content">
                         <div className="revision-results-content">
                           {Object.entries(issueMap)
                             .filter(([id, issue]) => issue.toolType === tool.id)
@@ -936,11 +839,6 @@ export default function WritingStage({ stageName, nextStage }) {
                                   backgroundColor: issue.fixed ? '#f0f0f0' : `${tool.color}11`,
                                   opacity: issue.fixed ? 0.6 : 1,
                                   boxShadow: activeIssueId === id ? `0 0 0 2px ${tool.color}` : 'none',
-                                  cursor: 'pointer',
-                                  padding: '10px',
-                                  marginBottom: '8px',
-                                  borderRadius: '4px',
-                                  transition: 'background-color 0.3s, box-shadow 0.2s'
                                 }}
                               >
                                 <p style={{ marginBottom: '4px' }}>
@@ -965,48 +863,6 @@ export default function WritingStage({ stageName, nextStage }) {
           </>
         )}
       </div>
-
-      {/* Add CSS for the highlighted text area */}
-      <style>
-        {`
-          .highlighted-textarea-container {
-            position: relative;
-            width: 100%;
-          }
-          
-          /* Make textarea and highlight layer have the same font metrics */
-          .highlighted-textarea-container textarea,
-          .highlight-layer {
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
-            letter-spacing: inherit;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            overflow-y: auto;
-          }
-          
-          /* Hide scrollbar from the highlight layer */
-          .highlight-layer::-webkit-scrollbar {
-            width: 0;
-            height: 0;
-          }
-          
-          /* FIX: Hover effects for blockquotes */
-          .revision-results-content blockquote {
-            transition: background-color 0.3s, box-shadow 0.3s;
-          }
-          
-          .revision-results-content blockquote:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-          }
-        `}
-      </style>
     </div>
   );
 }
