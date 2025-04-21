@@ -50,9 +50,9 @@ export default function FormPage() {
           <p className="survey-question">On a scale from 1 (Strongly Disagree) to 7 (Strongly Agree), rate the following:</p>
 
           {statements.map((text, index) => (
-            <div key={index} style={{ marginBottom: "1.5rem" }}>
+            <div key={index} className="survey-likert-div">
               {/* Statement text */}
-              <p className="survey-likert-statement" style={{ marginBottom: "0.5rem" }}>{text}</p>
+              <p className="survey-likert-statement">{text}</p>
 
               {/* Horizontal scale: Strongly Disagree ... 1 2 3 4 5 6 7 ... Strongly Agree */}
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>

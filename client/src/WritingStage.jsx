@@ -688,7 +688,13 @@ export default function WritingStage({ stageName, nextStage }) {
               onKeyDown={handleKeyDown}
               placeholder={`Type your ${stageName.toLowerCase()} here...`}
               rows={25}
-              style={{ width: "100%", boxSizing: "border-box" }}
+              style={{ 
+                  width: "100%", 
+                  boxSizing: "border-box",
+                  backgroundColor: "transparent",
+                  position: "relative",
+                  zIndex: 1
+                }}
               disabled={isTimedOut}
             />
           )}
@@ -699,7 +705,8 @@ export default function WritingStage({ stageName, nextStage }) {
               bottom: "5px",
               right: "10px",
               fontSize: "12px",
-              color: "#999"
+              color: "#999",
+              backgroundColor: "#fff"
             }}
           >
             {wordCount} words
