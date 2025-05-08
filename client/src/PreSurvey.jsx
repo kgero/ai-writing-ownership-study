@@ -24,18 +24,52 @@ export default function FormPage() {
   // Called by handleSubmit when form is valid
   const onSubmit = (data) => {
     console.log("Form data:", data);
+
+    // For multi-select checkboxes, transform the data format
+    if (data.aiToolsUsed) {
+      // Convert from object format to array of selected values
+      const selectedTools = Object.keys(data.aiToolsUsed)
+        .filter(key => data.aiToolsUsed[key] === true)
+        .map(key => key);
+      
+      // Replace the original format with the array
+      data.aiToolsUsed = selectedTools;
+    }
+  
     // e.g. You could also do an axios POST here to save in your database
 
     // Then navigate to the appropriate interface route
     navigate(`/outline/${condition}/${promptId}`);
   };
 
-  const statements = [
-    "Statement/s about writing self-efficacy.",
-    "Statement/s about technology acceptance.",
-    "Statement/s about use of AI for writing support.",
-    "Statement/s about confidence or ability with AI.",
-    "Statement/s about need for cognition.",
+  const statementsNFC = [
+    "I prefer complex to simple problems.",
+    "I like tasks that require little thought once I've learned them.",
+    "Learning new ways to think doesn't excite me very much.",
+    "I prefer a task that is intellectual and difficult to one that requires little thought.",
+  ];
+
+  const statementsTechAccept = [
+    "I find new technologies easy to use.",
+    "Learning to use new technologies is easy for me.",
+    "I find new technologies useful in my daily life.",
+    "Using new technologies increases my productivity.",
+  ];
+
+  const statementsAIwriting = [
+    "I feel confident in my ability to use AI writing tools effectively.",
+    "I believe AI writing tools can improve my writing quality.",
+  ];
+
+  const statementsWritingEfficacy = [
+    "I can come up with creative ideas for my writing.",
+    "I can organize my ideas in a logical way.",
+    "I can write grammatically correct sentences.",
+    "I can revise my own writing effectively.",
+    "I can craft persuasive arguments in writing.",
+    "I can write concisely without unnecessary details.",
+    "I can structure an engaging introduction.",
+    "Overall, I am confident in my writing abilities.",
   ];
 
   return (
@@ -75,7 +109,7 @@ export default function FormPage() {
             What is your gender?
           </p>
 
-          {["male", "female", "non-binary", "other", "prefer not to disclose"].map((option) => (
+          {["male", "female", "non-binary/third gender", "prefer not to disclose"].map((option) => (
             <label key={option} style={{ display: "block", marginBottom: "0.25rem" }}>
               <input
                 type="radio"
@@ -92,11 +126,91 @@ export default function FormPage() {
           )}
         </div>
 
-        {/* MULTIPLE LIKERT STATEMENTS */}
+        {/* RADIO SELECT */}
+        <div style={{ marginBottom: "2rem" }}>
+          <p className="survey-question" style={{ marginBottom: "0.5rem" }}>
+            What is your highest level of education?
+          </p>
+
+          {["High school diploma", "Bachelor's degree", "Master's degree", "Doctorate", "Other"].map((option) => (
+            <label key={option} style={{ display: "block", marginBottom: "0.25rem" }}>
+              <input
+                type="radio"
+                value={option}
+                // Hook Form uses the same name for radio group
+                {...register("genderChoice", { required: !devMode })}
+              />
+              {option.charAt(0).toUpperCase() + option.slice(1)}
+            </label>
+          ))}
+
+          {errors.genderChoice && (
+            <p style={{ color: "red" }}>Please select your level of education.</p>
+          )}
+        </div>
+
+        {/* RADIO SELECT */}
+        <div style={{ marginBottom: "2rem" }}>
+          <p className="survey-question" style={{ marginBottom: "0.5rem" }}>
+            Is English your native language?
+          </p>
+
+          {["Yes", "No"].map((option) => (
+            <label key={option} style={{ display: "block", marginBottom: "0.25rem" }}>
+              <input
+                type="radio"
+                value={option}
+                // Hook Form uses the same name for radio group
+                {...register("genderChoice", { required: !devMode })}
+              />
+              {option.charAt(0).toUpperCase() + option.slice(1)}
+            </label>
+          ))}
+
+          {errors.genderChoice && (
+            <p style={{ color: "red" }}>Please select yes or no.</p>
+          )}
+        </div>
+
+        {/* Need for Cognition Questions */}
+        <div style={{ marginBottom: "1rem" }}>
+          <p className="survey-question">On a scale from 1 (Strongly Disagree) to 5 (Strongly Agree), rate the following:</p>
+
+          {statementsNFC.map((text, index) => (
+            <div key={index} className="survey-likert-div">
+              {/* Statement text */}
+              <p className="survey-likert-statement">{text}</p>
+
+              {/* Horizontal scale: Strongly Disagree ... 1 2 3 4 5 ... Strongly Agree */}
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                <span style={{ fontSize: ".9em"}}>Strongly Disagree</span>
+                {Array.from({ length: 5 }, (_, i) => i + 1).map((numVal) => (
+                  <label key={numVal} style={{ display: "flex", flexDirection: "column" }}>
+                    <input
+                      type="radio"
+                      value={numVal}
+                      // Each statement gets a unique name, e.g. "likert_0", "likert_1", etc.
+                      {...register(`likert_${index}`, { required: !devMode })}
+                    />
+                    {numVal}
+                  </label>
+                ))}
+                <span style={{ fontSize: ".9em"}}>Strongly Agree</span>
+              </div>
+
+              {/* If there's a validation error for this statement's likert */}
+              {errors[`likert_${index}`] && (
+                <p style={{ color: "red" }}>Please rate this statement.</p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Technology Acceptance Questions */}
         <div style={{ marginBottom: "1rem" }}>
           <p className="survey-question">On a scale from 1 (Strongly Disagree) to 7 (Strongly Agree), rate the following:</p>
 
-          {statements.map((text, index) => (
+          {statementsTechAccept.map((text, index) => (
             <div key={index} className="survey-likert-div">
               {/* Statement text */}
               <p className="survey-likert-statement">{text}</p>
@@ -126,6 +240,121 @@ export default function FormPage() {
           ))}
         </div>
 
+        {/* RADIO SELECT */}
+        <div style={{ marginBottom: "2rem" }}>
+          <p className="survey-question" style={{ marginBottom: "0.5rem" }}>
+            How often do you use AI tools <i>for writing</i> (e.g., ChatGPT, Google Gemini, Claude)?
+          </p>
+
+          {["Never", "Rarely", "Occasionally", "Frequently"].map((option) => (
+            <label key={option} style={{ display: "block", marginBottom: "0.25rem" }}>
+              <input
+                type="radio"
+                value={option}
+                // Hook Form uses the same name for radio group
+                {...register("genderChoice", { required: !devMode })}
+              />
+              {option.charAt(0).toUpperCase() + option.slice(1)}
+            </label>
+          ))}
+
+          {errors.genderChoice && (
+            <p style={{ color: "red" }}>Please select how frequently you use AI writing tools.</p>
+          )}
+        </div>
+
+        {/* MULTI-SELECT CHECKBOX */}
+        <div style={{ marginBottom: "2rem" }}>
+          <p className="survey-question" style={{ marginBottom: "0.5rem" }}>
+            Which writing tasks have you used AI for? (Select all that apply)
+          </p>
+
+          {["Brainstorming ideas", "Drafting content", "Revising/editing", "I don't use AI for writing"].map((option) => (
+            <label key={option} style={{ display: "block", marginBottom: "0.25rem" }}>
+              <input
+                type="checkbox"
+                value={option}
+                // For checkboxes, we still use register but with different handling
+                {...register("aiToolsUsed")}
+              />
+              {" " + option}
+            </label>
+          ))}
+
+          {/* Optional validation if you require at least one selection */}
+          {errors.aiToolsUsed && (
+            <p style={{ color: "red" }}>Please select at least one option.</p>
+          )}
+        </div>
+
+        {/* AI writing Likert Questions */}
+        <div style={{ marginBottom: "1rem" }}>
+          <p className="survey-question">On a scale from 1 (Strongly Disagree) to 7 (Strongly Agree), rate the following:</p>
+
+          {statementsAIwriting.map((text, index) => (
+            <div key={index} className="survey-likert-div">
+              {/* Statement text */}
+              <p className="survey-likert-statement">{text}</p>
+
+              {/* Horizontal scale: Strongly Disagree ... 1 2 3 4 5 6 7 ... Strongly Agree */}
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                <span style={{ fontSize: ".9em"}}>Strongly Disagree</span>
+                {Array.from({ length: 7 }, (_, i) => i + 1).map((numVal) => (
+                  <label key={numVal} style={{ display: "flex", flexDirection: "column" }}>
+                    <input
+                      type="radio"
+                      value={numVal}
+                      // Each statement gets a unique name, e.g. "likert_0", "likert_1", etc.
+                      {...register(`likert_${index}`, { required: !devMode })}
+                    />
+                    {numVal}
+                  </label>
+                ))}
+                <span style={{ fontSize: ".9em"}}>Strongly Agree</span>
+              </div>
+
+              {/* If there's a validation error for this statement's likert */}
+              {errors[`likert_${index}`] && (
+                <p style={{ color: "red" }}>Please rate this statement.</p>
+              )}
+            </div>
+          ))}
+        </div>
+
+
+        {/* Writing Self-Efficacy Questions */}
+        <div style={{ marginBottom: "1rem" }}>
+          <p className="survey-question">On a scale from 1 (Strongly Disagree) to 7 (Strongly Agree), rate the following:</p>
+
+          {statementsWritingEfficacy.map((text, index) => (
+            <div key={index} className="survey-likert-div">
+              {/* Statement text */}
+              <p className="survey-likert-statement">{text}</p>
+
+              {/* Horizontal scale: Strongly Disagree ... 1 2 3 4 5 6 7 ... Strongly Agree */}
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                <span style={{ fontSize: ".9em"}}>Strongly Disagree</span>
+                {Array.from({ length: 7 }, (_, i) => i + 1).map((numVal) => (
+                  <label key={numVal} style={{ display: "flex", flexDirection: "column" }}>
+                    <input
+                      type="radio"
+                      value={numVal}
+                      // Each statement gets a unique name, e.g. "likert_0", "likert_1", etc.
+                      {...register(`likert_${index}`, { required: !devMode })}
+                    />
+                    {numVal}
+                  </label>
+                ))}
+                <span style={{ fontSize: ".9em"}}>Strongly Agree</span>
+              </div>
+
+              {/* If there's a validation error for this statement's likert */}
+              {errors[`likert_${index}`] && (
+                <p style={{ color: "red" }}>Please rate this statement.</p>
+              )}
+            </div>
+          ))}
+        </div>
 
         {/* SHORT ANSWER */}
         {/*<div style={{ marginBottom: "1rem" }}>

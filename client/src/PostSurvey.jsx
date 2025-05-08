@@ -18,8 +18,15 @@ export default function FormPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      // Set default values for sliders (optional)
+      slider_0: 50,
+      slider_1: 50,
+    }
+  });
 
   // Called by handleSubmit when form is valid
   const onSubmit = (data) => {
@@ -31,9 +38,17 @@ export default function FormPage() {
   };
 
   const statements = [
-    "I feel this piece of writing is mine.",
+    "I feel this piece of writing is truly mine.",
     "I feel this writing reflects my own voice and ideas.",
-    "I feel I had complete control over the writing process."
+    "I feel I had complete control over the writing process.",
+    "If I were to share this essay with a colleague, I would acknowledge AI support.",
+    "I put a lot of effort into writing this essay.",
+    "I feel that I actively chose all the argument in this essay."
+  ];
+
+  const sliderStatements = [
+    "What percentage of the ideas in this text would you attribute to yourself versus AI?",
+    "What percentage of the final text would you attribute to yourself versus AI?"
   ];
 
   return (
@@ -79,7 +94,49 @@ export default function FormPage() {
           ))}
         </div>
 
+        {/* PERCENTAGE SLIDERS */}
+        <div style={{ marginBottom: "2rem" }}>
+          <p className="survey-question">Drag the slider to indicate your response:</p>
 
+          {sliderStatements.map((text, index) => (
+            <div key={index} className="survey-slider-div" style={{ marginBottom: "2rem" }}>
+              {/* Statement text */}
+              <p className="survey-slider-statement">{text}</p>
+
+              {/* Slider container with labels */}
+              <div style={{ marginBottom: "1rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                  <span>0% (All AI)</span>
+                  <span>50% (Equal)</span>
+                  <span>100% (All Me)</span>
+                </div>
+
+                {/* The actual slider input */}
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  style={{ width: "100%" }}
+                  {...register(`slider_${index}`, { 
+                    required: !devMode,
+                    valueAsNumber: true // This ensures the value is stored as a number
+                  })}
+                />
+
+                {/* Current value display */}
+                <div style={{ textAlign: "center", marginTop: "0.5rem" }}>
+                  Selected: {watch(`slider_${index}`) || 50}%
+                </div>
+              </div>
+
+              {/* Error message if validation fails */}
+              {errors[`slider_${index}`] && (
+                <p style={{ color: "red" }}>Please set a value for this question.</p>
+              )}
+            </div>
+          ))}
+        </div>
 
 
         {/* SUBMIT */}
