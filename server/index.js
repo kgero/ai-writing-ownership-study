@@ -53,19 +53,48 @@ app.post('/api/openai', async (req, res) => {
     }
   });
 
-// Save Data to Database
-app.post('/api/save', async (req, res) => {
+// Save Survey Data to Database
+app.post('/api/survey/submit', async (req, res) => {
+  console.log("Survey submission endpoint hit");
+
   try {
-    const { user_input, response_text } = req.body;
+    const { participant_id, survey_type, prompt_id, condition, responses, timestamp } = req.body;
+
+
+
+    // Insert the entire response as JSON
     const result = await pool.query(
-      'INSERT INTO responses (user_input, response_text) VALUES ($1, $2) RETURNING *',
-      [user_input, response_text]
+      'INSERT INTO survey_responses (participant_id, survey_type, prompt_id, condition, responses, created_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [participant_id, survey_type, prompt_id, condition, JSON.stringify(responses), timestamp]
     );
+
     res.json(result.rows[0]);
   } catch (error) {
+    console.error("Database error:", error);
     res.status(500).json({ error: error.message });
   }
 });
+
+// Save Snapshot Data to Database
+app.post('/api/snapshot/submit', async (req, res) => {
+  console.log("Text snapshot submission endpoint hit");
+
+  try {
+    const { participant_id, stage, time_from_stage_start, text_content, created_at } = req.body;
+
+    // Insert the snapshot into the database
+    const result = await pool.query(
+      'INSERT INTO text_snapshots (participant_id, stage, time_from_stage_start, text_content, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [participant_id, stage, time_from_stage_start, text_content, created_at || new Date()]
+    );
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Database error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 // Fetch Data from Database
 app.get('/api/data', async (req, res) => {

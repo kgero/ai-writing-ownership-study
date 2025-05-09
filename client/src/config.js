@@ -43,7 +43,7 @@ export const stageConfig = {
 
   // Stage-specific instructions
   instructions: {
-    outline: `Please write an outline for an essay on the topic below. 
+    outline: `Please write an outline for an essay on the topic below.
 
 This outline is for your own use, so you can use bullet points, notes or whatever style of planning you prefer. You will be asked to write a complete draft of the essay in the next step.
 
@@ -54,6 +54,7 @@ Remember, your essay should be about 300 words. A word count is in the bottom ri
     revision: `Please review and revise your essay below. Your draft is in the textbox.`
   },
 
+  // Stage max times are listed in minutes
   stageTimes: {
     outline: 3,
     draft: 3,

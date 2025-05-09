@@ -1,5 +1,6 @@
 // FormPage.jsx
 import React from "react";
+import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
@@ -31,10 +32,32 @@ export default function FormPage() {
   // Called by handleSubmit when form is valid
   const onSubmit = (data) => {
     console.log("Form data:", data);
-    // e.g. You could also do an axios POST here to save in your database
 
-    // Then navigate to the appropriate interface route
-    navigate(`/exit`);
+    // Generate a unique participant ID if not stored already
+    const participantId = localStorage.getItem('participantId') || 
+                         `p_${Math.random().toString(36).substring(2, 10)}`;
+
+    // Add metadata about the survey
+    const surveyData = {
+      participant_id: participantId,
+      survey_type: "post", 
+      prompt_id: promptId,
+      condition: condition,
+      responses: data,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Submit to backend
+    axios.post('/api/survey/submit', surveyData)
+      .then(response => {
+        console.log("Survey submitted successfully:", response.data);
+        navigate(`/exit`);
+      })
+      .catch(error => {
+        console.error("Error submitting survey:", error);
+        // Handle error?? got to next stage anyway...
+        navigate(`/exit`);
+      });    
   };
 
   const statements = [

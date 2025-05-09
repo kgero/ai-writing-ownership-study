@@ -1,5 +1,6 @@
 // FormPage.jsx
 import React from "react";
+import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
@@ -36,10 +37,34 @@ export default function FormPage() {
       data.aiToolsUsed = selectedTools;
     }
   
-    // e.g. You could also do an axios POST here to save in your database
+    // Generate a unique participant ID if not stored already
+    const participantId = localStorage.getItem('participantId') || 
+                         `p_${Math.random().toString(36).substring(2, 10)}`;
+    
+    // Store participant ID for later use
+    localStorage.setItem('participantId', participantId);
 
-    // Then navigate to the appropriate interface route
-    navigate(`/outline/${condition}/${promptId}`);
+    // Add metadata about the survey
+    const surveyData = {
+      participant_id: participantId,
+      survey_type: "pre", 
+      prompt_id: promptId,
+      condition: condition,
+      responses: data,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Submit to backend
+    axios.post('/api/survey/submit', surveyData)
+      .then(response => {
+        console.log("Survey submitted successfully:", response.data);
+        navigate(`/outline/${condition}/${promptId}`); // or to exit for post-survey
+      })
+      .catch(error => {
+        console.error("Error submitting survey:", error);
+        // Handle error?? got to next stage anyway...
+        navigate(`/outline/${condition}/${promptId}`);
+      });
   };
 
   const statementsNFC = [
@@ -76,8 +101,6 @@ export default function FormPage() {
     <div style={{ maxWidth: "600px", margin: "2rem auto" }}>
       <h2>Pre-Task Survey</h2>
 
-      {/* "handleSubmit(onSubmit)" wraps your onSubmit logic 
-          and also handles validation checking */}
       <form onSubmit={handleSubmit(onSubmit)} style={{ margin: "2rem auto" }}>
 
         {/* RADIO SELECT */}
@@ -92,13 +115,13 @@ export default function FormPage() {
                 type="radio"
                 value={option}
                 // Hook Form uses the same name for radio group
-                {...register("ageChoice", { required: !devMode })}
+                {...register("age", { required: !devMode })}
               />
               {option.charAt(0).toUpperCase() + option.slice(1)}
             </label>
           ))}
 
-          {errors.ageChoice && (
+          {errors.age && (
             <p style={{ color: "red" }}>Please select your age.</p>
           )}
         </div>
@@ -115,13 +138,13 @@ export default function FormPage() {
                 type="radio"
                 value={option}
                 // Hook Form uses the same name for radio group
-                {...register("genderChoice", { required: !devMode })}
+                {...register("gender", { required: !devMode })}
               />
               {option.charAt(0).toUpperCase() + option.slice(1)}
             </label>
           ))}
 
-          {errors.genderChoice && (
+          {errors.gender && (
             <p style={{ color: "red" }}>Please select your gender.</p>
           )}
         </div>
@@ -138,13 +161,13 @@ export default function FormPage() {
                 type="radio"
                 value={option}
                 // Hook Form uses the same name for radio group
-                {...register("genderChoice", { required: !devMode })}
+                {...register("education", { required: !devMode })}
               />
               {option.charAt(0).toUpperCase() + option.slice(1)}
             </label>
           ))}
 
-          {errors.genderChoice && (
+          {errors.education && (
             <p style={{ color: "red" }}>Please select your level of education.</p>
           )}
         </div>
@@ -161,13 +184,13 @@ export default function FormPage() {
                 type="radio"
                 value={option}
                 // Hook Form uses the same name for radio group
-                {...register("genderChoice", { required: !devMode })}
+                {...register("nativeEnglish", { required: !devMode })}
               />
               {option.charAt(0).toUpperCase() + option.slice(1)}
             </label>
           ))}
 
-          {errors.genderChoice && (
+          {errors.nativeEnglish && (
             <p style={{ color: "red" }}>Please select yes or no.</p>
           )}
         </div>
@@ -190,7 +213,7 @@ export default function FormPage() {
                       type="radio"
                       value={numVal}
                       // Each statement gets a unique name, e.g. "likert_0", "likert_1", etc.
-                      {...register(`likert_${index}`, { required: !devMode })}
+                      {...register(`nfc_${index}`, { required: !devMode })}
                     />
                     {numVal}
                   </label>
@@ -199,7 +222,7 @@ export default function FormPage() {
               </div>
 
               {/* If there's a validation error for this statement's likert */}
-              {errors[`likert_${index}`] && (
+              {errors[`nfc_${index}`] && (
                 <p style={{ color: "red" }}>Please rate this statement.</p>
               )}
             </div>
@@ -224,7 +247,7 @@ export default function FormPage() {
                       type="radio"
                       value={numVal}
                       // Each statement gets a unique name, e.g. "likert_0", "likert_1", etc.
-                      {...register(`likert_${index}`, { required: !devMode })}
+                      {...register(`techAccept_${index}`, { required: !devMode })}
                     />
                     {numVal}
                   </label>
@@ -233,7 +256,7 @@ export default function FormPage() {
               </div>
 
               {/* If there's a validation error for this statement's likert */}
-              {errors[`likert_${index}`] && (
+              {errors[`techAccept_${index}`] && (
                 <p style={{ color: "red" }}>Please rate this statement.</p>
               )}
             </div>
@@ -252,13 +275,13 @@ export default function FormPage() {
                 type="radio"
                 value={option}
                 // Hook Form uses the same name for radio group
-                {...register("genderChoice", { required: !devMode })}
+                {...register("aiFrequency", { required: !devMode })}
               />
               {option.charAt(0).toUpperCase() + option.slice(1)}
             </label>
           ))}
 
-          {errors.genderChoice && (
+          {errors.aiFrequency && (
             <p style={{ color: "red" }}>Please select how frequently you use AI writing tools.</p>
           )}
         </div>
@@ -275,14 +298,14 @@ export default function FormPage() {
                 type="checkbox"
                 value={option}
                 // For checkboxes, we still use register but with different handling
-                {...register("aiToolsUsed")}
+                {...register("aiUseType")}
               />
               {" " + option}
             </label>
           ))}
 
           {/* Optional validation if you require at least one selection */}
-          {errors.aiToolsUsed && (
+          {errors.aiUseType && (
             <p style={{ color: "red" }}>Please select at least one option.</p>
           )}
         </div>
@@ -305,7 +328,7 @@ export default function FormPage() {
                       type="radio"
                       value={numVal}
                       // Each statement gets a unique name, e.g. "likert_0", "likert_1", etc.
-                      {...register(`likert_${index}`, { required: !devMode })}
+                      {...register(`AIwriting_${index}`, { required: !devMode })}
                     />
                     {numVal}
                   </label>
@@ -314,7 +337,7 @@ export default function FormPage() {
               </div>
 
               {/* If there's a validation error for this statement's likert */}
-              {errors[`likert_${index}`] && (
+              {errors[`AIwriting_${index}`] && (
                 <p style={{ color: "red" }}>Please rate this statement.</p>
               )}
             </div>
@@ -340,7 +363,7 @@ export default function FormPage() {
                       type="radio"
                       value={numVal}
                       // Each statement gets a unique name, e.g. "likert_0", "likert_1", etc.
-                      {...register(`likert_${index}`, { required: !devMode })}
+                      {...register(`writingEfficacy_${index}`, { required: !devMode })}
                     />
                     {numVal}
                   </label>
@@ -349,82 +372,13 @@ export default function FormPage() {
               </div>
 
               {/* If there's a validation error for this statement's likert */}
-              {errors[`likert_${index}`] && (
+              {errors[`writingEfficacy_$_${index}`] && (
                 <p style={{ color: "red" }}>Please rate this statement.</p>
               )}
             </div>
           ))}
         </div>
 
-        {/* SHORT ANSWER */}
-        {/*<div style={{ marginBottom: "1rem" }}>
-          <label htmlFor="shortAnswer" style={{ display: "block", marginBottom: "0.5rem" }}>
-            1. Short Answer Question
-          </label>
-          <input
-            id="shortAnswer"
-            type="text"
-            placeholder="Type your answer..."
-            style={{ width: "100%", padding: "0.5rem" }}
-
-            // "register('shortAnswer')" connects this input to Hook Form
-            // "required: !devMode" means required if devMode = false
-            {...register("shortAnswer", { required: !devMode })}
-          />
-          {errors.shortAnswer && (
-            <p style={{ color: "red" }}>This field is required.</p>
-          )}
-        </div>*/}
-
-        {/* RADIO SELECT */}
-        {/*<div style={{ marginBottom: "1rem" }}>
-          <p style={{ marginBottom: "0.5rem" }}>
-            2. Radio Select: Which color do you like best?
-          </p>
-
-          {["red", "green", "blue"].map((option) => (
-            <label key={option} style={{ display: "block", marginBottom: "0.25rem" }}>
-              <input
-                type="radio"
-                value={option}
-                // Hook Form uses the same name for radio group
-                {...register("colorChoice", { required: !devMode })}
-              />
-              {option.charAt(0).toUpperCase() + option.slice(1)}
-            </label>
-          ))}
-
-          {errors.colorChoice && (
-            <p style={{ color: "red" }}>Please select a color.</p>
-          )}
-        </div>*/}
-
-        {/* SINGLE LIKERT SCALE */}
-        {/*<div style={{ marginBottom: "1rem" }}>
-          <p style={{ marginBottom: "0.5rem" }}>
-            3. On a scale from 1 (Strongly Disagree) to 7 (Strongly Agree), rate this statement:
-            <br />
-            <em>"I enjoy writing code."</em>
-          </p>
-          <div style={{ display: "flex", justifyContent: "space-between", maxWidth: "300px" }}>
-            {Array.from({ length: 7 }, (_, i) => i + 1).map((numVal) => (
-              <label key={numVal}>
-                <input
-                  type="radio"
-                  value={numVal}
-                  // Again, same name for a single group
-                  {...register("likertValue", { required: !devMode })}
-                />
-                {numVal}
-              </label>
-            ))}
-          </div>
-          {errors.likertValue && (
-            <p style={{ color: "red" }}>Please choose a rating.</p>
-          )}
-        </div>*/}
-
-        {/* SUBMIT */}
         <button type="submit" style={{ padding: "0.5rem 1rem" }}>
           Submit
         </button>

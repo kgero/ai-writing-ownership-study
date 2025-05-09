@@ -317,9 +317,6 @@ export default function WritingStage({ stageName, nextStage }) {
     return true;
   };
 
-
-
-
   // MODIFIED: Function to highlight issues in the textarea - now using underlines instead of highlights
   const highlightIssuesInTextarea = (currentIssueMap) => {
     // Only proceed if we have text to highlight
@@ -391,7 +388,6 @@ export default function WritingStage({ stageName, nextStage }) {
     setTimeout(() => card.classList.remove("pulse-border"), 600);
   };
 
-
   // Keypress recording
   const handleKeyDown = (event) => {
     const keyInfo = { key: event.key, time: Date.now(), stage: stageName };
@@ -404,9 +400,35 @@ export default function WritingStage({ stageName, nextStage }) {
     inputRef.current = input;
   }, [input]);
 
+  // Track when the stage started
+  const stageStartTimeRef = useRef(Date.now());
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       console.log(`${stageName} snapshot at`, new Date().toISOString());
+
+      const participantId = localStorage.getItem('participantId') || 
+                         `p_${Math.random().toString(36).substring(2, 10)}`;
+
+      const currentTime = Date.now();
+      const timeFromStart = Math.floor((currentTime - stageStartTimeRef.current) / 1000); // Convert to seconds
+
+      const snapshotData = {
+        participant_id: participantId,
+        stage: stageName.toLowerCase(),
+        time_from_stage_start: timeFromStart,
+        text_content: inputRef.current,
+        created_at: new Date().toISOString(),
+      };
+
+      // Submit to backend
+      axios.post('/api/snapshot/submit', snapshotData)
+        .then(response => {
+          console.log("Text snapshot submitted successfully:", response.data);
+        })
+        .catch(error => {
+          console.error("Error submitting text snapshot:", error);
+        });
     }, 30000);
 
     return () => clearInterval(intervalId);
@@ -438,7 +460,7 @@ export default function WritingStage({ stageName, nextStage }) {
         prompt = llmPrompts.revision(promptText, previousContent);
       }
       
-      const response = await axios.post("http://localhost:5001/api/openai", {
+      const response = await axios.post("/api/openai", {
         prompt: prompt
       });
       
@@ -472,7 +494,7 @@ export default function WritingStage({ stageName, nextStage }) {
       
       const prompt = promptFn(input);
       
-      const response = await axios.post("http://localhost:5001/api/openai", {
+      const response = await axios.post("/api/openai", {
         prompt: prompt
       });
       
@@ -519,7 +541,7 @@ export default function WritingStage({ stageName, nextStage }) {
         // Use the prompt from config.js and the current input (outline)
         const prompt = llmPrompts.aiDraft(promptText, input);
         
-        const response = await axios.post("http://localhost:5001/api/openai", {
+        const response = await axios.post("/api/openai", {
           prompt: prompt
         });
         
@@ -553,6 +575,29 @@ export default function WritingStage({ stageName, nextStage }) {
     
     // Submit all data to backend
     console.log("Submitting all writing data to database...");
+
+    const participantId = localStorage.getItem('participantId') || 
+                         `p_${Math.random().toString(36).substring(2, 10)}`;
+
+    const currentTime = Date.now();
+    const timeFromStart = Math.floor((currentTime - stageStartTimeRef.current) / 1000); // Convert to seconds
+
+    const snapshotData = {
+      participant_id: participantId,
+      stage: stageName.toLowerCase(),
+      time_from_stage_start: timeFromStart,
+      text_content: inputRef.current,
+      created_at: new Date().toISOString(),
+    };
+
+    // Submit to backend
+    axios.post('/api/snapshot/submit', snapshotData)
+      .then(response => {
+        console.log("Final snapshot submitted successfully:", response.data);
+      })
+      .catch(error => {
+        console.error("Error submitting text snapshot:", error);
+      });
     
     // Clear localStorage
     localStorage.removeItem("outline_content");
@@ -560,8 +605,6 @@ export default function WritingStage({ stageName, nextStage }) {
     localStorage.removeItem("revision_content");
     localStorage.removeItem("ai_draft");
     
-    // Navigate to completion page (which we'd need to create)
-    alert("Thank you for completing the writing task!");
     navigate("/postsurvey");
   };
 

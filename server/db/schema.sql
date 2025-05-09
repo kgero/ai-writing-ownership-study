@@ -1,6 +1,0 @@
-CREATE TABLE responses (
-  id SERIAL PRIMARY KEY,
-  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  keystroke TEXT NOT NULL,
-  participant_id TEXT NOT NULL
-);
