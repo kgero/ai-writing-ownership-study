@@ -5,6 +5,9 @@ import remarkGfm from "remark-gfm";
 import axios from "axios";
 import { llmPrompts } from "./config";
 
+const apiUrl = import.meta.env.VITE_API_URL || '';
+axios.defaults.baseURL = apiUrl;
+
 const IdeasList = ({ ideas, setIdeas, promptText }) => {
   const [expandedIdea, setExpandedIdea] = useState(null);
   const [outlines, setOutlines] = useState({});

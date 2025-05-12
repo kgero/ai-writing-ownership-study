@@ -4,6 +4,9 @@ import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
+const apiUrl = import.meta.env.VITE_API_URL || '';
+axios.defaults.baseURL = apiUrl;
+
 export default function FormPage() {
   const { condition, promptId } = useParams();
   const navigate = useNavigate();

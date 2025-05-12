@@ -20,7 +20,13 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-app.use(cors());
+// Allow requests from your client domain
+app.use(cors({
+  origin: process.env.CLIENT_URL || '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+
 app.use(express.json());
 
 // Initialize OpenAI SDK

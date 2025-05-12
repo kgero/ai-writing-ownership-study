@@ -30,6 +30,7 @@ minimal-react-app/
 │   ├── index.html           # Main HTML file
 │   ├── package.json         # React dependencies
 │   ├── vite.config.js       # Vite config
+│   ├── .env                 # Just contains the VITE_API_URL
 │   ├── .gitignore           # Git ignore file
 │
 │── server/                  # Backend (Express + PostgreSQL)

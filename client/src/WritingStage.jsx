@@ -7,6 +7,9 @@ import remarkGfm from "remark-gfm";
 import { stageConfig, llmPrompts } from "./config";
 import IdeasList from "./IdeasList"; // Import the new component
 
+const apiUrl = import.meta.env.VITE_API_URL || '';
+axios.defaults.baseURL = apiUrl;
+
 export default function WritingStage({ stageName, nextStage }) {
   const { condition, promptId } = useParams();
   const navigate = useNavigate();
