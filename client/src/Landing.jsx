@@ -6,12 +6,11 @@ import { stageConfig } from "./config.js";
 export default function Landing() {
   const [condition, setCondition] = useState("");
   const [promptId, setPromptId] = useState("");
-  const [participantId, setParticipantId] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    if (!condition || !promptId || !participantId) {
-      alert("Please select a condition, an essay prompt, and enter a participant ID.");
+    if (!condition || !promptId) {
+      alert("Please select a condition and an essay prompt.");
       return;
     }
 
@@ -39,7 +38,7 @@ export default function Landing() {
   return (
     <div className="container">
       <div className="landing">
-        <h1>Pick your condition & essay prompt, and enter a temp participant ID</h1>
+        <h1>Pick your condition & essay prompt.</h1>
         
         <div className="selection-section">
           <h2>Select Condition:</h2>
@@ -81,16 +80,6 @@ export default function Landing() {
               </div>
             ))}
           </div>
-        </div>
-        
-        <div className="input-section">
-          <h2>Enter Participant ID:</h2>
-          <input
-            type="text"
-            value={participantId}
-            onChange={(e) => setParticipantId(e.target.value)}
-            placeholder="e.g. P001"
-          />
         </div>
         
         <button className="submit-button" onClick={handleSubmit}>Continue to Informed Consent</button>

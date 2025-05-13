@@ -2,17 +2,31 @@
 
 This is a minimal React application for running an experiment on AI, writing, and ownership. It was developed on a Mac.
 
+## TODOs
 
-## Prerequisites
+- revise post-survey to match IRB
+- set up interaction logging (create the table, add in all the hooks)
+- ensure that text is saved to the snapshots at the end of each stage, not just final submission
+  - consider adding a column to this table so snapshots are labeled 'partial' (for 30 sec snapshots) or 'final' (submission for each stage)
+  - also make sure AI generated draft is saved properly this way for consistency
+- think about if it's worth having a 'config' table that maps participants to experiment config details (e.g. stage max length, prompts, etc.) or having participant condition and prompt saved everywhere
 
-Ensure you have the following installed on your Mac:
+There are also many aesthetic fixes, as well as some prompt engineering for the LLM and crafting of the writing prompts for the participants.
 
-- [Homebrew](https://brew.sh/)
-- Node.js and npm (via Homebrew)
 
-  ```sh
-  brew install node
-  ```
+## Railway deployment
+
+This app is deployed on Railway via github. There is a single project with three services: the client, the server, and the postgres database. The client and server should automatically redeploy when the github repo updates the relevant code.
+
+There are some environment variables that need to be set in Railway carefully:
+
+- `VITE_API_URL` in the client must be set to the server url (incl. https:// is key)
+- `CLIENT_URL` in the server must be set to the client url (incl. https:// is key)
+- `OPENAI_API_KEY` in the server must have the OpenAI key to make LLM requests
+
+The server must also have the variables for the PostgreSQL database; these should be reference variables as Railway is also setting the PostgreSQL details.
+
+
 
 ## App structure
 
@@ -45,6 +59,19 @@ minimal-react-app/
 
 ## .env
 
+
+
+## Run app locally
+
+Ensure you have the following installed on your Mac:
+
+- [Homebrew](https://brew.sh/)
+- Node.js and npm (via Homebrew)
+
+  ```sh
+  brew install node
+  ```
+
 The `.env` file need to have an OpenAI key, as well as the credentials for the database. It should look something like:
 
 ```
@@ -56,8 +83,6 @@ DB_PASSWORD=putincorrectpasswordhere
 DB_PORT=5432
 PORT=5001
 ```
-
-## Run app locally
 
 To run the app locally, you need to start up the backend and frontend separately.
 

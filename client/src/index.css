@@ -4,6 +4,10 @@ h1 {
   font-size: 24px;
 }
 
+h2 {
+  font-size: 20px;
+}
+
 /* Existing styles */
 .ideas-list {
   list-style: none;

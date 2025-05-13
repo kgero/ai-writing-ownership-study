@@ -42,7 +42,7 @@ app.post('/api/openai', async (req, res) => {
     console.log("LLM prompt", req.body.prompt);
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4.1-mini',
       // max_tokens: 50,
       messages: [
         { role: "system", content: "You are a helpful assistant." },
