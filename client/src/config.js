@@ -56,9 +56,9 @@ Remember, your essay should be about 300 words. A word count is in the bottom ri
 
   // Stage max times are listed in minutes
   stageTimes: {
-    outline: 3,
-    draft: 3,
-    revision: 3
+    outline: 10,
+    draft: 10,
+    revision: 10
   },
 
   // Warning times in seconds before timeout

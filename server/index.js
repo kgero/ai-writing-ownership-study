@@ -86,12 +86,12 @@ app.post('/api/snapshot/submit', async (req, res) => {
   console.log("Text snapshot submission endpoint hit");
 
   try {
-    const { participant_id, stage, time_from_stage_start, text_content, created_at } = req.body;
+    const { participant_id, stage, time_from_stage_start, text_content, created_at, type } = req.body;
 
     // Insert the snapshot into the database
     const result = await pool.query(
-      'INSERT INTO text_snapshots (participant_id, stage, time_from_stage_start, text_content, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [participant_id, stage, time_from_stage_start, text_content, created_at || new Date()]
+      'INSERT INTO text_snapshots (participant_id, stage, time_from_stage_start, text_content, created_at, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [participant_id, stage, time_from_stage_start, text_content, created_at || new Date(), type]
     );
 
     res.json(result.rows[0]);

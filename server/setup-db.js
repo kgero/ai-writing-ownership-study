@@ -43,7 +43,8 @@ async function setupDatabase() {
         stage VARCHAR(20) NOT NULL,
         time_from_stage_start INTEGER NOT NULL,
         text_content TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        type TEXT
       );
     `);
     console.log('✓ text_snapshots table created or already exists');
@@ -74,6 +75,26 @@ async function setupDatabase() {
     // Commit the transaction
     await client.query('COMMIT');
 
+    // Add 'type' column to text_snapshots table if not already there
+    // (Migration code)
+    // Check if 'type' column already exists
+    const checkColumn = await client.query(`
+      SELECT column_name
+      FROM information_schema.columns
+      WHERE table_name='text_snapshots' AND column_name='type';
+    `);
+
+    if (checkColumn.rows.length === 0) {
+      // Add the new column
+      await client.query(`
+        ALTER TABLE text_snapshots
+        ADD COLUMN type TEXT;
+      `);
+      console.log('Successfully added type column to text_snapshots table');
+    } else {
+      console.log('Type column already exists in text_snapshots table');
+    }
+
     console.log('Database setup complete! All tables created successfully.');
   } catch (error) {
     // Rollback in case of error
@@ -85,6 +106,8 @@ async function setupDatabase() {
     await pool.end();
   }
 }
+
+
 
 // Run the setup function
 setupDatabase();
