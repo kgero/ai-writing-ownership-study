@@ -7,8 +7,7 @@ This is a minimal React application for running an experiment on AI, writing, an
 - revise post-survey to match IRB
 - set up interaction logging (create the table, add in all the hooks)
 - ensure that text is saved to the snapshots at the end of each stage, not just final submission
-  - consider adding a column to this table so snapshots are labeled 'partial' (for 30 sec snapshots) or 'final' (submission for each stage)
-  - also make sure AI generated draft is saved properly this way for consistency
+  - this is done! but make sure AI generated draft is saved properly this way for consistency
 - think about if it's worth having a 'config' table that maps participants to experiment config details (e.g. stage max length, prompts, etc.) or having participant condition and prompt saved everywhere
 
 There are also many aesthetic fixes, as well as some prompt engineering for the LLM and crafting of the writing prompts for the participants.
