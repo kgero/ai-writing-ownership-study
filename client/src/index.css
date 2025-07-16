@@ -8,7 +8,7 @@ h2 {
   font-size: 20px;
 }
 
-/* Existing styles */
+/* Enhanced idea item styles for grey sidebar */
 .ideas-list {
   list-style: none;
   padding: 0;
@@ -16,56 +16,77 @@ h2 {
 }
 
 .idea-item {
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  margin-bottom: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
   overflow: hidden;
+  background-color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 .idea-header {
   display: flex;
   align-items: center;
-  padding: 10px;
-  background-color: #f8f8f8;
+  padding: 8px 10px;
+  background-color: white;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .idea-number {
-  font-weight: bold;
+  font-weight: 600;
   margin-right: 8px;
-  min-width: 20px;
+  min-width: 16px;
+  color: #666;
+  font-size: 14px;
 }
 
 .idea-text {
   flex: 1;
-  margin-right: 10px;
+  margin-right: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
 }
 
 .outline-button {
   padding: 4px 8px;
   margin: 0;
-  font-size: 12px;
+  font-size: 11px;
   background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 500;
+  white-space: pre-line;
+  text-align: center;
+  min-width: 60px;
+  line-height: 1.2;
+}
+
+.outline-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 .carat-button {
-  padding: 0 8px;
+  padding: 2px 6px;
   margin: 0;
   background: none;
-  color: #333;
-  font-size: 16px;
+  color: #007bff;
+  font-size: 14px;
   border: none;
   cursor: pointer;
-}
-
-.carat-button:hover {
-  background: none;
-  color: #007bff;
+  border-radius: 3px;
 }
 
 .idea-outline {
-  padding: 10px 15px;
-  background-color: #fff;
-  border-top: 1px solid #ddd;
+  padding: 10px 12px;
+  background-color: #fafafa;
+  border-top: 1px solid #f0f0f0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #555;
 }
 
 body {
@@ -149,16 +170,7 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.ideas-box {
-  width: 100%;
-  padding: 10px;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  overflow-y: auto;
-  min-height: 100px;
-  max-height: 600px;
-}
+
 
 .survey-question {
   font-weight: bold;

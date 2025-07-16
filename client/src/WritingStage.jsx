@@ -945,7 +945,14 @@ export default function WritingStage({ stageName, nextStage }) {
         {showPreviousContent && (
           <>
             <h3>{stageName === "Draft" ? "Your Outline" : "Your Draft"}</h3>
-            <div className="ideas-box" style={{ marginTop: "1rem", whiteSpace: "pre-wrap" }}>
+            <div style={{ 
+              marginTop: "1rem", 
+              whiteSpace: "pre-wrap",
+              padding: "10px",
+              backgroundColor: "white",
+              border: "1px solid #ccc",
+              borderRadius: "5px"
+            }}>
               {previousContent}
             </div>
           </>
@@ -960,7 +967,7 @@ export default function WritingStage({ stageName, nextStage }) {
               </button>
             )}
             
-            <div className="ideas-box" style={{ marginTop: "1rem" }}>
+            <div style={{ marginTop: "1rem" }}>
               {loading ? (
                 <p>Loading ideas…</p>
               ) : ideas ? (
@@ -989,7 +996,7 @@ export default function WritingStage({ stageName, nextStage }) {
               </button>
             )}
             
-            <div className="ideas-box" style={{ marginTop: "1rem" }}>
+            <div style={{ marginTop: "1rem" }}>
               {loading ? (
                 <p>Loading ideas…</p>
               ) : (

@@ -124,7 +124,7 @@ const IdeasList = ({ ideas, setIdeas, promptText }) => {
                   onClick={() => generateOutline(idea.id, idea.text)}
                   disabled={loadingOutline === idea.id}
                 >
-                  {loadingOutline === idea.id ? "Loading..." : "Generate Outline"}
+                  {loadingOutline === idea.id ? "Loading..." : "Generate\nOutline"}
                 </button>
               )}
               {outlines[idea.id] && (
@@ -139,8 +139,6 @@ const IdeasList = ({ ideas, setIdeas, promptText }) => {
             
             {outlines[idea.id] && expandedIdea === idea.id && (
               <div className="idea-outline" style={{ 
-                maxHeight: "300px", 
-                overflow: "auto", 
                 fontSize: "0.9em", 
                 lineHeight: "1.4"
               }}>
