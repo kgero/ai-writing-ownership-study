@@ -952,8 +952,28 @@ export default function WritingStage({ stageName, nextStage }) {
         </div>
       </div>
       
-      {/* Always render sidebar with same width for consistent layout */}
-      <div className="sidebar" ref={sidebarRef}>
+      {/* Always render sidebar for consistent layout */}
+      <div
+        className="sidebar"
+        ref={sidebarRef}
+        style={
+          !(showPreviousContent || hasAISupport)
+            ? {
+                background: "#fff",
+                border: "none",
+                boxShadow: "none",
+                opacity: 1,
+                width: "100%",
+                height: "100%",
+                minHeight: 0,
+                minWidth: 0,
+                padding: 0,
+                margin: 0,
+                pointerEvents: "none"
+              }
+            : undefined
+        }
+      >
         {/* Previous content display for "no support" condition */}
         {showPreviousContent && (
           <>
@@ -1129,6 +1149,8 @@ export default function WritingStage({ stageName, nextStage }) {
             </div>
           </>
         )}
+        {/* If no content, render nothing (blank sidebar) */}
+        {!(showPreviousContent || hasAISupport) && <div style={{ width: '100%', height: '100%' }}></div>}
       </div>
     </div>
   );

@@ -98,6 +98,7 @@ body {
 .container {
   display: flex;
   height: 100vh;
+  /* margin: 20px 0; */ /* Remove vertical margin from container */
 }
 
 .editor {
@@ -117,8 +118,18 @@ body {
 
 .sidebar {
   width: 30%;
-  overflow-y: auto; /* Make sidebar scrollable */
-  max-height: 100vh; /* Limit height to viewport height */
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 3;
+  padding: 20px;
+  margin: 20px 20px 20px 0; /* Restore top, right, bottom margin */
+  background-color: #f4f4f4;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 /* Full width editor when sidebar is not displayed */
@@ -134,19 +145,6 @@ textarea {
   border-radius: 5px;
   font-size: 16px;
   resize: none;
-  box-sizing: border-box;
-}
-
-.sidebar {
-  flex: 3;
-  padding: 20px;
-  margin: 20px;
-  background-color: #f4f4f4;
-  border-radius: 2px;
-  border: 1px solid #ccc;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   box-sizing: border-box;
 }
 

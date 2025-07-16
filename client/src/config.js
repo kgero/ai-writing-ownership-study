@@ -154,7 +154,7 @@ Please create a well-structured essay of approximately 300 words that follows th
         2. Quote the problematic phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
         3. Very briefly explain the problem in 5-10 words.
         4. Suggest a concise fix.
-        
+
         Format as:
         ### Issue 1
         > "problematic text"
@@ -165,6 +165,7 @@ Please create a well-structured essay of approximately 300 words that follows th
         
         Be extremely concise. Only identify actual errors.
         The quoted "problematic text" must appear EXACTLY as written in the original text - this is critical.
+        If there are no issues, return "No issues found".
 
 `,
 
