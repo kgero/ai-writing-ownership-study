@@ -41,17 +41,48 @@ export const stageConfig = {
     revision: "Revise your Essay"
   },
 
-  // Stage-specific instructions
+  // Stage-specific instructions with AI and no-AI versions
   instructions: {
-    outline: `Please write an outline for an essay on the topic below.
+    outline: {
+      base: `INSTRUCTIONS: Please write an outline for an essay on the topic below. This outline is for your own use, so you can use bullet points, notes or whatever style of planning you prefer. You will be asked to write a complete draft of the essay in the next step.
 
-This outline is for your own use, so you can use bullet points, notes or whatever style of planning you prefer. You will be asked to write a complete draft of the essay in the next step.
+LENGTH: The final essay should be about 300 words, so your outline should be less than 100 words. There is a word count in the bottom righthand corner of the textbox. Your outline will be shown to you when you move to the drafting stage.
 
-The final essay should be about 300 words, so your outline should be less than 100 words. (Note the word count in the bottom lefthand corner of the textbox.) Your outline will be shown to you when you move to the drafting stage.`,
-    draft: `Please write a first draft for the essay based on your outline; your topic is below and your outline has been put in the righthand sidebar. 
+TIME ALLOWED: You will have 10 minutes to write the outline. You will be given warnings when you have 5 minutes left, 2 minutes left, and 30 seconds left, at which point you will not be able to continue writing. You may move to the next stage before your time is up, whenever you feel you are ready.`,
+      noai: `SUPPORT: You are not allowed to use any kind of AI support.`,
+      ai: `SUPPORT: You may request ideas from a Large Language Model using the panel to the right.`
+    },
+    draft: {
+      base: `INSTRUCTIONS: Please write a first draft for the essay based on your outline; your topic is below and your outline has been put in the righthand sidebar. This is just a first draft; once you are done you will be given more time to revise your essay.
 
-Remember, your essay should be about 300 words. A word count is in the bottom righthand corner of the textbox.`,
-    revision: `Please review and revise your essay below. Your draft is in the textbox.`
+LENGTH: Your final essay should be about 300 words. A word count is in the bottom righthand corner of the textbox. You must write at least 300 words to continue to the revision stage.
+
+TIME ALLOWED: You will have 10 minutes to write the draft. You will be given warnings when you have 5 minutes left, 2 minutes left, and 30 seconds left, at which point you will not be able to continue writing. You may move to the next stage before your time is up, whenever you feel you are ready.`,
+      noai: `SUPPORT: You are not allowed to use any kind of AI support.`,
+      ai: `n/a`
+    },
+    revision: {
+      base: `INSTRUCTIONS: Please review and revise your essay below. Your draft is in the textbox. You may want to consider the strength of your arguments, the clarity of your writing, and the overall structure of your essay.
+
+LENGTH: Your final essay should be about 300 words. A word count is in the bottom righthand corner of the textbox. You must have at least 250 words in the textbox to submit your essay.
+
+TIME ALLOWED: You will have 10 minutes to revise your essay. You will be given warnings when you have 5 minutes left, 2 minutes left, and 30 seconds left, at which point you will not be able to continue writing. You may submit your essay before your time is up, whenever you feel you are ready.`,
+      noai: `SUPPORT: You are not allowed to use any kind of AI support.`,
+      ai: `SUPPORT: You may use AI revision tools in the panel to the right to help identify and correct issues in your writing.`
+    }
+  },
+
+  // Helper function to get the appropriate instruction based on condition and stage
+  getInstruction: (condition, stageName) => {
+    const stage = stageName.toLowerCase();
+    const hasAI = stageConfig[condition][stage];
+    
+    const baseInstruction = stageConfig.instructions[stage].base;
+    const supportInstruction = hasAI ? 
+      stageConfig.instructions[stage].ai : 
+      stageConfig.instructions[stage].noai;
+    
+    return `${baseInstruction}\n\n${supportInstruction}`;
   },
 
   // Stage max times are listed in minutes

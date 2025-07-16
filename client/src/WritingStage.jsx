@@ -692,12 +692,42 @@ export default function WritingStage({ stageName, nextStage }) {
     return tool ? tool.color : "#999";
   };
   
+  // DEFINE THE ACTUAL UI
   return (
     <div className="container">
       <div className="editor" style={editorStyle}>
         <h1>{stageConfig.stageTitles[stageName.toLowerCase()]}</h1>
-        <p style={{ whiteSpace: "pre-wrap" }}>{stageConfig.instructions[stageName.toLowerCase()]}</p>
-        <p>Essay topic: <i>{promptText}</i></p>
+        <p style={{ whiteSpace: "pre-wrap" }}>{stageConfig.getInstruction(conditionNum, stageName)}</p>
+        
+        {/* Enhanced essay topic styling */}
+        <div style={{
+          backgroundColor: "#e8f5e8",
+          border: "2px solid #4CAF50",
+          borderRadius: "8px",
+          padding: "16px 20px",
+          margin: "20px 0",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+        }}>
+          <div style={{
+            fontSize: "14px",
+            fontWeight: "600",
+            color: "#2e7d32",
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
+            marginBottom: "8px"
+          }}>
+            Essay Topic
+          </div>
+          <div style={{
+            fontSize: "18px",
+            fontWeight: "500",
+            color: "#1b5e20",
+            lineHeight: "1.4",
+            fontStyle: "italic"
+          }}>
+            {promptText}
+          </div>
+        </div>
         
         <div style={{ position: "relative" }}>
           {/* Replace the textarea with a div for highlighting when in Revision stage */}
