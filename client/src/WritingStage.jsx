@@ -649,6 +649,10 @@ export default function WritingStage({ stageName, nextStage }) {
   // Word count
   const wordCount = input.trim().length ? input.trim().split(/\s+/).length : 0;
 
+  // Word count requirements for each stage
+  const wordCountRequirement = stageConfig.wordCountRequirements[stageName.toLowerCase()] || 0;
+  const hasEnoughWords = wordCount >= wordCountRequirement;
+
   // Determine if this is the no support condition but still needs previous content display
   const showPreviousContent = (stageName === "Draft");
 
@@ -805,18 +809,19 @@ export default function WritingStage({ stageName, nextStage }) {
             />
           )}
 
-          <div
-            style={{
-              position: "absolute",
-              bottom: "5px",
-              right: "10px",
-              fontSize: "12px",
-              color: "#999",
-              backgroundColor: "#fff"
-            }}
-          >
-            {wordCount} words
-          </div>
+        </div>
+
+        {/* Word count display below text box */}
+        <div
+          style={{
+            textAlign: "right",
+            fontSize: "12px",
+            color: hasEnoughWords ? "#4CAF50" : "#ff6b6b",
+            marginTop: "8px",
+            fontWeight: "500"
+          }}
+        >
+          {wordCount} / {wordCountRequirement} words
         </div>
 
         {/* Warning message */}
@@ -888,11 +893,12 @@ export default function WritingStage({ stageName, nextStage }) {
           {nextStage ? (
             <button 
               onClick={handleNextStage} 
-              disabled={loading}
+              disabled={loading || !hasEnoughWords}
               style={{ 
-                cursor: loading ? 'wait' : 'pointer',
+                cursor: (loading || !hasEnoughWords) ? 'not-allowed' : 'pointer',
                 position: 'relative',
-                minWidth: '280px'
+                minWidth: '280px',
+                opacity: (loading || !hasEnoughWords) ? 0.6 : 1
               }}
             >
               {loading && stageName === "Outline" && stageConfig[conditionNum].draft ? (
@@ -932,7 +938,14 @@ export default function WritingStage({ stageName, nextStage }) {
               )}
             </button>
           ) : (
-            <button onClick={handleSubmit}>
+            <button 
+              onClick={handleSubmit}
+              disabled={!hasEnoughWords}
+              style={{ 
+                cursor: !hasEnoughWords ? 'not-allowed' : 'pointer',
+                opacity: !hasEnoughWords ? 0.6 : 1
+              }}
+            >
               Submit Final Essay
             </button>
           )}

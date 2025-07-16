@@ -46,7 +46,7 @@ export const stageConfig = {
     outline: {
       base: `INSTRUCTIONS: Please write an outline for an essay on the topic below. This outline is for your own use, so you can use bullet points, notes or whatever style of planning you prefer. You will be asked to write a complete draft of the essay in the next step.
 
-LENGTH: The final essay should be about 300 words, so your outline should be less than 100 words. There is a word count in the bottom righthand corner of the textbox. Your outline will be shown to you when you move to the drafting stage.
+LENGTH: The final essay should be about 300 words, so your outline should be at least 60 words. There is a word count in the bottom righthand corner of the textbox. Your outline will be shown to you when you move to the drafting stage. You must have at least 60 words in the textbox to continue to the drafting stage.
 
 TIME ALLOWED: You will have 10 minutes to write the outline. You will be given warnings when you have 5 minutes left, 2 minutes left, and 30 seconds left, at which point you will not be able to continue writing. You may move to the next stage before your time is up, whenever you feel you are ready.`,
       noai: `SUPPORT: You are not allowed to use any kind of AI support.`,
@@ -55,7 +55,7 @@ TIME ALLOWED: You will have 10 minutes to write the outline. You will be given w
     draft: {
       base: `INSTRUCTIONS: Please write a first draft for the essay based on your outline; your topic is below and your outline has been put in the righthand sidebar. This is just a first draft; once you are done you will be given more time to revise your essay.
 
-LENGTH: Your final essay should be about 300 words. A word count is in the bottom righthand corner of the textbox. You must write at least 300 words to continue to the revision stage.
+LENGTH: Your final essay should be about 300 words. A word count is in the bottom righthand corner of the textbox. You must have at least 300 words in the textbox to continue to the revision stage.
 
 TIME ALLOWED: You will have 10 minutes to write the draft. You will be given warnings when you have 5 minutes left, 2 minutes left, and 30 seconds left, at which point you will not be able to continue writing. You may move to the next stage before your time is up, whenever you feel you are ready.`,
       noai: `SUPPORT: You are not allowed to use any kind of AI support.`,
@@ -93,7 +93,14 @@ TIME ALLOWED: You will have 10 minutes to revise your essay. You will be given w
   },
 
   // Warning times in seconds before timeout
-  warningTimes: [120, 60, 30] // 5 min, 2 min, 30 sec
+  warningTimes: [120, 60, 30], // 5 min, 2 min, 30 sec
+  
+  // Word count requirements for each stage
+  wordCountRequirements: {
+    outline: 60,
+    draft: 300,
+    revision: 250
+  }
 };
 
 
