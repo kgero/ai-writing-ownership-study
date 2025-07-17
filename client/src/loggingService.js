@@ -1,5 +1,7 @@
 // client/src/loggingService.js
 
+import axios from 'axios';
+
 class LoggingService {
   constructor() {
     this.sessionId = this.getOrCreateSessionId();
@@ -208,21 +210,17 @@ class LoggingService {
   }
 
   async sendBatch(batch) {
+    const apiUrl = import.meta.env.VITE_API_URL || '';
+    axios.defaults.baseURL = apiUrl;
     for (let attempt = 0; attempt < this.retryAttempts; attempt++) {
       try {
-        const response = await fetch('/api/log', {
-          method: 'POST',
+        const response = await axios.post(`/api/log`, batch[0], {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(batch[0]) // Send one at a time for now
+          withCredentials: false
         });
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        return await response.json();
+        return response.data;
       } catch (error) {
         if (attempt === this.retryAttempts - 1) {
           throw error;
