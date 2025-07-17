@@ -213,7 +213,7 @@ class LoggingService {
   async sendBatch(batch) {
     for (let attempt = 0; attempt < this.retryAttempts; attempt++) {
       try {
-        const response = await axios.post(`/api/log`, batch[0], {
+        const response = await axios.post(`/api/log`, batch, {
           headers: {
             'Content-Type': 'application/json',
           },

@@ -104,19 +104,34 @@ app.post('/api/log', async (req, res) => {
   console.log("Interaction logging endpoint hit");
 
   try {
-    const { participant_id, session_id, stage, time_from_stage_start, event_type, event_data } = req.body;
+    // Handle both single log entry and batch of log entries
+    const logEntries = Array.isArray(req.body) ? req.body : [req.body];
+    
+    const results = [];
+    
+    for (const logEntry of logEntries) {
+      const { participant_id, session_id, stage, time_from_stage_start, event_type, event_data } = logEntry;
 
-    // Insert the interaction log into the database
-    const result = await pool.query(
-      'INSERT INTO interaction_logs (participant_id, session_id, stage, time_from_stage_start, event_type, event_data, created_at) VALUES ($1, $2, $3, $4, $5, $6, NOW()) RETURNING *',
-      [participant_id, session_id, stage, time_from_stage_start, event_type, JSON.stringify(event_data)]
-    );
+      // Insert the interaction log into the database
+      const result = await pool.query(
+        'INSERT INTO interaction_logs (participant_id, session_id, stage, time_from_stage_start, event_type, event_data, created_at) VALUES ($1, $2, $3, $4, $5, $6, NOW()) RETURNING *',
+        [participant_id, session_id, stage, time_from_stage_start, event_type, JSON.stringify(event_data)]
+      );
+      
+      results.push(result.rows[0]);
+    }
 
-    res.json(result.rows[0]);
+    // Return single result for single entry, array for batch
+    res.json(Array.isArray(req.body) ? results : results[0]);
   } catch (error) {
     console.error("Database error:", error);
     res.status(500).json({ error: error.message });
   }
+});
+
+// Heartbeat endpoint for connectivity check
+app.get('/api/log', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 
