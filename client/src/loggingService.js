@@ -2,6 +2,8 @@
 
 import axios from 'axios';
 
+const apiUrl = import.meta.env.VITE_API_URL || '';
+
 class LoggingService {
   constructor() {
     this.sessionId = this.getOrCreateSessionId();
@@ -210,7 +212,6 @@ class LoggingService {
   }
 
   async sendBatch(batch) {
-    const apiUrl = import.meta.env.VITE_API_URL || '';
     for (let attempt = 0; attempt < this.retryAttempts; attempt++) {
       try {
         const response = await axios.post(`${apiUrl}/api/log`, batch[0], {
