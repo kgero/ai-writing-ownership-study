@@ -211,10 +211,9 @@ class LoggingService {
 
   async sendBatch(batch) {
     const apiUrl = import.meta.env.VITE_API_URL || '';
-    axios.defaults.baseURL = apiUrl;
     for (let attempt = 0; attempt < this.retryAttempts; attempt++) {
       try {
-        const response = await axios.post(`/api/log`, batch[0], {
+        const response = await axios.post(`${apiUrl}/api/log`, batch[0], {
           headers: {
             'Content-Type': 'application/json',
           },
