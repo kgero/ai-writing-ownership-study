@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import api from "./api.js";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { stageConfig, llmPrompts } from "./config";
@@ -9,8 +10,6 @@ import IdeasList from "./IdeasList"; // Import the new component
 import loggingService from './loggingService.js';
 import { useLogging } from './useLogging.js';
 
-const apiUrl = import.meta.env.VITE_API_URL || '';
-axios.defaults.baseURL = apiUrl;
 
 export default function WritingStage({ stageName, nextStage }) {
   const { condition, promptId } = useParams();
