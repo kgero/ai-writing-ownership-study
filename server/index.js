@@ -129,11 +129,6 @@ app.post('/api/log', async (req, res) => {
   }
 });
 
-// Heartbeat endpoint for connectivity check
-app.get('/api/log', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
 
 // Fetch Data from Database
 app.get('/api/data', async (req, res) => {
