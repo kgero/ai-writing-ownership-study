@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import axios from "axios";
 import { llmPrompts } from "./config";
+import loggingService from './loggingService.js';
 
 const apiUrl = import.meta.env.VITE_API_URL || '';
 axios.defaults.baseURL = apiUrl;
@@ -45,11 +46,15 @@ const IdeasList = ({ ideas, setIdeas, promptText }) => {
   
   // Generate an outline for a specific idea
   const generateOutline = async (ideaId, ideaText) => {
+    const buttonClickTime = Date.now();
+    loggingService.logButtonClick('generate_outline');
+    const start = Date.now();
+    let prompt;
     try {
       setLoadingOutline(ideaId);
       
       // Use the ideaOutline prompt from config
-      const prompt = llmPrompts.ideaOutline(promptText, ideaText);
+      prompt = llmPrompts.ideaOutline(promptText, ideaText);
       
       const response = await axios.post("http://localhost:5001/api/openai", {
         prompt: prompt
@@ -63,6 +68,10 @@ const IdeasList = ({ ideas, setIdeas, promptText }) => {
       
       // Automatically expand to show the outline
       setExpandedIdea(ideaId);
+      loggingService.logApiCall('openai', prompt, response.data.completion, 'success', Date.now() - start, {
+        triggeredBy: 'generate_outline_button',
+        buttonClickTimestamp: buttonClickTime
+      });
       
     } catch (error) {
       console.error("Error generating outline:", error);
@@ -70,6 +79,10 @@ const IdeasList = ({ ideas, setIdeas, promptText }) => {
         ...prev,
         [ideaId]: "Failed to generate outline. Please try again."
       }));
+      loggingService.logApiCall('openai', prompt, error?.toString() || '', 'error', Date.now() - start, {
+        triggeredBy: 'generate_outline_button',
+        buttonClickTimestamp: buttonClickTime
+      });
     } finally {
       setLoadingOutline(null);
     }

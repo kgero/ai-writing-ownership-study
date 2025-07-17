@@ -3,6 +3,7 @@ import React from "react";
 import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import loggingService from './loggingService.js';
 
 const apiUrl = import.meta.env.VITE_API_URL || '';
 axios.defaults.baseURL = apiUrl;
@@ -41,11 +42,7 @@ export default function FormPage() {
     }
   
     // Generate a unique participant ID if not stored already
-    const participantId = localStorage.getItem('participantId') || 
-                         `p_${Math.random().toString(36).substring(2, 10)}`;
-    
-    // Store participant ID for later use
-    localStorage.setItem('participantId', participantId);
+    const participantId = loggingService.getParticipantId();
 
     // Generate a new session ID for this experiment session
     const sessionId = `${participantId}_${Date.now()}`;

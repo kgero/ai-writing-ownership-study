@@ -6,6 +6,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { stageConfig, llmPrompts } from "./config";
 import IdeasList from "./IdeasList"; // Import the new component
+import loggingService from './loggingService.js';
+import { useLogging } from './useLogging.js';
 
 const apiUrl = import.meta.env.VITE_API_URL || '';
 axios.defaults.baseURL = apiUrl;
@@ -40,6 +42,18 @@ export default function WritingStage({ stageName, nextStage }) {
   const [highlightedText, setHighlightedText] = useState([]);
   const [hoveredIssueId, setHoveredIssueId] = useState(null);
   const textareaRef = useRef(null);
+
+  // Logging hook
+  const logging = useLogging(stageName);
+
+  // Attach logging to textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      const cleanup = logging.setupTextareaLogging(textareaRef.current);
+      return cleanup;
+    }
+  }, [textareaRef.current, logging]);
+  
   const sidebarRef = useRef(null);
   
   // For improved revision highlighting/underlining
@@ -410,20 +424,11 @@ export default function WritingStage({ stageName, nextStage }) {
     const intervalId = setInterval(() => {
       console.log(`${stageName} snapshot at`, new Date().toISOString());
 
-      const participantId = localStorage.getItem('participantId') || 
-                         `p_${Math.random().toString(36).substring(2, 10)}`;
-
+      const participantId = loggingService.getParticipantId();
+      const sessionId = loggingService.getOrCreateSessionId();
       const currentTime = Date.now();
       const timeFromStart = Math.floor((currentTime - stageStartTimeRef.current) / 1000); // Convert to seconds
-
-      const sessionId = localStorage.getItem('sessionId');
-      if (!sessionId) {
-        console.error('No session ID found in localStorage. This should not happen if user completed pre-survey.');
-        // Generate a fallback session ID
-        const fallbackSessionId = `${participantId}_fallback_${Date.now()}`;
-        localStorage.setItem('sessionId', fallbackSessionId);
-      }
-    
+  
     const snapshotData = {
       participant_id: participantId,
       session_id: sessionId,
@@ -459,6 +464,9 @@ export default function WritingStage({ stageName, nextStage }) {
 
   // GET IDEAS BUTTON HANDLER
   const fetchIdeas = async () => {
+    const buttonClickTime = Date.now();
+    logging.logButtonClick('get_ideas');
+    const start = Date.now();
     try {
       setLoading(true);
       
@@ -478,9 +486,17 @@ export default function WritingStage({ stageName, nextStage }) {
       });
       
       setIdeas(response.data.completion);
+      logging.logApiCall('openai', prompt, response.data.completion, 'success', Date.now() - start, {
+        triggeredBy: 'get_ideas_button',
+        buttonClickTimestamp: buttonClickTime
+      });
     } catch (error) {
       console.error(`Error fetching ideas for ${stageName}:`, error);
       setIdeas("Failed to get ideas. Please try again.");
+      logging.logApiCall('openai', prompt, error?.toString() || '', 'error', Date.now() - start, {
+        triggeredBy: 'get_ideas_button',
+        buttonClickTimestamp: buttonClickTime
+      });
     } finally {
       setLoading(false);
     }
@@ -488,6 +504,8 @@ export default function WritingStage({ stageName, nextStage }) {
 
   // IMPROVED: AI REVISION TOOL HANDLER with better formatting instructions
   const handleRevisionTool = async (toolType) => {
+    logging.logButtonClick(`revision_tool:${toolType}`);
+    const start = Date.now();
     try {
       setRevisionLoading(true);
       setActiveRevisionType(toolType);
@@ -519,6 +537,7 @@ export default function WritingStage({ stageName, nextStage }) {
         };
         return newResults;
       });
+      logging.logApiCall('openai', prompt, response.data.completion, 'success', Date.now() - start);
       
     } catch (error) {
       console.error(`Error with ${toolType}:`, error);
@@ -526,6 +545,7 @@ export default function WritingStage({ stageName, nextStage }) {
         ...prev,
         [toolType]: `Failed to use ${toolType}. Please try again.`
       }));
+      logging.logApiCall('openai', prompt, error?.toString() || '', 'error', Date.now() - start);
     } finally {
       setRevisionLoading(false);
       setActiveRevisionType("");
@@ -543,25 +563,17 @@ export default function WritingStage({ stageName, nextStage }) {
 
   // NEXT STAGE BUTTON HANDLER
   const handleNextStage = async () => {
+    logging.logButtonClick('next_stage');
     // Save current stage data
     localStorage.setItem(`${stageName.toLowerCase()}_content`, input);
 
     // Submit all data to backend
     console.log("Submitting", stageName.toLowerCase(), "writing data to database...");
 
-    const participantId = localStorage.getItem('participantId') || 
-                         `p_${Math.random().toString(36).substring(2, 10)}`;
-
+    const participantId = loggingService.getParticipantId();
+    const sessionId = loggingService.getOrCreateSessionId();
     const currentTime = Date.now();
     const timeFromStart = Math.floor((currentTime - stageStartTimeRef.current) / 1000); // Convert to seconds
-
-    const sessionId = localStorage.getItem('sessionId');
-    if (!sessionId) {
-      console.error('No session ID found in localStorage. This should not happen if user completed pre-survey.');
-      // Generate a fallback session ID
-      const fallbackSessionId = `${participantId}_fallback_${Date.now()}`;
-      localStorage.setItem('sessionId', fallbackSessionId);
-    }
     
     const snapshotData = {
       participant_id: participantId,
@@ -584,17 +596,18 @@ export default function WritingStage({ stageName, nextStage }) {
     
     // If going from outline to draft and has AI support for draft, generate AI draft
     if (stageName === "Outline" && stageConfig[conditionNum].draft) {
+      logging.logButtonClick('generate_ai_draft');
       setLoading(true); // Set loading to true for UI indication
       
       try {
         // Use the prompt from config.js and the current input (outline)
         const prompt = llmPrompts.aiDraft(promptText, input);
-        
+        const start = Date.now();
         const response = await axios.post("/api/openai", {
           prompt: prompt
         });
-        
         const draftContent = response.data.completion;
+        logging.logApiCall('openai', prompt, draftContent, 'success', Date.now() - start);
         
         // Store in localStorage
         localStorage.setItem("ai_draft", draftContent); 
@@ -605,6 +618,7 @@ export default function WritingStage({ stageName, nextStage }) {
         navigate(`/revision/${condition}/${promptId}`);
       } catch (error) {
         console.error("Error generating AI draft:", error);
+        logging.logApiCall('openai', prompt, error?.toString() || '', 'error');
         alert("Failed to generate AI draft. Please try again.");
       } finally {
         setLoading(false);
@@ -619,6 +633,7 @@ export default function WritingStage({ stageName, nextStage }) {
 
   // SUBMIT BUTTON HANDLER (for final stage)
   const handleSubmit = () => {
+    logging.logButtonClick('submit');
     // Save final content
     localStorage.setItem(`${stageName.toLowerCase()}_content`, input);
     
@@ -626,19 +641,10 @@ export default function WritingStage({ stageName, nextStage }) {
     console.log("Submitting", stageName.toLowerCase(), "writing data to database...");
 
 
-    const participantId = localStorage.getItem('participantId') || 
-                         `p_${Math.random().toString(36).substring(2, 10)}`;
-
+    const participantId = loggingService.getParticipantId();
+    const sessionId = loggingService.getOrCreateSessionId();
     const currentTime = Date.now();
     const timeFromStart = Math.floor((currentTime - stageStartTimeRef.current) / 1000); // Convert to seconds
-
-    const sessionId = localStorage.getItem('sessionId');
-    if (!sessionId) {
-      console.error('No session ID found in localStorage. This should not happen if user completed pre-survey.');
-      // Generate a fallback session ID
-      const fallbackSessionId = `${participantId}_fallback_${Date.now()}`;
-      localStorage.setItem('sessionId', fallbackSessionId);
-    }
     
     const snapshotData = {
       participant_id: participantId,
@@ -820,6 +826,7 @@ export default function WritingStage({ stageName, nextStage }) {
           ) : (
             // Regular textarea for non-revision stages
             <textarea
+              ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
