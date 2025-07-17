@@ -40,9 +40,19 @@ export default function FormPage() {
     const participantId = localStorage.getItem('participantId') || 
                          `p_${Math.random().toString(36).substring(2, 10)}`;
 
+    // Get session ID
+    const sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) {
+      console.error('No session ID found in localStorage. This should not happen if user completed pre-survey.');
+      // Generate a fallback session ID
+      const fallbackSessionId = `${participantId}_fallback_${Date.now()}`;
+      localStorage.setItem('sessionId', fallbackSessionId);
+    }
+
     // Add metadata about the survey
     const surveyData = {
       participant_id: participantId,
+      session_id: sessionId,
       survey_type: "post", 
       prompt_id: promptId,
       condition: condition,

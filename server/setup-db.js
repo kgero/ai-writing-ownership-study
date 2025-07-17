@@ -26,6 +26,7 @@ async function setupDatabase() {
       CREATE TABLE IF NOT EXISTS survey_responses (
         id SERIAL PRIMARY KEY,
         participant_id VARCHAR(50) NOT NULL,
+        session_id VARCHAR(50) NOT NULL,
         survey_type VARCHAR(20) NOT NULL,
         prompt_id VARCHAR(50),
         condition VARCHAR(50),
@@ -40,6 +41,7 @@ async function setupDatabase() {
       CREATE TABLE IF NOT EXISTS text_snapshots (
         id SERIAL PRIMARY KEY,
         participant_id VARCHAR(50) NOT NULL,
+        session_id VARCHAR(50) NOT NULL,
         stage VARCHAR(20) NOT NULL,
         time_from_stage_start INTEGER NOT NULL,
         text_content TEXT NOT NULL,
@@ -49,28 +51,20 @@ async function setupDatabase() {
     `);
     console.log('✓ text_snapshots table created or already exists');
 
-    // // Create interaction_logs table
-    // await client.query(`
-    //   CREATE TABLE IF NOT EXISTS interaction_logs (
-    //     id SERIAL PRIMARY KEY,
-    //     participant_id VARCHAR(50) NOT NULL,
-    //     stage VARCHAR(20) NOT NULL,
-    //     time_from_stage_start INTEGER NOT NULL,
-    //     event_type VARCHAR(50) NOT NULL,
-    //     event_data JSONB NOT NULL,
-    //     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    //   );
-    // `);
-    // console.log('✓ interaction_logs table created or already exists');
-
-    // // Add indexes for better query performance
-    // await client.query(`
-    //   CREATE INDEX IF NOT EXISTS idx_survey_participant_id ON survey_responses(participant_id);
-    //   CREATE INDEX IF NOT EXISTS idx_snapshot_participant_id ON text_snapshots(participant_id);
-    //   CREATE INDEX IF NOT EXISTS idx_interaction_participant_id ON interaction_logs(participant_id);
-    //   CREATE INDEX IF NOT EXISTS idx_interaction_event_type ON interaction_logs(event_type);
-    // `);
-    // console.log('✓ Indexes created or already exist');
+    // Create interaction_logs table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS interaction_logs (
+        id SERIAL PRIMARY KEY,
+        participant_id VARCHAR(50) NOT NULL,
+        session_id VARCHAR(50) NOT NULL,
+        stage VARCHAR(20) NOT NULL,
+        time_from_stage_start INTEGER NOT NULL,
+        event_type VARCHAR(50) NOT NULL,
+        event_data JSONB NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    console.log('✓ interaction_logs table created or already exists');
 
     // Commit the transaction
     await client.query('COMMIT');
@@ -95,6 +89,51 @@ async function setupDatabase() {
       console.log('Type column already exists in text_snapshots table');
     }
 
+    // Add session_id columns to existing tables if they don't exist
+    const checkSurveySession = await client.query(`
+      SELECT column_name
+      FROM information_schema.columns
+      WHERE table_name='survey_responses' AND column_name='session_id';
+    `);
+
+    if (checkSurveySession.rows.length === 0) {
+      await client.query(`
+        ALTER TABLE survey_responses
+        ADD COLUMN session_id VARCHAR(50) DEFAULT 'legacy_session';
+      `);
+      console.log('Successfully added session_id column to survey_responses table');
+    } else {
+      console.log('Session_id column already exists in survey_responses table');
+    }
+
+    const checkSnapshotSession = await client.query(`
+      SELECT column_name
+      FROM information_schema.columns
+      WHERE table_name='text_snapshots' AND column_name='session_id';
+    `);
+
+    if (checkSnapshotSession.rows.length === 0) {
+      await client.query(`
+        ALTER TABLE text_snapshots
+        ADD COLUMN session_id VARCHAR(50) DEFAULT 'legacy_session';
+      `);
+      console.log('Successfully added session_id column to text_snapshots table');
+    } else {
+      console.log('Session_id column already exists in text_snapshots table');
+    }
+
+    // Add indexes for better query performance (after columns are added)
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_survey_participant_id ON survey_responses(participant_id);
+      CREATE INDEX IF NOT EXISTS idx_survey_session_id ON survey_responses(session_id);
+      CREATE INDEX IF NOT EXISTS idx_snapshot_participant_id ON text_snapshots(participant_id);
+      CREATE INDEX IF NOT EXISTS idx_snapshot_session_id ON text_snapshots(session_id);
+      CREATE INDEX IF NOT EXISTS idx_interaction_participant_id ON interaction_logs(participant_id);
+      CREATE INDEX IF NOT EXISTS idx_interaction_session_id ON interaction_logs(session_id);
+      CREATE INDEX IF NOT EXISTS idx_interaction_event_type ON interaction_logs(event_type);
+    `);
+    console.log('✓ Indexes created or already exist');
+
     console.log('Database setup complete! All tables created successfully.');
   } catch (error) {
     // Rollback in case of error
@@ -106,8 +145,6 @@ async function setupDatabase() {
     await pool.end();
   }
 }
-
-
 
 // Run the setup function
 setupDatabase();

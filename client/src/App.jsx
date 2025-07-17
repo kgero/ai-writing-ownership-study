@@ -23,7 +23,7 @@ function App() {
         {/* A single form page for all users, identified by condition */}
         <Route path="/presurvey/:condition/:promptId" element={<PreSurvey />} />
 
-        <Route path="/postsurvey/" element={<PostSurvey />} />
+        <Route path="/postsurvey/:condition/:promptId" element={<PostSurvey />} />
         <Route path="/exit/" element={<Exit />} />
 
         {/* Three writing stages */}

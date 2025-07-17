@@ -47,9 +47,14 @@ export default function FormPage() {
     // Store participant ID for later use
     localStorage.setItem('participantId', participantId);
 
+    // Generate a new session ID for this experiment session
+    const sessionId = `${participantId}_${Date.now()}`;
+    localStorage.setItem('sessionId', sessionId);
+
     // Add metadata about the survey
     const surveyData = {
       participant_id: participantId,
+      session_id: sessionId,
       survey_type: "pre", 
       prompt_id: promptId,
       condition: condition,

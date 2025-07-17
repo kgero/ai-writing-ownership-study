@@ -64,14 +64,12 @@ app.post('/api/survey/submit', async (req, res) => {
   console.log("Survey submission endpoint hit");
 
   try {
-    const { participant_id, survey_type, prompt_id, condition, responses, timestamp } = req.body;
-
-
+    const { participant_id, session_id, survey_type, prompt_id, condition, responses, timestamp } = req.body;
 
     // Insert the entire response as JSON
     const result = await pool.query(
-      'INSERT INTO survey_responses (participant_id, survey_type, prompt_id, condition, responses, created_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [participant_id, survey_type, prompt_id, condition, JSON.stringify(responses), timestamp]
+      'INSERT INTO survey_responses (participant_id, session_id, survey_type, prompt_id, condition, responses, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [participant_id, session_id, survey_type, prompt_id, condition, JSON.stringify(responses), timestamp]
     );
 
     res.json(result.rows[0]);
@@ -86,12 +84,32 @@ app.post('/api/snapshot/submit', async (req, res) => {
   console.log("Text snapshot submission endpoint hit");
 
   try {
-    const { participant_id, stage, time_from_stage_start, text_content, created_at, type } = req.body;
+    const { participant_id, session_id, stage, time_from_stage_start, text_content, created_at, type } = req.body;
 
     // Insert the snapshot into the database
     const result = await pool.query(
-      'INSERT INTO text_snapshots (participant_id, stage, time_from_stage_start, text_content, created_at, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [participant_id, stage, time_from_stage_start, text_content, created_at || new Date(), type]
+      'INSERT INTO text_snapshots (participant_id, session_id, stage, time_from_stage_start, text_content, created_at, type) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [participant_id, session_id, stage, time_from_stage_start, text_content, created_at || new Date(), type]
+    );
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Database error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Log Interaction Data
+app.post('/api/log', async (req, res) => {
+  console.log("Interaction logging endpoint hit");
+
+  try {
+    const { participant_id, session_id, stage, time_from_stage_start, event_type, event_data } = req.body;
+
+    // Insert the interaction log into the database
+    const result = await pool.query(
+      'INSERT INTO interaction_logs (participant_id, session_id, stage, time_from_stage_start, event_type, event_data, created_at) VALUES ($1, $2, $3, $4, $5, $6, NOW()) RETURNING *',
+      [participant_id, session_id, stage, time_from_stage_start, event_type, JSON.stringify(event_data)]
     );
 
     res.json(result.rows[0]);

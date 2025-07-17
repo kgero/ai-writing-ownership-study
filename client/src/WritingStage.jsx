@@ -416,14 +416,23 @@ export default function WritingStage({ stageName, nextStage }) {
       const currentTime = Date.now();
       const timeFromStart = Math.floor((currentTime - stageStartTimeRef.current) / 1000); // Convert to seconds
 
-      const snapshotData = {
-        participant_id: participantId,
-        stage: stageName.toLowerCase(),
-        time_from_stage_start: timeFromStart,
-        text_content: inputRef.current,
-        created_at: new Date().toISOString(),
-        type: "partial",
-      };
+      const sessionId = localStorage.getItem('sessionId');
+      if (!sessionId) {
+        console.error('No session ID found in localStorage. This should not happen if user completed pre-survey.');
+        // Generate a fallback session ID
+        const fallbackSessionId = `${participantId}_fallback_${Date.now()}`;
+        localStorage.setItem('sessionId', fallbackSessionId);
+      }
+    
+    const snapshotData = {
+      participant_id: participantId,
+      session_id: sessionId,
+      stage: stageName.toLowerCase(),
+      time_from_stage_start: timeFromStart,
+      text_content: inputRef.current,
+      created_at: new Date().toISOString(),
+      type: "partial",
+    };
 
       // Submit to backend
       axios.post('/api/snapshot/submit', snapshotData)
@@ -546,8 +555,17 @@ export default function WritingStage({ stageName, nextStage }) {
     const currentTime = Date.now();
     const timeFromStart = Math.floor((currentTime - stageStartTimeRef.current) / 1000); // Convert to seconds
 
+    const sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) {
+      console.error('No session ID found in localStorage. This should not happen if user completed pre-survey.');
+      // Generate a fallback session ID
+      const fallbackSessionId = `${participantId}_fallback_${Date.now()}`;
+      localStorage.setItem('sessionId', fallbackSessionId);
+    }
+    
     const snapshotData = {
       participant_id: participantId,
+      session_id: sessionId,
       stage: stageName.toLowerCase(),
       time_from_stage_start: timeFromStart,
       text_content: inputRef.current,
@@ -614,8 +632,17 @@ export default function WritingStage({ stageName, nextStage }) {
     const currentTime = Date.now();
     const timeFromStart = Math.floor((currentTime - stageStartTimeRef.current) / 1000); // Convert to seconds
 
+    const sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) {
+      console.error('No session ID found in localStorage. This should not happen if user completed pre-survey.');
+      // Generate a fallback session ID
+      const fallbackSessionId = `${participantId}_fallback_${Date.now()}`;
+      localStorage.setItem('sessionId', fallbackSessionId);
+    }
+    
     const snapshotData = {
       participant_id: participantId,
+      session_id: sessionId,
       stage: stageName.toLowerCase(),
       time_from_stage_start: timeFromStart,
       text_content: inputRef.current,
@@ -638,7 +665,7 @@ export default function WritingStage({ stageName, nextStage }) {
     localStorage.removeItem("revision_content");
     localStorage.removeItem("ai_draft");
     
-    navigate("/postsurvey");
+    navigate(`/postsurvey/${condition}/${promptId}`);
   };
 
   // Use AI draft if available
