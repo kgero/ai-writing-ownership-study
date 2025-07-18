@@ -101,12 +101,15 @@ app.post('/api/snapshot/submit', async (req, res) => {
 
 // Log Interaction Data
 app.post('/api/log', async (req, res) => {
-  console.log("Interaction logging endpoint hit");
+  const isBatch = Array.isArray(req.body);
+  const logEntries = isBatch ? req.body : [req.body];
+  const fullSessionId = logEntries[0]?.session_id || 'unknown';
+  const sessionId = fullSessionId.length > 12 ? fullSessionId.substring(0, 12) + '...' : fullSessionId;
+  const eventTypes = logEntries.map(entry => entry.event_type).filter(Boolean);
+  
+  console.log(`Interaction logging endpoint hit - ${sessionId}, ${isBatch ? 'batch' : 'single'}, ${logEntries.length}${eventTypes.length > 0 ? `, [${eventTypes.join(', ')}]` : ''}`);
 
   try {
-    // Handle both single log entry and batch of log entries
-    const logEntries = Array.isArray(req.body) ? req.body : [req.body];
-    
     const results = [];
     
     for (const logEntry of logEntries) {
@@ -120,11 +123,11 @@ app.post('/api/log', async (req, res) => {
       
       results.push(result.rows[0]);
     }
-
+    
     // Return single result for single entry, array for batch
     res.json(Array.isArray(req.body) ? results : results[0]);
   } catch (error) {
-    console.error("Database error:", error);
+    console.error(`Database error for session ${sessionId}:`, error);
     res.status(500).json({ error: error.message });
   }
 });
