@@ -14,6 +14,8 @@ class LoggingService {
     this.batchSize = 10;
     this.retryAttempts = 3;
     this.retryDelay = 1000; // 1 second
+    this.batchInterval = 500; // 500ms
+    this.batchTimer = null;
   }
 
   // Session management
@@ -185,7 +187,20 @@ class LoggingService {
     };
 
     this.logQueue.push(logEntry);
-    this.processQueue();
+    this.scheduleBatchProcessing();
+  }
+
+  // Schedule batch processing with timer
+  scheduleBatchProcessing() {
+    // Clear existing timer if there is one
+    if (this.batchTimer) {
+      clearTimeout(this.batchTimer);
+    }
+    
+    // Schedule new batch processing
+    this.batchTimer = setTimeout(() => {
+      this.processQueue();
+    }, this.batchInterval);
   }
 
   // Queue processing
@@ -260,6 +275,11 @@ class LoggingService {
 
   // Cleanup
   destroy() {
+    // Clear any pending timer
+    if (this.batchTimer) {
+      clearTimeout(this.batchTimer);
+    }
+    
     // Process any remaining logs
     this.processQueue();
   }
