@@ -170,26 +170,22 @@ Please create a well-structured essay of approximately 300 words that follows th
 `,
 
   contentpolisher: (draft) => `
-        Please briefly review the following essay for the most significant weak arguments:
-        
-        ${draft}
-        
-        Identify only 2-3 of the most important issues. For each issue:
-        1. Number the issue (Issue 1, Issue 2, etc.)
-        2. Quote the relevant phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
-        3. Very briefly explain the weakness in 5-10 words.
-        4. Suggest a specific, concise improvement.
-        
-        Format as:
-        ### Issue 1
-        > "weak argument"
-        >
-        > **Issue**: Brief explanation
-        >
-        > **Fix**: Suggested improvement
-        
-        Be extremely concise. Focus only on substantive improvements.
-        The quoted "weak argument" must appear EXACTLY as written in the original text - this is critical.
+Please briefly review the following essay for the most significant argument weaknesses:
+
+${draft}
+
+Identify only 2-3 of the most important argument issues. For each issue:
+1. Number the issue (Issue 1, Issue 2, etc.)
+2. Very briefly describe the argument weakness.
+3. Provide a specific, actionable suggestion with concrete examples or specific steps.
+
+Format as:
+### Issue 1
+> **Issue**: Brief description of the argument weakness
+>
+> **Suggestion**: Specific, actionable advice with concrete examples or steps
+
+Be extremely concise. Focus only on argument quality and logic. For suggestions, provide specific examples, steps, or concrete details rather than general advice.
 `,
 
   writingclarity: (draft) => `

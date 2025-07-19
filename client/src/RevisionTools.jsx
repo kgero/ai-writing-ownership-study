@@ -27,12 +27,7 @@ const RevisionTools = ({
   // Define revision tools with descriptions for tooltips and highlight colors
   const revisionTools = [
     {
-      id: "Proof-reader",
-      description: "Find typos, grammatical mistakes, and misplaced punctuation",
-      color: "#FFC107" // Yellow for proofreading issues
-    },
-    {
-      id: "Content polisher",
+      id: "Argument Improver",
       description: "Identify weak arguments and confusing points",
       color: "#4CAF50" // Green for content issues
     },
@@ -40,6 +35,11 @@ const RevisionTools = ({
       id: "Writing clarity",
       description: "Highlight unclear or hard to follow passages",
       color: "#2196F3" // Blue for clarity issues
+    },
+    {
+      id: "Proof-reader",
+      description: "Find typos, grammatical mistakes, and misplaced punctuation",
+      color: "#FFC107" // Yellow for proofreading issues
     }
   ];
 
@@ -136,7 +136,12 @@ const RevisionTools = ({
       return;
     }
     
-    const charMap = generateCharMap(input, currentIssueMap);
+    // Filter out Argument Improver issues since they don't have specific text to highlight
+    const highlightableIssues = Object.fromEntries(
+      Object.entries(currentIssueMap).filter(([id, issue]) => issue.toolType !== "Argument Improver")
+    );
+    
+    const charMap = generateCharMap(input, highlightableIssues);
     const spans = groupCharMapIntoSpans(charMap);
     setHighlightedText(spans);
   };
@@ -147,6 +152,9 @@ const RevisionTools = ({
     let hasChanges = false;
     
     Object.entries(updatedIssueMap).forEach(([id, issue]) => {
+      // Skip Argument Improver issues since they don't have specific text to check
+      if (issue.toolType === "Argument Improver") return;
+      
       const isTextPresent = input.includes(issue.text);
       if (issue.fixed !== !isTextPresent) {
         updatedIssueMap[id].fixed = !isTextPresent;
@@ -184,6 +192,7 @@ const RevisionTools = ({
         }
       });
 
+      // Handle all tools with the same format now
       const issueSections = results.split(/### Issue \d+/g).slice(1);
       let issueNumber = 1;
 
@@ -205,7 +214,7 @@ const RevisionTools = ({
           }
         }
 
-        // Extract issue and fix lines
+        // Extract issue and fix/suggestion lines
         for (let line of lines) {
           if (line.toLowerCase().startsWith('**issue**') || line.toLowerCase().startsWith('> **issue**')) {
             issueDescription = line.replace(/^>?\s*\*\*issue\*\*[:：]?\s*/i, '').trim();
@@ -215,13 +224,17 @@ const RevisionTools = ({
                 (fix.startsWith('"') && fix.endsWith('"'))) {
               fix = fix.slice(1, -1).trim();
             }
+          } else if (line.toLowerCase().startsWith('**suggestion**') || line.toLowerCase().startsWith('> **suggestion**')) {
+            fix = line.replace(/^>?\s*\*\*suggestion\*\*[:：]?\s*/i, '').trim();
           }
         }
 
-        if (problematicText && problematicText.length > 0 && input.includes(problematicText)) {
+        // For Argument Improver, we don't need problematic text to be present
+        // For other tools, require the text to be found in the input
+        if (toolType === "Argument Improver" || (problematicText && problematicText.length > 0 && input.includes(problematicText))) {
           const issueId = `${toolType}-${issueNumber}`;
           newIssueMap[issueId] = {
-            text: problematicText,
+            text: problematicText || "",
             issueDescription: issueDescription || '',
             fix: fix || '',
             toolType: toolType,
@@ -232,7 +245,7 @@ const RevisionTools = ({
         }
       });
 
-      console.log(`Extracted ${issueNumber - 1} issues for ${toolType}`);
+      console.log(`Processed results for ${toolType}`);
     });
 
     setIssueMap(newIssueMap);
@@ -310,7 +323,7 @@ const RevisionTools = ({
       // Map the tool type to the corresponding prompt
       const promptMap = {
         "Proof-reader": llmPrompts.proofreader,
-        "Content polisher": llmPrompts.contentpolisher,
+        "Argument Improver": llmPrompts.contentpolisher,
         "Writing clarity": llmPrompts.writingclarity
       };
       
@@ -436,7 +449,9 @@ const RevisionTools = ({
                           onMouseLeave={() => handleBlockquoteHover(id, false)}
                           onClick={() => {
                             setActiveIssueId(id);
-                            scrollEditorToIssue(issue);
+                            if (issue.toolType !== "Argument Improver") {
+                              scrollEditorToIssue(issue);
+                            }
                             pulseSidebarCard(id);
                           }}
                           style={{
@@ -446,15 +461,30 @@ const RevisionTools = ({
                             boxShadow: activeIssueId === id ? `0 0 0 2px ${tool.color}` : 'none',
                           }}
                         >
-                          <p style={{ marginBottom: '4px' }}>
-                            <strong style={{ color: tool.color }}>Problem:</strong> "{issue.text}"
-                          </p>
-                          <p style={{ marginBottom: '4px' }}>
-                            <strong style={{ color: tool.color }}>Issue:</strong> {issue.issueDescription}
-                          </p>
-                          <p>
-                            <strong style={{ color: tool.color }}>Fix:</strong> "{issue.fix}"
-                          </p>
+                          {issue.toolType === "Argument Improver" ? (
+                            // Render Argument Improver format (Issue/Suggestion)
+                            <>
+                              <p style={{ marginBottom: '4px' }}>
+                                <strong style={{ color: tool.color }}>Issue:</strong> {issue.issueDescription}
+                              </p>
+                              <p>
+                                <strong style={{ color: tool.color }}>Suggestion:</strong> {issue.fix}
+                              </p>
+                            </>
+                          ) : (
+                            // Render original format for other tools (Problem/Issue/Fix)
+                            <>
+                              <p style={{ marginBottom: '4px' }}>
+                                <strong style={{ color: tool.color }}>Problem:</strong> "{issue.text}"
+                              </p>
+                              <p style={{ marginBottom: '4px' }}>
+                                <strong style={{ color: tool.color }}>Issue:</strong> {issue.issueDescription}
+                              </p>
+                              <p>
+                                <strong style={{ color: tool.color }}>Fix:</strong> "{issue.fix}"
+                              </p>
+                            </>
+                          )}
                         </blockquote>
                       ))}
                   </div>
