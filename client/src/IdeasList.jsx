@@ -56,7 +56,7 @@ const IdeasList = ({ ideas, setIdeas, promptText }) => {
       // Use the ideaOutline prompt from config
       prompt = llmPrompts.ideaOutline(promptText, ideaText);
       
-      const response = await axios.post("http://localhost:5001/api/openai", {
+      const response = await axios.post("/api/openai", {
         prompt: prompt
       });
       
@@ -99,7 +99,7 @@ const IdeasList = ({ ideas, setIdeas, promptText }) => {
       // Use the singleIdea prompt from config with existing ideas
       const prompt = llmPrompts.singleIdea(promptText, existingIdeasList);
       
-      const response = await axios.post("http://localhost:5001/api/openai", {
+      const response = await axios.post("/api/openai", {
         prompt: prompt
       });
       
