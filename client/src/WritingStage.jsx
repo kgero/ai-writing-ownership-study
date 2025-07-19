@@ -193,7 +193,7 @@ export default function WritingStage({ stageName, nextStage }) {
       // Submit to backend
       axios.post('/api/snapshot/submit', snapshotData)
         .then(response => {
-          console.log("Text snapshot submitted successfully:", response.data);
+          console.log("Text snapshot submitted successfully:");
         })
         .catch(error => {
           console.error("Error submitting text snapshot:", error);

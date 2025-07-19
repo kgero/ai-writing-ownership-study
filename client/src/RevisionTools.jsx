@@ -22,7 +22,9 @@ const RevisionTools = ({
 }) => {
   const [revisionLoading, setRevisionLoading] = useState(false);
   const [activeRevisionType, setActiveRevisionType] = useState("");
-  const [hoveredIssueId, setHoveredIssueId] = useState(null);
+  const [collapsedCards, setCollapsedCards] = useState(new Set());
+  const [dismissedCards, setDismissedCards] = useState(new Set());
+
 
   // Define revision tools with descriptions for tooltips and highlight colors
   const revisionTools = [
@@ -49,102 +51,7 @@ const RevisionTools = ({
     return tool ? tool.color : "#999";
   };
 
-  // Helper functions for highlightIssuesInTextarea
-  const generateCharMap = (input, issueMap) => {
-    // Initialize character array
-    const charMap = input.split('').map((char, index) => ({
-      char,
-      index,
-      issues: [],        // List of issue IDs this char belongs to
-      toolTypes: [],     // Optional: for rendering styles
-      fixedFlags: []     // Optional: if some issues are already fixed
-    }));
 
-    // Loop through each issue and mark character positions
-    Object.entries(issueMap).forEach(([issueId, issue]) => {
-      const { text, toolType, fixed } = issue;
-
-      // Find all matching positions of the problematic text
-      let pos = input.indexOf(text);
-      while (pos !== -1) {
-        const end = pos + text.length;
-
-        for (let i = pos; i < end; i++) {
-          if (!charMap[i]) continue; // skip out-of-bounds (shouldn't happen)
-
-          charMap[i].issues.push(issueId);
-          charMap[i].toolTypes.push(toolType);
-          charMap[i].fixedFlags.push(fixed);
-        }
-
-        pos = input.indexOf(text, pos + 1);
-      }
-    });
-
-    return charMap;
-  };
-
-  const groupCharMapIntoSpans = (charMap) => {
-    if (charMap.length === 0) return [];
-
-    const spans = [];
-    let currentSpan = {
-      text: charMap[0].char,
-      issues: [...charMap[0].issues],
-      toolTypes: [...charMap[0].toolTypes],
-      fixedFlags: [...charMap[0].fixedFlags]
-    };
-
-    for (let i = 1; i < charMap.length; i++) {
-      const charData = charMap[i];
-
-      const sameIssues = arraysEqual(currentSpan.issues, charData.issues);
-      const sameTools = arraysEqual(currentSpan.toolTypes, charData.toolTypes);
-      const sameFixed = arraysEqual(currentSpan.fixedFlags, charData.fixedFlags);
-
-      if (sameIssues && sameTools && sameFixed) {
-        currentSpan.text += charData.char;
-      } else {
-        spans.push(currentSpan);
-        currentSpan = {
-          text: charData.char,
-          issues: [...charData.issues],
-          toolTypes: [...charData.toolTypes],
-          fixedFlags: [...charData.fixedFlags]
-        };
-      }
-    }
-
-    spans.push(currentSpan);
-    return spans;
-  };
-
-  // Helper: compare arrays for shallow equality
-  const arraysEqual = (a, b) => {
-    if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) return false;
-    }
-    return true;
-  };
-
-  // Function to highlight issues in the textarea - now using underlines instead of highlights
-  const highlightIssuesInTextarea = (currentIssueMap) => {
-    // Only proceed if we have text to highlight
-    if (!input || input.length === 0) {
-      setHighlightedText([]);
-      return;
-    }
-    
-    // Filter out Argument Improver issues since they don't have specific text to highlight
-    const highlightableIssues = Object.fromEntries(
-      Object.entries(currentIssueMap).filter(([id, issue]) => issue.toolType !== "Argument Improver")
-    );
-    
-    const charMap = generateCharMap(input, highlightableIssues);
-    const spans = groupCharMapIntoSpans(charMap);
-    setHighlightedText(spans);
-  };
 
   // Function to check if issues have been resolved
   const checkIssueResolution = () => {
@@ -164,19 +71,10 @@ const RevisionTools = ({
     
     if (hasChanges) {
       setIssueMap(updatedIssueMap);
-      // Only update highlights for visible result panels
-      updateHighlightsBasedOnVisibility();
     }
   };
 
-  // Modified to always display all results
-  const updateHighlightsBasedOnVisibility = () => {
-    // Make a copy of the issue map to work with
-    const visibleIssueMap = { ...issueMap };
-    
-    // Update highlighting with all issues
-    highlightIssuesInTextarea(visibleIssueMap);
-  };
+
 
   // Parse LLM response from revision tool to extract issues w essay
   const processRevisionResults = () => {
@@ -229,12 +127,11 @@ const RevisionTools = ({
           }
         }
 
-        // For Argument Improver, we don't need problematic text to be present
-        // For other tools, require the text to be found in the input
-        if (toolType === "Argument Improver" || (problematicText && problematicText.length > 0 && input.includes(problematicText))) {
+        // All tools now require the quoted text to be found in the input
+        if (problematicText && problematicText.length > 0 && input.includes(problematicText)) {
           const issueId = `${toolType}-${issueNumber}`;
           newIssueMap[issueId] = {
-            text: problematicText || "",
+            text: problematicText,
             issueDescription: issueDescription || '',
             fix: fix || '',
             toolType: toolType,
@@ -242,6 +139,9 @@ const RevisionTools = ({
             number: issueNumber
           };
           issueNumber++;
+        } else if (problematicText && problematicText.length > 0) {
+          // Log when quoted text isn't found (for debugging)
+          console.log(`Quoted text not found in input for ${toolType}: "${problematicText}"`);
         }
       });
 
@@ -249,7 +149,6 @@ const RevisionTools = ({
     });
 
     setIssueMap(newIssueMap);
-    highlightIssuesInTextarea(newIssueMap);
   };
 
   // Process issues after revision results change
@@ -259,15 +158,7 @@ const RevisionTools = ({
     }
   }, [revisionResults]);
 
-  // Update highlights when issueMap changes
-  useEffect(() => {
-    updateHighlightsBasedOnVisibility();
-  }, [issueMap, hoveredIssueId]);
 
-  useEffect(() => {
-    // every keystroke re‑evaluates the segment list
-    updateHighlightsBasedOnVisibility();   // uses the new algorithm above
-  }, [input, issueMap, hoveredIssueId]);
 
   // Check if issues have been resolved when input changes
   useEffect(() => {
@@ -310,6 +201,40 @@ const RevisionTools = ({
     if (!card) return;
     card.classList.add("pulse-border");
     setTimeout(() => card.classList.remove("pulse-border"), 600);
+  };
+
+  // Helper function to truncate text to one line
+  const truncateToLine = (text, maxLength = 50) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength - 3) + "...";
+  };
+
+  // Toggle card collapse state
+  const toggleCardCollapse = (issueId) => {
+    setCollapsedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(issueId)) {
+        newSet.delete(issueId);
+      } else {
+        newSet.add(issueId);
+      }
+      return newSet;
+    });
+  };
+
+  // Toggle card dismiss state
+  const toggleCardDismiss = (issueId) => {
+    setDismissedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(issueId)) {
+        newSet.delete(issueId);
+      } else {
+        newSet.add(issueId);
+        // Auto-collapse when dismissing
+        setCollapsedCards(collapsed => new Set([...collapsed, issueId]));
+      }
+      return newSet;
+    });
   };
 
   // AI REVISION TOOL HANDLER with better formatting instructions
@@ -362,44 +287,15 @@ const RevisionTools = ({
     }
   };
 
-  // Handle mouse enter for blockquote to highlight text in the textarea
-  const handleBlockquoteHover = (issueId, isEnter) => {
-    if (isEnter) {
-      setHoveredIssueId(issueId);
-    } else if (hoveredIssueId === issueId) {
-      setHoveredIssueId(null);
-    }
-  };
+
 
   return (
     <>
       <h3>Revision Tools</h3>
       
-      {/* Display a legend for the underline colors */}
-      <div className="revision-legend">
-        {revisionTools.map(tool => (
-          <div 
-            key={tool.id} 
-            style={{ 
-              display: "flex", 
-              alignItems: "center", 
-              marginBottom: "5px" 
-            }}
-          >
-            <div 
-              style={{ 
-                width: "15px", 
-                height: "2px", 
-                backgroundColor: tool.color, 
-                marginRight: "8px"
-              }}
-            ></div>
-            <span style={{ fontSize: "12px" }}>{tool.id}</span>
-          </div>
-        ))}
-      </div>
+
       
-      {/* Render revision tools with tooltips */}
+      {/* Render revision tools */}
       <div className="revision-tools-container">
         {revisionTools.map((tool) => (
           <div key={tool.id} style={{ marginBottom: "15px" }}>
@@ -421,74 +317,146 @@ const RevisionTools = ({
               </button>
             </div>
             
-            {/* Always show results if they exist, no toggle needed */}
+            {/* Show results directly in sidebar */}
             {revisionResults[tool.id] && (
-              <div className="revision-results">
-                <div 
-                  className="revision-results-header"
-                  style={{
-                    display: "flex", 
-                    justifyContent: "space-between",
-                    padding: "8px",
-                    backgroundColor: `${tool.color}22`,
-                    borderLeft: `4px solid ${tool.color}`,
-                    borderRadius: "4px 4px 0 0"
-                  }}
-                >
-                </div>
-                
-                <div className="revision-results-content">
-                  <div className="revision-results-content">
-                    {Object.entries(issueMap)
-                      .filter(([id, issue]) => issue.toolType === tool.id)
-                      .map(([id, issue]) => (
-                        <blockquote
-                          key={id}
-                          data-sidebar-issue-id={id}
-                          onMouseEnter={() => handleBlockquoteHover(id, true)}
-                          onMouseLeave={() => handleBlockquoteHover(id, false)}
-                          onClick={() => {
-                            setActiveIssueId(id);
-                            if (issue.toolType !== "Argument Improver") {
+              <div style={{ marginTop: "10px" }}>
+                {Object.entries(issueMap)
+                  .filter(([id, issue]) => issue.toolType === tool.id)
+                  .map(([id, issue]) => (
+                    <blockquote
+                      key={id}
+                      data-sidebar-issue-id={id}
+                      style={{
+                        borderLeft: `4px solid ${tool.color}`,
+                        backgroundColor: issue.fixed ? '#f0f0f0' : `${tool.color}11`,
+                        opacity: (issue.fixed || dismissedCards.has(id)) ? 0.6 : 1,
+                        boxShadow: activeIssueId === id ? `0 0 0 2px ${tool.color}` : 'none',
+                        margin: collapsedCards.has(id) ? "2px 0" : "8px 0",
+                        padding: collapsedCards.has(id) ? "6px 12px" : "12px",
+                        borderRadius: "4px",
+                        fontSize: "13px",
+                        lineHeight: collapsedCards.has(id) ? "1.2" : "1.4",
+                        position: "relative"
+                      }}
+                    >
+                      {/* Action buttons */}
+                      <div style={{ 
+                        position: "absolute", 
+                        top: collapsedCards.has(id) ? "2px" : "8px", 
+                        right: "8px", 
+                        display: "flex", 
+                        gap: "4px",
+                        zIndex: 1
+                      }}>
+                        {!collapsedCards.has(id) && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveIssueId(id);
                               scrollEditorToIssue(issue);
-                            }
-                            pulseSidebarCard(id);
+                              pulseSidebarCard(id);
+                            }}
+                            style={{
+                              background: "none",
+                              border: "none",
+                              fontSize: "10px",
+                              color: "#666",
+                              cursor: "pointer",
+                              padding: "2px 4px",
+                              borderRadius: "2px"
+                            }}
+                            title="Highlight relevant text in essay"
+                          >
+                            Highlight
+                          </button>
+                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleCardCollapse(id);
                           }}
                           style={{
-                            borderLeft: `4px solid ${tool.color}`,
-                            backgroundColor: issue.fixed ? '#f0f0f0' : `${tool.color}11`,
-                            opacity: issue.fixed ? 0.6 : 1,
-                            boxShadow: activeIssueId === id ? `0 0 0 2px ${tool.color}` : 'none',
+                            background: "none",
+                            border: "none",
+                            fontSize: "10px",
+                            color: "#666",
+                            cursor: "pointer",
+                            padding: "2px 4px",
+                            borderRadius: "2px"
                           }}
+                          title={collapsedCards.has(id) ? "Show details" : "Hide details"}
                         >
-                          {issue.toolType === "Argument Improver" ? (
-                            // Render Argument Improver format (Issue/Suggestion)
-                            <>
-                              <p style={{ marginBottom: '4px' }}>
-                                <strong style={{ color: tool.color }}>Issue:</strong> {issue.issueDescription}
-                              </p>
-                              <p>
-                                <strong style={{ color: tool.color }}>Suggestion:</strong> {issue.fix}
-                              </p>
-                            </>
-                          ) : (
-                            // Render original format for other tools (Problem/Issue/Fix)
-                            <>
-                              <p style={{ marginBottom: '4px' }}>
-                                <strong style={{ color: tool.color }}>Problem:</strong> "{issue.text}"
-                              </p>
-                              <p style={{ marginBottom: '4px' }}>
-                                <strong style={{ color: tool.color }}>Issue:</strong> {issue.issueDescription}
-                              </p>
-                              <p>
-                                <strong style={{ color: tool.color }}>Fix:</strong> "{issue.fix}"
-                              </p>
-                            </>
+                          {collapsedCards.has(id) ? "Show" : "Hide"}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleCardDismiss(id);
+                          }}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            fontSize: "10px",
+                            color: dismissedCards.has(id) ? "#999" : "#666",
+                            cursor: "pointer",
+                            padding: "2px 4px",
+                            borderRadius: "2px"
+                          }}
+                          title={dismissedCards.has(id) ? "Restore" : "Dismiss"}
+                        >
+                          {dismissedCards.has(id) ? "Restore" : "Dismiss"}
+                        </button>
+                      </div>
+
+                      {collapsedCards.has(id) ? (
+                        /* Collapsed view - just the quoted text */
+                        <div style={{ 
+                          fontStyle: "italic", 
+                          color: dismissedCards.has(id) ? "#999" : "#555",
+                          padding: "2px 0",
+                          marginRight: "80px" // Space for the two remaining buttons
+                        }}>
+                          "{truncateToLine(issue.text)}"
+                        </div>
+                      ) : (
+                        /* Expanded view - full content */
+                        <>
+                          {/* Quoted text at the top without label */}
+                          {issue.text && (
+                            <div style={{ 
+                              marginBottom: "8px", 
+                              fontStyle: "italic", 
+                              color: "#555",
+                              backgroundColor: "#f8f8f8",
+                              padding: "6px 8px",
+                              borderRadius: "3px",
+                              border: "1px solid #e0e0e0",
+                              marginTop: "15px"
+                            }}>
+                              "{issue.text}"
+                            </div>
                           )}
-                        </blockquote>
-                      ))}
-                  </div>
-                </div>
+                          
+                          {/* Issue and Fix/Suggestion with clear visual hierarchy */}
+                          <div style={{ marginBottom: "6px" }}>
+                            <strong style={{ color: tool.color, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                              Issue:
+                            </strong>
+                            <span style={{ marginLeft: "4px" }}>{issue.issueDescription}</span>
+                          </div>
+                          
+                          <div>
+                            <strong style={{ color: tool.color, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                              {issue.toolType === "Argument Improver" ? "Suggestion:" : "Fix:"}
+                            </strong>
+                            <span style={{ marginLeft: "4px" }}>
+                              {issue.toolType === "Argument Improver" ? issue.fix : `"${issue.fix}"`}
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    </blockquote>
+                  ))}
               </div>
             )}
           </div>

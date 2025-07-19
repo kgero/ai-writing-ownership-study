@@ -164,7 +164,7 @@ Please create a well-structured essay of approximately 300 words that follows th
         > **Fix**: "corrected version"
         
         Be extremely concise. Only identify actual errors.
-        The quoted "problematic text" must appear EXACTLY as written in the original text - this is critical.
+        The quoted "problematic text" must appear EXACTLY as written in the original text - copy and paste the exact words, do not paraphrase or modify. This is critical for the tool to work properly.
         If there are no issues, return "No issues found".
 
 `,
@@ -176,16 +176,19 @@ ${draft}
 
 Identify only 2-3 of the most important argument issues. For each issue:
 1. Number the issue (Issue 1, Issue 2, etc.)
-2. Very briefly describe the argument weakness.
-3. Provide a specific, actionable suggestion with concrete examples or specific steps.
+2. Quote the relevant text that indicates approximately where the problem is (keep it under 15 words), using "double quotes". Quote a phrase EXACTLY as it appears in the text - copy and paste the exact words, do not paraphrase or modify.
+3. Very briefly describe the argument weakness.
+4. Provide a specific, actionable suggestion with concrete examples or specific steps.
 
 Format as:
 ### Issue 1
+> "relevant text for improvement"
+>
 > **Issue**: Brief description of the argument weakness
 >
 > **Suggestion**: Specific, actionable advice with concrete examples or steps
 
-Be extremely concise. Focus only on argument quality and logic. For suggestions, provide specific examples, steps, or concrete details rather than general advice.
+Be extremely concise. Focus only on argument quality and logic. For suggestions, provide specific examples, steps, or concrete details rather than general advice. The quoted text must appear EXACTLY as written in the original text - this is critical for the tool to work properly.
 `,
 
   writingclarity: (draft) => `
@@ -208,7 +211,7 @@ Be extremely concise. Focus only on argument quality and logic. For suggestions,
         > **Fix**: "clearer version"
         
         Be extremely concise. Focus only on clarity issues.
-        The quoted "unclear text" must appear EXACTLY as written in the original text - this is critical.
+        The quoted "unclear text" must appear EXACTLY as written in the original text - copy and paste the exact words, do not paraphrase or modify. This is critical for the tool to work properly.
 `,
 
   // For generating extra single idea sentences
