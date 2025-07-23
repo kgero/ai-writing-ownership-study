@@ -153,7 +153,7 @@ Please create a well-structured essay of approximately 300 words that follows th
         1. Number the issue (Issue 1, Issue 2, etc.)
         2. Quote the problematic phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
         3. Very briefly explain the problem in 5-10 words.
-        4. Suggest a concise fix.
+        4. Suggest a concise fix. The Fix must be a direct replacement for the quoted text, with no instructions, options, or meta-comments. If the fix is to delete the text, return an empty string.
 
         Format as:
         ### Issue 1
@@ -179,6 +179,11 @@ Identify only 2-3 of the most important argument issues. For each issue:
 2. Quote the relevant text that indicates approximately where the problem is (keep it under 15 words), using "double quotes". Quote a phrase EXACTLY as it appears in the text - copy and paste the exact words, do not paraphrase or modify.
 3. Very briefly describe the argument weakness.
 4. Provide a specific, actionable suggestion with concrete examples or specific steps.
+5. If your suggestion involves adding new content, provide:
+   - **Addition label**: a short (2-6 words) summary for a button label, e.g., 'add examples and case studies', 'add limitations', or 'add concrete examples'.
+   - **Addition text**: the exact text to add (1-3 sentences).
+   - **Insertion point**: a clear description of where to insert it (e.g., 'After the sentence: "X"' or 'After paragraph 2').
+   If your suggestion does not involve adding new content, leave these fields blank.
 
 Format as:
 ### Issue 1
@@ -187,6 +192,12 @@ Format as:
 > **Issue**: Brief description of the argument weakness
 >
 > **Suggestion**: Specific, actionable advice with concrete examples or steps
+>
+> **Addition label**: add concrete examples
+>
+> **Addition text**: For instance, recent studies have shown that...
+>
+> **Insertion point**: After the sentence: "The argument lacks supporting evidence."
 
 Be extremely concise. Focus only on argument quality and logic. For suggestions, provide specific examples, steps, or concrete details rather than general advice. The quoted text must appear EXACTLY as written in the original text - this is critical for the tool to work properly.
 `,
@@ -200,7 +211,7 @@ Be extremely concise. Focus only on argument quality and logic. For suggestions,
         1. Number the issue (Issue 1, Issue 2, etc.)
         2. Quote the unclear phrase EXACTLY as it appears in the text (keep it under 10 words), using "double quotes".
         3. Very briefly explain the clarity issue in 5-10 words.
-        4. Suggest a clearer alternative.
+        4. Suggest a clearer alternative. The Fix must be a direct replacement for the quoted text, with no instructions, options, or meta-comments. If the fix is to delete the text, return an empty string.
         
         Format as:
         ### Issue 1

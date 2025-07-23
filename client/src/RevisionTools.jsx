@@ -1,11 +1,13 @@
 // RevisionTools.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { llmPrompts } from "./config";
 import loggingService from './loggingService.js';
 
 const apiUrl = import.meta.env.VITE_API_URL || '';
 axios.defaults.baseURL = apiUrl;
+
+const HIGHLIGHT_DURATION = 2000; // ms
 
 const RevisionTools = ({ 
   input, 
@@ -18,12 +20,14 @@ const RevisionTools = ({
   activeIssueId,
   setActiveIssueId,
   sidebarRef,
-  textareaRef
+  textareaRef,
+  setInput // <-- add this prop to update the essay text
 }) => {
   const [revisionLoading, setRevisionLoading] = useState(false);
   const [activeRevisionType, setActiveRevisionType] = useState("");
   const [collapsedCards, setCollapsedCards] = useState(new Set());
   const [dismissedCards, setDismissedCards] = useState(new Set());
+  const highlightTimeoutRef = useRef(null);
 
 
   // Define revision tools with descriptions for tooltips and highlight colors
@@ -99,6 +103,10 @@ const RevisionTools = ({
         let problematicText = null;
         let issueDescription = null;
         let fix = null;
+        let additionLabel = null;
+        let additionText = null;
+        let insertionPoint = null;
+        let directReplacement = null;
 
         // Extract problematic text (first line that starts with > and includes a quote)
         for (let line of lines) {
@@ -112,7 +120,7 @@ const RevisionTools = ({
           }
         }
 
-        // Extract issue and fix/suggestion lines
+        // Extract issue, fix/suggestion, and new fields
         for (let line of lines) {
           if (line.toLowerCase().startsWith('**issue**') || line.toLowerCase().startsWith('> **issue**')) {
             issueDescription = line.replace(/^>?\s*\*\*issue\*\*[:：]?\s*/i, '').trim();
@@ -124,6 +132,12 @@ const RevisionTools = ({
             }
           } else if (line.toLowerCase().startsWith('**suggestion**') || line.toLowerCase().startsWith('> **suggestion**')) {
             fix = line.replace(/^>?\s*\*\*suggestion\*\*[:：]?\s*/i, '').trim();
+          } else if (line.toLowerCase().startsWith('**addition label**') || line.toLowerCase().startsWith('> **addition label**')) {
+            additionLabel = line.replace(/^>?\s*\*\*addition label\*\*[:：]?\s*/i, '').trim();
+          } else if (line.toLowerCase().startsWith('**addition text**') || line.toLowerCase().startsWith('> **addition text**')) {
+            additionText = line.replace(/^>?\s*\*\*addition text\*\*[:：]?\s*/i, '').trim();
+          } else if (line.toLowerCase().startsWith('**insertion point**') || line.toLowerCase().startsWith('> **insertion point**')) {
+            insertionPoint = line.replace(/^>?\s*\*\*insertion point\*\*[:：]?\s*/i, '').trim();
           }
         }
 
@@ -136,7 +150,15 @@ const RevisionTools = ({
             fix: fix || '',
             toolType: toolType,
             fixed: false,
-            number: issueNumber
+            number: issueNumber,
+            ...(toolType === 'Argument Improver' ? {
+              additionLabel,
+              additionText,
+              insertionPoint
+            } : {}),
+            ...(toolType === 'Proof-reader' || toolType === 'Writing clarity' ? {
+              directReplacement
+            } : {})
           };
           issueNumber++;
         } else if (problematicText && problematicText.length > 0) {
@@ -272,6 +294,21 @@ const RevisionTools = ({
         };
         return newResults;
       });
+      // Clear dismissed and collapsed cards for this tool
+      setDismissedCards(prev => {
+        const newSet = new Set([...prev]);
+        Object.keys(issueMap).forEach(id => {
+          if (id.startsWith(toolType)) newSet.delete(id);
+        });
+        return newSet;
+      });
+      setCollapsedCards(prev => {
+        const newSet = new Set([...prev]);
+        Object.keys(issueMap).forEach(id => {
+          if (id.startsWith(toolType)) newSet.delete(id);
+        });
+        return newSet;
+      });
       loggingService.logApiCall('openai', prompt, response.data.completion, 'success', Date.now() - start);
       
     } catch (error) {
@@ -287,6 +324,91 @@ const RevisionTools = ({
     }
   };
 
+  // Helper to highlight a range in the textbox using native selection
+  const highlightRangeNative = (start, end) => {
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.setSelectionRange(start, end);
+      }
+    }, 0);
+  };
+
+  // Handler for Proof-reader & Writing Clarity: Replace quoted text with fix
+  const handleApplySuggestion = (issue, issueId) => {
+    const idx = input.indexOf(issue.text);
+    if (idx === -1) return;
+    const before = input.slice(0, idx);
+    const after = input.slice(idx + issue.text.length);
+    const newText = before + issue.fix + after;
+    setInput(newText);
+    highlightRangeNative(idx, idx + issue.fix.length);
+    setIssueMap(prev => ({ ...prev, [Object.keys(issueMap).find(id => issueMap[id] === issue)]: { ...issue, fixed: true } }));
+    // Auto-dismiss the card
+    setDismissedCards(prev => new Set([...prev, issueId]));
+  };
+
+  // Handler for Argument Improver: Insert additionText at insertionPoint
+  const handleAddArgumentImprover = (issue, issueId) => {
+    let newText = input;
+    let insertAt = null;
+    // Try insertion point: after sentence
+    if (issue.insertionPoint && issue.insertionPoint.toLowerCase().startsWith('after the sentence:')) {
+      const match = issue.insertionPoint.match(/after the sentence: ["'](.+)["']/i);
+      if (match) {
+        const sentence = match[1];
+        const idx = input.indexOf(sentence);
+        if (idx !== -1) {
+          // Find the end of the sentence including punctuation and any following whitespace
+          const sentenceEndIdx = idx + sentence.length;
+          const punctuationMatch = input.slice(sentenceEndIdx).match(/^([.!?]+)(\s*)/);
+          if (punctuationMatch) {
+            insertAt = sentenceEndIdx + punctuationMatch[0].length;
+          } else {
+            insertAt = sentenceEndIdx;
+          }
+        }
+      }
+    }
+    // Try insertion point: after paragraph
+    if (insertAt === null && issue.insertionPoint && issue.insertionPoint.toLowerCase().startsWith('after paragraph')) {
+      const match = issue.insertionPoint.match(/after paragraph (\d+)/i);
+      if (match) {
+        const paraNum = parseInt(match[1], 10) - 1;
+        const paragraphs = input.split(/\n\s*\n/);
+        if (paraNum >= 0 && paraNum < paragraphs.length) {
+          let idx = 0;
+          for (let i = 0; i <= paraNum; i++) {
+            idx += paragraphs[i].length + 2;
+          }
+          insertAt = idx;
+        }
+      }
+    }
+    // Fallback: after quoted text
+    if (insertAt === null && issue.text) {
+      const idx = input.indexOf(issue.text);
+      if (idx !== -1) {
+        insertAt = idx + issue.text.length;
+      }
+    }
+    // Fallback: end of essay
+    if (insertAt === null) {
+      insertAt = input.length;
+    }
+    let prefix = '';
+    if (insertAt > 0 && !/\s$/.test(input.slice(0, insertAt))) prefix = ' ';
+    let suffix = '';
+    if (insertAt < input.length && !/^\s/.test(input.slice(insertAt))) suffix = ' ';
+    newText = input.slice(0, insertAt) + prefix + issue.additionText + suffix + input.slice(insertAt);
+    setInput(newText);
+    // Highlight the added text using native selection
+    const highlightStart = insertAt + prefix.length;
+    const highlightEnd = highlightStart + issue.additionText.length;
+    highlightRangeNative(highlightStart, highlightEnd);
+    // Auto-dismiss the card
+    setDismissedCards(prev => new Set([...prev, issueId]));
+  };
 
 
   return (
@@ -329,7 +451,8 @@ const RevisionTools = ({
                       style={{
                         borderLeft: `4px solid ${tool.color}`,
                         backgroundColor: issue.fixed ? '#f0f0f0' : `${tool.color}11`,
-                        opacity: (issue.fixed || dismissedCards.has(id)) ? 0.6 : 1,
+                        opacity: (issue.fixed ? 0.6 : (dismissedCards.has(id) ? 0.6 : 1)),
+                        color: dismissedCards.has(id) ? '#999' : undefined,
                         boxShadow: activeIssueId === id ? `0 0 0 2px ${tool.color}` : 'none',
                         margin: collapsedCards.has(id) ? "2px 0" : "8px 0",
                         padding: collapsedCards.has(id) ? "6px 12px" : "12px",
@@ -348,7 +471,7 @@ const RevisionTools = ({
                         gap: "4px",
                         zIndex: 1
                       }}>
-                        {!collapsedCards.has(id) && (
+                        {!collapsedCards.has(id) && !dismissedCards.has(id) && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -426,7 +549,7 @@ const RevisionTools = ({
                             <div style={{ 
                               marginBottom: "8px", 
                               fontStyle: "italic", 
-                              color: "#555",
+                              color: dismissedCards.has(id) ? "#999" : "#555",
                               backgroundColor: "#f8f8f8",
                               padding: "6px 8px",
                               borderRadius: "3px",
@@ -454,6 +577,46 @@ const RevisionTools = ({
                             </span>
                           </div>
                         </>
+                      )}
+                      {!collapsedCards.has(id) && !dismissedCards.has(id) && (
+                        <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
+                          {issue.toolType === 'Argument Improver' && issue.additionLabel && issue.additionText && issue.insertionPoint ? (
+                            <button
+                              style={{
+                                backgroundColor: tool.color,
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '3px',
+                                padding: '6px 12px',
+                                fontSize: '13px',
+                                cursor: 'pointer',
+                                fontWeight: 500
+                              }}
+                              onClick={() => handleAddArgumentImprover(issue, id)}
+                              title={issue.additionText}
+                            >
+                              {issue.additionLabel}
+                            </button>
+                          ) : null}
+                          {(issue.toolType === 'Proof-reader' || issue.toolType === 'Writing clarity') && issue.fix ? (
+                            <button
+                              style={{
+                                backgroundColor: tool.color,
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '3px',
+                                padding: '6px 12px',
+                                fontSize: '13px',
+                                cursor: 'pointer',
+                                fontWeight: 500
+                              }}
+                              onClick={() => handleApplySuggestion(issue, id)}
+                              title={`Replace with: "${issue.fix}"`}
+                            >
+                              Apply Suggestion
+                            </button>
+                          ) : null}
+                        </div>
                       )}
                     </blockquote>
                   ))}

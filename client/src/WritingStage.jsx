@@ -444,40 +444,52 @@ export default function WritingStage({ stageName, nextStage }) {
           {stageName === "Revision" && hasAISupport ? (
             <div className="highlighted-textarea-container">
               <div className="highlight-layer">
-                {highlightedText.map((segment, index) => (
-                  segment.issues.length > 0 ? (
-                    <span
-                      key={index}
-                      data-issue-id={segment.issueId}
-                      onClick={() => {
-                        // ① mark as active
-                        setActiveIssueId(segment.issueId);
-                        // ② scroll the editor so the text is centred
-                        const issue = issueMap[segment.issueId];
-                        if (issue) scrollEditorToIssue(issue);
-                        // ③ pulse the sidebar card
-                        pulseSidebarCard(segment.issueId);
-                        // ④ scroll sidebar to position issue at 1/3
-                        scrollSidebarToIssue(segment.issueId);
-                      }}
-                      style={{
-                        cursor: 'pointer',
-                        whiteSpace: 'pre-wrap',
-                        boxShadow: [
-                          segment.toolTypes.includes("Proof-reader") ? "inset 0 -2px 0 0 #FFC107" : "",
-                          segment.toolTypes.includes("Content polisher") ? "0 2px 0 #4CAF50" : "",
-                          segment.toolTypes.includes("Writing clarity") ? "inset 0 -4px 0 0 #2196F3" : ""
-                        ].filter(Boolean).join(', '),
-                        color: 'transparent'
-                      }}
-                    >
-                      {segment.text}
-                    </span>
-
-                  ) : (
-                    <span key={index}>{segment.text}</span>
-                  )
-                ))}
+                {/* Render highlighted ranges based on start/end/toolType */}
+                {(() => {
+                  if (!highlightedText.length) {
+                    return input;
+                  }
+                  // Sort highlights by start
+                  const sorted = [...highlightedText].sort((a, b) => a.start - b.start);
+                  let lastIdx = 0;
+                  const spans = [];
+                  sorted.forEach((hl, i) => {
+                    // Add unhighlighted text before this highlight
+                    if (hl.start > lastIdx) {
+                      spans.push(
+                        <span key={`plain-${i}`}>{input.slice(lastIdx, hl.start)}</span>
+                      );
+                    }
+                    // Add highlighted text
+                    spans.push(
+                      <span
+                        key={`hl-${i}`}
+                        style={{
+                          backgroundColor:
+                            hl.toolType === "Proof-reader"
+                              ? "rgba(255, 193, 7, 0.3)"
+                              : hl.toolType === "Argument Improver"
+                              ? "rgba(76, 175, 80, 0.3)"
+                              : hl.toolType === "Writing clarity"
+                              ? "rgba(33, 150, 243, 0.3)"
+                              : "#ff0",
+                          borderRadius: "2px",
+                          transition: "background-color 0.3s"
+                        }}
+                      >
+                        {input.slice(hl.start, hl.end)}
+                      </span>
+                    );
+                    lastIdx = hl.end;
+                  });
+                  // Add any remaining text
+                  if (lastIdx < input.length) {
+                    spans.push(
+                      <span key={`plain-end`}>{input.slice(lastIdx)}</span>
+                    );
+                  }
+                  return spans;
+                })()}
               </div>
               <textarea
                 ref={textareaRef}
@@ -760,6 +772,7 @@ export default function WritingStage({ stageName, nextStage }) {
             setActiveIssueId={setActiveIssueId}
             sidebarRef={sidebarRef}
             textareaRef={textareaRef}
+            setInput={setInput} // <-- pass setInput here
           />
         )}
         {/* If no content, render nothing (blank sidebar) */}
