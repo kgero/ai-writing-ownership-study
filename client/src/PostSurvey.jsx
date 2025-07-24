@@ -71,7 +71,7 @@ export default function FormPage() {
     "I feel I had complete control over the writing process.",
     "If I were to share this essay with a colleague, I would acknowledge AI support.",
     "I put a lot of effort into writing this essay.",
-    "I feel that I actively chose all the argument in this essay."
+    "I feel that I actively chose all the arguments in this essay."
   ];
 
   const sliderStatements = [
@@ -87,13 +87,12 @@ export default function FormPage() {
           and also handles validation checking */}
       <form onSubmit={handleSubmit(onSubmit)} style={{ margin: "2rem auto" }}>
 
-
         {/* MULTIPLE LIKERT STATEMENTS */}
         <div style={{ marginBottom: "1rem" }}>
           <p className="survey-question">On a scale from 1 (Strongly Disagree) to 7 (Strongly Agree), rate the following:</p>
 
           {statements.map((text, index) => (
-            <div key={index} className="survey-likert-div">
+            <div key={index} className="survey-likert-div likert-question-container">
               {/* Statement text */}
               <p className="survey-likert-statement">{text}</p>
 
@@ -127,7 +126,7 @@ export default function FormPage() {
           <p className="survey-question">Drag the slider to indicate your response:</p>
 
           {sliderStatements.map((text, index) => (
-            <div key={index} className="survey-slider-div" style={{ marginBottom: "2rem" }}>
+            <div key={index} className="survey-slider-div likert-question-container" style={{ marginBottom: "2rem" }}>
               {/* Statement text */}
               <p className="survey-slider-statement">{text}</p>
 
@@ -166,9 +165,8 @@ export default function FormPage() {
           ))}
         </div>
 
-
         {/* SUBMIT */}
-        <button type="submit" style={{ padding: "0.5rem 1rem" }}>
+        <button type="submit" className="submit-button">
           Submit
         </button>
       </form>

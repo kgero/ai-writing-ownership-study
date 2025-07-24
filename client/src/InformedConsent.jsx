@@ -22,7 +22,7 @@ export default function ConsentPage() {
         <div style={{ marginBottom: "1rem" }}>
           <p><strong>Project title:</strong> The Impact of Idea and Text Provenance in Writing on Ownership, Agency, and Authorship</p>
           <p><strong>Principal Investigator:</strong> Dr. Paramveer Dhillon, School of Information, University of Michigan — dhillonp@umich.edu</p>
-          <p><strong>Co‑Principal Investigator:</strong> Dr. Katy Gero, School of Computer Science, University of Sydney — katy@g.harvard.edu</p>
+          <p><strong>Co‑Principal Investigator:</strong> Dr. Katy Gero, School of Computer Science, University of Sydney — katy.gero@sydney.edu.au</p>
           <p><strong>IRB:</strong> University of Michigan Health Sciences &amp; Behavioral Sciences IRB (HSBS)</p>
           <p><strong>IRB number:</strong> HUM00272842 (Exemption 3)</p>
           <p><strong>IRB contact (questions about your rights as a participant):</strong> irbhsbs@umich.edu | +1 734‑936‑0933</p>
@@ -37,7 +37,7 @@ export default function ConsentPage() {
               <h2>What will happen if I take part?</h2>
               <ol>
                   <li>Complete a short pre‑task survey about your background and views on writing and AI.</li>
-                  <li>Write a 200‑300‑word argumentative essay using our web interface. You may receive AI help at one or more stages of writing, or you may complete the task on your own.</li>
+                  <li>Write a 200‑300 word argumentative essay using our web interface. You may receive AI help at one or more stages of writing, or you may complete the task on your own.</li>
                   <li>Answer a brief post‑task survey about your experience.</li>
               </ol>
               <p>The whole session will take about 45–60 minutes.</p>

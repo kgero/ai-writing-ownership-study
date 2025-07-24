@@ -8,6 +8,7 @@ import loggingService from './loggingService.js';
 const apiUrl = import.meta.env.VITE_API_URL || '';
 axios.defaults.baseURL = apiUrl;
 
+
 export default function FormPage() {
   const { condition, promptId } = useParams();
   const navigate = useNavigate();
@@ -110,7 +111,7 @@ export default function FormPage() {
 
         {/* RADIO SELECT */}
         <div style={{ marginBottom: "2rem" }}>
-          <p className="survey-question" style={{ marginBottom: "0.5rem" }}>
+          <p className="survey-question">
             What is your age?
           </p>
 
@@ -133,7 +134,7 @@ export default function FormPage() {
 
         {/* RADIO SELECT */}
         <div style={{ marginBottom: "2rem" }}>
-          <p className="survey-question" style={{ marginBottom: "0.5rem" }}>
+          <p className="survey-question">
             What is your gender?
           </p>
 
@@ -156,7 +157,7 @@ export default function FormPage() {
 
         {/* RADIO SELECT */}
         <div style={{ marginBottom: "2rem" }}>
-          <p className="survey-question" style={{ marginBottom: "0.5rem" }}>
+          <p className="survey-question">
             What is your highest level of education?
           </p>
 
@@ -179,7 +180,7 @@ export default function FormPage() {
 
         {/* RADIO SELECT */}
         <div style={{ marginBottom: "2rem" }}>
-          <p className="survey-question" style={{ marginBottom: "0.5rem" }}>
+          <p className="survey-question">
             Is English your native language?
           </p>
 
@@ -205,7 +206,7 @@ export default function FormPage() {
           <p className="survey-question">On a scale from 1 (Strongly Disagree) to 5 (Strongly Agree), rate the following:</p>
 
           {statementsNFC.map((text, index) => (
-            <div key={index} className="survey-likert-div">
+            <div key={index} className="survey-likert-div likert-question-container">
               {/* Statement text */}
               <p className="survey-likert-statement">{text}</p>
 
@@ -239,7 +240,7 @@ export default function FormPage() {
           <p className="survey-question">On a scale from 1 (Strongly Disagree) to 7 (Strongly Agree), rate the following:</p>
 
           {statementsTechAccept.map((text, index) => (
-            <div key={index} className="survey-likert-div">
+            <div key={index} className="survey-likert-div likert-question-container">
               {/* Statement text */}
               <p className="survey-likert-statement">{text}</p>
 
@@ -270,7 +271,7 @@ export default function FormPage() {
 
         {/* RADIO SELECT */}
         <div style={{ marginBottom: "2rem" }}>
-          <p className="survey-question" style={{ marginBottom: "0.5rem" }}>
+          <p className="survey-question">
             How often do you use AI tools <i>for writing</i> (e.g., ChatGPT, Google Gemini, Claude)?
           </p>
 
@@ -293,7 +294,7 @@ export default function FormPage() {
 
         {/* MULTI-SELECT CHECKBOX */}
         <div style={{ marginBottom: "2rem" }}>
-          <p className="survey-question" style={{ marginBottom: "0.5rem" }}>
+          <p className="survey-question">
             Which writing tasks have you used AI for? (Select all that apply)
           </p>
 
@@ -320,7 +321,7 @@ export default function FormPage() {
           <p className="survey-question">On a scale from 1 (Strongly Disagree) to 7 (Strongly Agree), rate the following:</p>
 
           {statementsAIwriting.map((text, index) => (
-            <div key={index} className="survey-likert-div">
+            <div key={index} className="survey-likert-div likert-question-container">
               {/* Statement text */}
               <p className="survey-likert-statement">{text}</p>
 
@@ -355,7 +356,7 @@ export default function FormPage() {
           <p className="survey-question">On a scale from 1 (Strongly Disagree) to 7 (Strongly Agree), rate the following:</p>
 
           {statementsWritingEfficacy.map((text, index) => (
-            <div key={index} className="survey-likert-div">
+            <div key={index} className="survey-likert-div likert-question-container">
               {/* Statement text */}
               <p className="survey-likert-statement">{text}</p>
 
