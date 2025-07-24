@@ -182,7 +182,9 @@ Identify only 2-3 of the most important argument issues. For each issue:
 5. If your suggestion involves adding new content, provide:
    - **Addition label**: a short (2-6 words) summary for a button label, e.g., 'add examples and case studies', 'add limitations', or 'add concrete examples'.
    - **Addition text**: the exact text to add (1-3 sentences).
-   - **Insertion point**: a clear description of where to insert it (e.g., 'After the sentence: "X"' or 'After paragraph 2').
+   - **Insertion point**: a clear description of where to insert it. Use one of these formats:
+     * 'After the sentence: "COMPLETE_SENTENCE"' - quote the ENTIRE sentence exactly as it appears in the text, from capital letter to period/question mark/exclamation mark
+     * 'After paragraph X' - where X is the paragraph number (1, 2, 3, etc.)
    If your suggestion does not involve adding new content, leave these fields blank.
 
 Format as:
@@ -200,6 +202,8 @@ Format as:
 > **Insertion point**: After the sentence: "The argument lacks supporting evidence."
 
 Be extremely concise. Focus only on argument quality and logic. For suggestions, provide specific examples, steps, or concrete details rather than general advice. The quoted text must appear EXACTLY as written in the original text - this is critical for the tool to work properly.
+
+IMPORTANT: When using "After the sentence:" format, you MUST quote the COMPLETE sentence exactly as it appears in the text, from the first capital letter to the final punctuation mark. Do not truncate or abbreviate the sentence.
 `,
 
   writingclarity: (draft) => `
