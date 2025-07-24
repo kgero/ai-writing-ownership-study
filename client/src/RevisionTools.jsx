@@ -343,9 +343,9 @@ const RevisionTools = ({
     const newText = before + issue.fix + after;
     setInput(newText);
     highlightRangeNative(idx, idx + issue.fix.length);
-    setIssueMap(prev => ({ ...prev, [Object.keys(issueMap).find(id => issueMap[id] === issue)]: { ...issue, fixed: true } }));
-    // Auto-dismiss the card
+    // Only auto-dismiss and collapse the card (do not set fixed:true)
     setDismissedCards(prev => new Set([...prev, issueId]));
+    setCollapsedCards(prev => new Set([...prev, issueId]));
   };
 
   // Handler for Argument Improver: Insert additionText at insertionPoint
@@ -406,8 +406,9 @@ const RevisionTools = ({
     const highlightStart = insertAt + prefix.length;
     const highlightEnd = highlightStart + issue.additionText.length;
     highlightRangeNative(highlightStart, highlightEnd);
-    // Auto-dismiss the card
+    // Only auto-dismiss and collapse the card (do not set fixed:true)
     setDismissedCards(prev => new Set([...prev, issueId]));
+    setCollapsedCards(prev => new Set([...prev, issueId]));
   };
 
 
@@ -442,6 +443,15 @@ const RevisionTools = ({
             {/* Show results directly in sidebar */}
             {revisionResults[tool.id] && (
               <div style={{ marginTop: "10px" }}>
+                {Object.entries(issueMap)
+                  .filter(([id, issue]) => issue.toolType === tool.id)
+                  .length === 0 &&
+                  typeof revisionResults[tool.id] === 'string' &&
+                  revisionResults[tool.id].toLowerCase().includes('failed to use') && (
+                    <div style={{ fontWeight: 500, marginBottom: '10px' }}>
+                      Tool failed, please try again.
+                    </div>
+                  )}
                 {Object.entries(issueMap)
                   .filter(([id, issue]) => issue.toolType === tool.id)
                   .map(([id, issue]) => (
@@ -578,7 +588,7 @@ const RevisionTools = ({
                           </div>
                         </>
                       )}
-                      {!collapsedCards.has(id) && !dismissedCards.has(id) && (
+                      {!collapsedCards.has(id) && !dismissedCards.has(id) && !issue.fixed && (
                         <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
                           {issue.toolType === 'Argument Improver' && issue.additionLabel && issue.additionText && issue.insertionPoint ? (
                             <button
