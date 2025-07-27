@@ -88,7 +88,7 @@ TIME ALLOWED: You will have 10 minutes to revise your essay. You will be given w
   // Stage max times are listed in minutes
   stageTimes: {
     outline: 10,
-    draft: 10,
+    draft: 15,
     revision: 10
   },
 

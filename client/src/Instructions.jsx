@@ -1,0 +1,184 @@
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { stageConfig } from "./config.js";
+
+export default function Instructions() {
+  const { condition, promptId } = useParams();
+  const navigate = useNavigate();
+  const [selectedTopic, setSelectedTopic] = useState("");
+
+  const conditionNum = parseInt(condition);
+  const config = stageConfig[conditionNum];
+
+  // Calculate expected time based on condition
+  const getExpectedTime = () => {
+    const totalStageTime = stageConfig.stageTimes.outline + stageConfig.stageTimes.draft + stageConfig.stageTimes.revision;
+    const baseTime = totalStageTime + 5; // Sum of all stages plus 5 minutes
+    let timeReduction = 0;
+    
+    // If AI generates draft, reduce time by the draft time
+    if (config.draft) {
+      timeReduction += stageConfig.stageTimes.draft;
+    }
+    
+    return baseTime - timeReduction;
+  };
+
+
+  // Generate flow diagram based on condition
+  const getFlowDiagram = () => {
+    const stages = [
+      { name: "Pre-survey", hasAI: false, isGreyed: false },
+      { name: "Outline", hasAI: config.outline, isGreyed: false },
+      { name: "Draft", hasAI: config.draft, isGreyed: config.draft },
+      { name: "Revision", hasAI: config.revision, isGreyed: false },
+      { name: "Post-survey", hasAI: false, isGreyed: false }
+    ];
+
+    return stages.map((stage, index) => (
+      <div key={index} style={{ display: "flex", alignItems: "center" }}>
+        <div
+          style={{
+            padding: "8px 2px",
+            borderRadius: "20px",
+            backgroundColor: stage.isGreyed ? "#e0e0e0" : "#007bff",
+            color: stage.isGreyed ? "#666" : "white",
+            fontWeight: "bold",
+            fontSize: "14px",
+            textAlign: "center",
+            minWidth: "100px"
+          }}
+        >
+          {stage.name}
+          {stage.hasAI && !stage.isGreyed && (
+            <div style={{ fontSize: "10px", marginTop: "2px" }}>
+              + AI Support
+            </div>
+          )}
+          {stage.isGreyed && (
+            <div style={{ fontSize: "10px", marginTop: "2px" }}>
+              AI Generated
+            </div>
+          )}
+        </div>
+        {index < stages.length - 1 && (
+          <div style={{ margin: "0 10px", fontSize: "20px", color: "#666" }}>
+            →
+          </div>
+        )}
+      </div>
+    ));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!selectedTopic) {
+      alert("Please select a topic before continuing.");
+      return;
+    }
+    navigate(`/presurvey/${condition}/${selectedTopic}`);
+  };
+
+  const topics = [
+    { id: "a", text: "Should universities require standardized testing for admissions?" },
+    { id: "b", text: "Should social media companies be responsible for moderating user content?" },
+    { id: "c", text: "Should remote work become the standard for office jobs?" },
+    { id: "d", text: "Should high schools make personal finance education mandatory?" }
+  ];
+
+  return (
+    <div style={{ maxWidth: "800px", margin: "2rem auto", padding: "0 1rem" }}>
+      <h1 style={{ textAlign: "center", marginBottom: "2rem" }}>Task Instructions</h1>
+      
+        <div style={{ marginBottom: "2rem" }}>
+          <h2>What you'll be doing</h2>
+          <p>
+            Imagine you have been asked to write an essay as part of an admission process, e.g., as part of graduate school admission or as part of interviewing for a consulting firm. 
+            Please write a 200-300 word argumentative essay on a provided topic. 
+            You will get to select a topic from several options.  
+          </p>
+          <p>
+            We are asking you to:
+            <ol>
+                <li>
+                  Write an outline ({stageConfig.stageTimes.outline} minutes)
+                  {config.outline && " - "}<i>{config.outline && "you will have AI support to help generate ideas"}</i>
+                </li>
+                <li>
+                  Write a draft based on your outline {!config.draft && `(${stageConfig.stageTimes.draft} minutes)`}
+                  {config.draft && " - "}<i>{config.draft && "AI will generate the draft for you based on your outline"}</i>
+                </li>
+                <li>
+                  Revise the essay ({stageConfig.stageTimes.revision} minutes)
+                  {config.revision && " - "}<i>{config.revision && "you will have AI tools to help with revision"}</i>
+                </li>
+            </ol>
+          </p>
+        </div>
+
+      <div style={{ marginBottom: "2rem" }}>
+        <h2>Task Flow</h2>
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "center", 
+          alignItems: "center", 
+          flexWrap: "wrap",
+          gap: "10px",
+          marginBottom: "1rem"
+        }}>
+          {getFlowDiagram()}
+        </div>
+      </div>
+
+      <div style={{ marginBottom: "2rem" }}>
+        <h2>Time & Compensation</h2>
+        <ul>
+          <li><strong>Expected time:</strong> {getExpectedTime()} minutes</li>
+          <li><strong>Base payment:</strong> $10 for completion</li>
+          <li><strong>Bonus:</strong> $5 for top 5% quality essays</li>
+        </ul>
+      </div>
+
+      <div style={{ marginBottom: "2rem" }}>
+        <h2>Select Your Essay Topic</h2>
+        <p>Please choose one of the following topics for your essay:</p>
+        
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: "1rem" }}>
+            {topics.map((topic) => (
+              <div key={topic.id} style={{ marginBottom: "1rem" }}>
+                <label style={{ display: "flex", alignItems: "flex-start", cursor: "pointer" }}>
+                  <input
+                    type="radio"
+                    name="topic"
+                    value={topic.id}
+                    checked={selectedTopic === topic.id}
+                    onChange={(e) => setSelectedTopic(e.target.value)}
+                    style={{ marginRight: "10px", marginTop: "3px" }}
+                  />
+                  <span>{topic.text}</span>
+                </label>
+              </div>
+            ))}
+          </div>
+          
+          <button 
+            type="submit" 
+            style={{
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              padding: "12px 24px",
+              borderRadius: "6px",
+              fontSize: "16px",
+              cursor: "pointer",
+              width: "100%"
+            }}
+          >
+            Continue to Pre-survey
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+} 

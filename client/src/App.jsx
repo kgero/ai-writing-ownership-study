@@ -7,6 +7,7 @@ import PreSurvey from "./PreSurvey";
 import PostSurvey from "./PostSurvey";
 import Exit from "./Exit";
 import InformedConsent from "./InformedConsent";
+import Instructions from "./Instructions";
 import OutlineStage from "./stages/OutlineStage";
 import DraftStage from "./stages/DraftStage";
 import RevisionStage from "./stages/RevisionStage";
@@ -19,6 +20,9 @@ function App() {
         <Route path="/" element={<Landing />} />
 
         <Route path="/consent/:condition/:promptId" element={<InformedConsent />} />
+
+        {/* Instructions page with topic selection */}
+        <Route path="/instructions/:condition/:promptId" element={<Instructions />} />
 
         {/* A single form page for all users, identified by condition */}
         <Route path="/presurvey/:condition/:promptId" element={<PreSurvey />} />

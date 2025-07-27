@@ -7,12 +7,12 @@ export default function ConsentPage() {
   const navigate = useNavigate();
 
   // On form submit, do whatever you need with the data
-  // then push the user to the chosen interface route
+  // then push the user to the instructions page
   const handleSubmitForm = (e) => {
     e.preventDefault();
 
-    // Now route to the correct interface
-    navigate(`/presurvey/${condition}/${promptId}`);
+    // Now route to the instructions page
+    navigate(`/instructions/${condition}/${promptId}`);
   };
 
   return (
