@@ -1,14 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { stageConfig } from "./config.js";
+import { writingPrompts } from "./writingprompts.js";
 
 export default function Instructions() {
-  const { condition, promptId } = useParams();
+  const { condition, promptSet } = useParams();
   const navigate = useNavigate();
-  const [selectedTopic, setSelectedTopic] = useState("");
+  const [selectedPromptId, setSelectedPromptId] = useState("");
 
   const conditionNum = parseInt(condition);
   const config = stageConfig[conditionNum];
+
+  // Get prompts from the assigned set
+  const getPromptsForSet = () => {
+    const promptSetKey = promptSet === 'A' ? 'setA' : 'setB';
+    return writingPrompts[promptSetKey];
+  };
+
+  const availablePrompts = getPromptsForSet();
 
   // Calculate expected time based on condition
   const getExpectedTime = () => {
@@ -72,19 +81,12 @@ export default function Instructions() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!selectedTopic) {
+    if (!selectedPromptId) {
       alert("Please select a topic before continuing.");
       return;
     }
-    navigate(`/presurvey/${condition}/${selectedTopic}`);
+    navigate(`/presurvey/${condition}/${promptSet}/${selectedPromptId}`);
   };
-
-  const topics = [
-    { id: "a", text: "Should universities require standardized testing for admissions?" },
-    { id: "b", text: "Should social media companies be responsible for moderating user content?" },
-    { id: "c", text: "Should remote work become the standard for office jobs?" },
-    { id: "d", text: "Should high schools make personal finance education mandatory?" }
-  ];
 
   return (
     <div style={{ maxWidth: "800px", margin: "2rem auto", padding: "0 1rem" }}>
@@ -145,18 +147,18 @@ export default function Instructions() {
         
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: "1rem" }}>
-            {topics.map((topic) => (
-              <div key={topic.id} style={{ marginBottom: "1rem" }}>
+            {availablePrompts.map((prompt) => (
+              <div key={prompt.id} style={{ marginBottom: "1rem" }}>
                 <label style={{ display: "flex", alignItems: "flex-start", cursor: "pointer" }}>
                   <input
                     type="radio"
                     name="topic"
-                    value={topic.id}
-                    checked={selectedTopic === topic.id}
-                    onChange={(e) => setSelectedTopic(e.target.value)}
+                    value={prompt.id}
+                    checked={selectedPromptId === prompt.id}
+                    onChange={(e) => setSelectedPromptId(e.target.value)}
                     style={{ marginRight: "10px", marginTop: "3px" }}
                   />
-                  <span>{topic.text}</span>
+                  <span>{prompt.text}</span>
                 </label>
               </div>
             ))}

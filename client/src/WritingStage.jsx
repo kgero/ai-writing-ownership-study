@@ -10,14 +10,24 @@ import IdeasList from "./IdeasList"; // Import the new component
 import RevisionTools from "./RevisionTools"; // Import the new revision tools component
 import loggingService from './loggingService.js';
 import { useLogging } from './useLogging.js';
+import { writingPrompts } from "./writingprompts.js";
 
 
 export default function WritingStage({ stageName, nextStage }) {
-  const { condition, promptId } = useParams();
+  const { condition, promptSet, promptId } = useParams();
   const navigate = useNavigate();
   
   const conditionNum = parseInt(condition, 10);
-  const promptText = stageConfig.prompts[promptId] || "No prompt found for this ID";
+  
+  // Get prompt text from the new writingprompts structure
+  const getPromptText = () => {
+    const promptSetKey = promptSet === 'A' ? 'setA' : 'setB';
+    const promptSetData = writingPrompts[promptSetKey];
+    const selectedPrompt = promptSetData.find(p => p.id === promptId);
+    return selectedPrompt ? selectedPrompt.text : "No prompt found for this ID";
+  };
+  
+  const promptText = getPromptText();
   
   // Determine if this stage has AI support based on condition
   const hasAISupport = stageConfig[conditionNum][stageName.toLowerCase()];
@@ -311,7 +321,7 @@ export default function WritingStage({ stageName, nextStage }) {
         localStorage.setItem("revision_content", draftContent);
         
         // Navigate to revision stage
-        navigate(`/revision/${condition}/${promptId}`);
+        navigate(`/revision/${condition}/${promptSet}/${promptId}`);
       } catch (error) {
         console.error("Error generating AI draft:", error);
         logging.logApiCall('openai', prompt, error?.toString() || '', 'error');
@@ -324,7 +334,7 @@ export default function WritingStage({ stageName, nextStage }) {
     }
     
     // Navigate to next stage
-    navigate(`/${nextStage.toLowerCase()}/${condition}/${promptId}`);
+    navigate(`/${nextStage.toLowerCase()}/${condition}/${promptSet}/${promptId}`);
   };
 
   // SUBMIT BUTTON HANDLER (for final stage)
@@ -367,7 +377,7 @@ export default function WritingStage({ stageName, nextStage }) {
     localStorage.removeItem("revision_content");
     localStorage.removeItem("ai_draft");
     
-    navigate(`/postsurvey/${condition}/${promptId}`);
+    navigate(`/postsurvey/${condition}/${promptSet}/${promptId}`);
   };
 
   // Use AI draft if available

@@ -16,24 +16,23 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Landing page for user to enter the number */}
-        <Route path="/" element={<Landing />} />
-
-        <Route path="/consent/:condition/:promptId" element={<InformedConsent />} />
+        {/* Entry point - informed consent with random assignment */}
+        <Route path="/" element={<InformedConsent />} />
+        <Route path="/consent" element={<InformedConsent />} />
 
         {/* Instructions page with topic selection */}
-        <Route path="/instructions/:condition/:promptId" element={<Instructions />} />
+        <Route path="/instructions/:condition/:promptSet" element={<Instructions />} />
 
         {/* A single form page for all users, identified by condition */}
-        <Route path="/presurvey/:condition/:promptId" element={<PreSurvey />} />
+        <Route path="/presurvey/:condition/:promptSet/:promptId" element={<PreSurvey />} />
 
-        <Route path="/postsurvey/:condition/:promptId" element={<PostSurvey />} />
+        <Route path="/postsurvey/:condition/:promptSet/:promptId" element={<PostSurvey />} />
         <Route path="/exit/" element={<Exit />} />
 
         {/* Three writing stages */}
-        <Route path="/outline/:condition/:promptId" element={<OutlineStage />} />
-        <Route path="/draft/:condition/:promptId" element={<DraftStage />} />
-        <Route path="/revision/:condition/:promptId" element={<RevisionStage />} />
+        <Route path="/outline/:condition/:promptSet/:promptId" element={<OutlineStage />} />
+        <Route path="/draft/:condition/:promptSet/:promptId" element={<DraftStage />} />
+        <Route path="/revision/:condition/:promptSet/:promptId" element={<RevisionStage />} />
 
         {/* Optional: a fallback route for invalid URLs */}
         <Route path="*" element={<div>Not Found</div>} />

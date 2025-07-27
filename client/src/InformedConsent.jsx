@@ -1,18 +1,49 @@
-// FormPage.jsx
-import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+// InformedConsent.jsx
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function ConsentPage() {
-  const { condition, promptId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  // On form submit, do whatever you need with the data
-  // then push the user to the instructions page
+  // Random assignment function
+  const getRandomAssignment = () => {
+    const condition = Math.floor(Math.random() * 4) + 1; // 1, 2, 3, or 4
+    const promptSet = Math.random() < 0.5 ? 'A' : 'B'; // A or B
+    return { condition, promptSet };
+  };
+
+  // Parse Prolific parameters
+  const getProlificParams = () => {
+    const prolificPid = searchParams.get('PROLIFIC_PID') || null;
+    const studyId = searchParams.get('STUDY_ID') || null;
+    const sessionId = searchParams.get('SESSION_ID') || null;
+    return { prolificPid, studyId, sessionId };
+  };
+
+  // Handle form submission
   const handleSubmitForm = (e) => {
     e.preventDefault();
+    setIsProcessing(true);
 
-    // Now route to the instructions page
-    navigate(`/instructions/${condition}/${promptId}`);
+    // Get Prolific parameters
+    const prolificParams = getProlificParams();
+    
+    // Store Prolific parameters in localStorage
+    localStorage.setItem('prolificPid', prolificParams.prolificPid);
+    localStorage.setItem('studyId', prolificParams.studyId);
+    localStorage.setItem('sessionId', prolificParams.sessionId);
+
+    // Get random assignment
+    const { condition, promptSet } = getRandomAssignment();
+    
+    // Store assignment in localStorage
+    localStorage.setItem('condition', condition);
+    localStorage.setItem('promptSet', promptSet);
+
+    // Navigate to instructions with new parameters
+    navigate(`/instructions/${condition}/${promptSet}`);
   };
 
   return (
@@ -91,11 +122,26 @@ export default function ConsentPage() {
               </ul>
           </div>
 
-          <p>By clicking the “I CONSENT” button below, you confirm that you are at least 18 years old, have read and understood this information, and voluntarily agree to participate.
+          <p>By clicking the "I CONSENT" button below, you confirm that you are at least 18 years old, have read and understood this information, and voluntarily agree to participate.
 If you do not wish to take part, simply close this tab.</p>
 
         </div>
-        <button type="submit">I CONSENT</button>
+        <button 
+          type="submit" 
+          disabled={isProcessing}
+          style={{
+            backgroundColor: isProcessing ? "#ccc" : "#007bff",
+            color: "white",
+            border: "none",
+            padding: "12px 24px",
+            borderRadius: "6px",
+            fontSize: "16px",
+            cursor: isProcessing ? "not-allowed" : "pointer",
+            width: "100%"
+          }}
+        >
+          {isProcessing ? "Processing..." : "I CONSENT"}
+        </button>
         
       </form>
     </div>

@@ -9,7 +9,7 @@ const apiUrl = import.meta.env.VITE_API_URL || '';
 axios.defaults.baseURL = apiUrl;
 
 export default function FormPage() {
-  const { condition, promptId } = useParams();
+  const { condition, promptSet, promptId } = useParams();
   const navigate = useNavigate();
 
   // For dev toggling "required" off, set devMode = true

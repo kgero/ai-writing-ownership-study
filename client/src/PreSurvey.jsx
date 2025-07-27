@@ -10,7 +10,7 @@ axios.defaults.baseURL = apiUrl;
 
 
 export default function FormPage() {
-  const { condition, promptId } = useParams();
+  const { condition, promptSet, promptId } = useParams();
   const navigate = useNavigate();
 
   // For dev toggling "required" off, set devMode = true
@@ -64,12 +64,12 @@ export default function FormPage() {
     axios.post('/api/survey/submit', surveyData)
       .then(response => {
         console.log("Survey submitted successfully:", response.data);
-        navigate(`/outline/${condition}/${promptId}`); // or to exit for post-survey
+        navigate(`/outline/${condition}/${promptSet}/${promptId}`); 
       })
       .catch(error => {
         console.error("Error submitting survey:", error);
         // Handle error?? got to next stage anyway...
-        navigate(`/outline/${condition}/${promptId}`);
+        navigate(`/outline/${condition}/${promptSet}/${promptId}`);
       });
   };
 

@@ -27,7 +27,8 @@ export const stageConfig = {
     revision: true
   },
 
-  // Essay prompts (moved from writingprompts.js)
+  // Essay prompts are now managed in writingprompts.js
+  // This is kept for backward compatibility but should not be used
   prompts: {
     a: "Should universities require standardized testing for admissions?",
     b: "Should social media companies be responsible for moderating user content?",
