@@ -3,14 +3,12 @@ export const writingPrompts = {
   setA: [
     { id: "a1", text: "Should universities require standardized testing for admissions?" },
     { id: "a2", text: "Should social media companies be responsible for moderating user content?" },
-    { id: "a3", text: "Should remote work become the standard for office jobs?" },
-    { id: "a4", text: "Should high schools make personal finance education mandatory?" }
+    { id: "a3", text: "Should remote work become the standard for office jobs?" }
   ],
   setB: [
     { id: "b1", text: "Should the government regulate artificial intelligence development?" },
     { id: "b2", text: "Should college athletes be paid for their participation?" },
-    { id: "b3", text: "Should voting be mandatory in democratic elections?" },
-    { id: "b4", text: "Should fast food restaurants be required to display calorie counts?" }
+    { id: "b3", text: "Should voting be mandatory in democratic elections?" }
   ],
   instructions: "Please write an essay...",
   ideasLLMprompt: (promptText) => `
