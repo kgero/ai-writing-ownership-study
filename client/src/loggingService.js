@@ -18,8 +18,23 @@ class LoggingService {
     this.batchTimer = null;
   }
 
+  // Check if Prolific parameters are available
+  hasProlificParams() {
+    const prolificPid = localStorage.getItem('prolificPid');
+    return prolificPid !== null && prolificPid !== 'null' && prolificPid !== '';
+  }
+
   // Session management
   getOrCreateSessionId() {
+    // Check if Prolific session ID is available
+    if (this.hasProlificParams()) {
+      const prolificSessionId = localStorage.getItem('sessionId');
+      if (prolificSessionId && prolificSessionId !== 'null' && prolificSessionId !== '') {
+        return prolificSessionId;
+      }
+    }
+    
+    // Fall back to existing logic
     let sessionId = localStorage.getItem('sessionId');
     if (!sessionId) {
       sessionId = `${this.getParticipantId()}_${Date.now()}`;
@@ -29,13 +44,21 @@ class LoggingService {
   }
 
   getParticipantId() {
-    // Get participant ID from localStorage or generate one
+    // Check if Prolific participant ID is available
+    if (this.hasProlificParams()) {
+      const prolificPid = localStorage.getItem('prolificPid');
+      if (prolificPid && prolificPid !== 'null' && prolificPid !== '') {
+        return prolificPid;
+      }
+    }
+    
+    // Fall back to existing logic
     let participantId = localStorage.getItem('participantId');
     if (participantId) {
       return participantId;
     }
     // Generate a new participant ID if none exists
-    participantId = 'p_' + Math.random().toString(36).substr(2, 9);
+    participantId = 'test_' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('participantId', participantId);
     return participantId;
   }

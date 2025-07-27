@@ -30,10 +30,16 @@ export default function ConsentPage() {
     // Get Prolific parameters
     const prolificParams = getProlificParams();
     
-    // Store Prolific parameters in localStorage
-    localStorage.setItem('prolificPid', prolificParams.prolificPid);
-    localStorage.setItem('studyId', prolificParams.studyId);
-    localStorage.setItem('sessionId', prolificParams.sessionId);
+    // Store Prolific parameters in localStorage only if they exist
+    if (prolificParams.prolificPid) {
+      localStorage.setItem('prolificPid', prolificParams.prolificPid);
+    }
+    if (prolificParams.studyId) {
+      localStorage.setItem('studyId', prolificParams.studyId);
+    }
+    if (prolificParams.sessionId) {
+      localStorage.setItem('sessionId', prolificParams.sessionId);
+    }
 
     // Get random assignment
     const { condition, promptSet } = getRandomAssignment();
