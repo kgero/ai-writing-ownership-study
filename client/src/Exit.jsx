@@ -8,6 +8,7 @@ export default function Exit() {
       <div className="landing">
         <h1>Thank you for completing our study!</h1>
         <p>Please use this code to indicate you finished the task.</p>
+        <h2>CJ4XXYU3</h2>
       </div>
     </div>
   );
