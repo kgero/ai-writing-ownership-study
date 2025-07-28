@@ -435,36 +435,36 @@ export default function WritingStage({ stageName, nextStage }) {
   return (
     <div className="container">
       <div className="editor" style={editorStyle}>
-        {/* Stage Progress Indicator */}
+        {/* Compact Stage Progress Indicator */}
         <div style={{
-          fontSize: "16px",
+          fontSize: "14px",
           fontWeight: "600",
           color: "#2196F3",
-          marginBottom: "8px",
+          marginBottom: "4px",
           textAlign: "center"
         }}>
           Stage {getStageNumber()} of 3
         </div>
         
-        {/* Enhanced Stage Title */}
+        {/* Compact Stage Title */}
         <h1 style={{
-          fontSize: "32px",
+          fontSize: "28px",
           fontWeight: "700",
           color: "#1976D2",
           textAlign: "center",
-          margin: "0 0 16px 0",
+          margin: "0 0 12px 0",
           textTransform: "uppercase",
           letterSpacing: "1px"
         }}>
           {stageName} Stage
         </h1>
         
-        {/* Enhanced Instructions */}
+        {/* Compact Instructions */}
         <div style={{
           fontSize: "14px",
-          lineHeight: "1.5",
+          lineHeight: "1.4",
           color: "#333",
-          marginBottom: "20px"
+          marginBottom: "12px"
         }}>
           <div 
             style={{ whiteSpace: "pre-wrap" }}
@@ -480,40 +480,40 @@ export default function WritingStage({ stageName, nextStage }) {
             backgroundColor: "#fff3cd",
             border: "1px solid #ffeaa7",
             borderRadius: "6px",
-            padding: "12px 16px",
-            margin: "16px 0",
+            padding: "8px 12px",
+            margin: "8px 0",
             color: "#856404",
-            fontSize: "14px",
+            fontSize: "13px",
             fontWeight: "500"
           }}>
             ⚠️ <strong>Note:</strong> Once you submit your outline, you will move directly to the revision stage to work on an AI-generated draft.
           </div>
         )}
         
-        {/* Enhanced essay topic styling */}
+        {/* Compact Essay Topic */}
         <div style={{
           backgroundColor: "#e8f5e8",
           border: "2px solid #4CAF50",
-          borderRadius: "8px",
-          padding: "16px 20px",
-          margin: "20px 0",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+          borderRadius: "6px",
+          padding: "12px 16px",
+          margin: "12px 0",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
         }}>
           <div style={{
-            fontSize: "14px",
+            fontSize: "12px",
             fontWeight: "600",
             color: "#2e7d32",
             textTransform: "uppercase",
             letterSpacing: "0.5px",
-            marginBottom: "8px"
+            marginBottom: "4px"
           }}>
             Essay Topic
           </div>
           <div style={{
-            fontSize: "18px",
+            fontSize: "16px",
             fontWeight: "500",
             color: "#1b5e20",
-            lineHeight: "1.4",
+            lineHeight: "1.3",
             fontStyle: "italic"
           }}>
             {promptText}
