@@ -403,6 +403,25 @@ export default function WritingStage({ stageName, nextStage }) {
     return `Continue to ${nextStage} Stage`;
   };
 
+  // Get stage number for progress indicator
+  const getStageNumber = () => {
+    switch (stageName) {
+      case "Outline": return 1;
+      case "Draft": return 2;
+      case "Revision": return 3;
+      default: return 1;
+    }
+  };
+
+  // Format instructions text to bold key terms instead of caps
+  const formatInstructions = (text) => {
+    return text
+      .replace(/INSTRUCTIONS/g, '<strong>Instructions</strong>')
+      .replace(/LENGTH/g, '<strong>Length</strong>')
+      .replace(/TIME ALLOWED/g, '<strong>Time Allowed</strong>')
+      .replace(/SUPPORT/g, '<strong>Support</strong>');
+  };
+
   // Always use standard width for the editor (70%)
   const editorStyle = {
     flex: "7",
@@ -416,8 +435,60 @@ export default function WritingStage({ stageName, nextStage }) {
   return (
     <div className="container">
       <div className="editor" style={editorStyle}>
-        <h1>{stageConfig.stageTitles[stageName.toLowerCase()]}</h1>
-        <p style={{ whiteSpace: "pre-wrap" }}>{stageConfig.getInstruction(conditionNum, stageName)}</p>
+        {/* Stage Progress Indicator */}
+        <div style={{
+          fontSize: "16px",
+          fontWeight: "600",
+          color: "#2196F3",
+          marginBottom: "8px",
+          textAlign: "center"
+        }}>
+          Stage {getStageNumber()} of 3
+        </div>
+        
+        {/* Enhanced Stage Title */}
+        <h1 style={{
+          fontSize: "32px",
+          fontWeight: "700",
+          color: "#1976D2",
+          textAlign: "center",
+          margin: "0 0 16px 0",
+          textTransform: "uppercase",
+          letterSpacing: "1px"
+        }}>
+          {stageName} Stage
+        </h1>
+        
+        {/* Enhanced Instructions */}
+        <div style={{
+          fontSize: "14px",
+          lineHeight: "1.5",
+          color: "#333",
+          marginBottom: "20px"
+        }}>
+          <div 
+            style={{ whiteSpace: "pre-wrap" }}
+            dangerouslySetInnerHTML={{ 
+              __html: formatInstructions(stageConfig.getInstruction(conditionNum, stageName)) 
+            }}
+          />
+        </div>
+        
+        {/* Warning for condition 3 (AI generated draft) */}
+        {conditionNum === 3 && stageName === "Outline" && (
+          <div style={{
+            backgroundColor: "#fff3cd",
+            border: "1px solid #ffeaa7",
+            borderRadius: "6px",
+            padding: "12px 16px",
+            margin: "16px 0",
+            color: "#856404",
+            fontSize: "14px",
+            fontWeight: "500"
+          }}>
+            ⚠️ <strong>Note:</strong> Once you submit your outline, you will move directly to the revision stage to work on an AI-generated draft.
+          </div>
+        )}
         
         {/* Enhanced essay topic styling */}
         <div style={{
