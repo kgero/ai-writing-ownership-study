@@ -19,6 +19,7 @@ export default function ConsentPage() {
     const prolificPid = searchParams.get('PROLIFIC_PID') || null;
     const studyId = searchParams.get('STUDY_ID') || null;
     const sessionId = searchParams.get('SESSION_ID') || null;
+    console.log('Prolific parameters:', { prolificPid, studyId, sessionId });
     return { prolificPid, studyId, sessionId };
   };
 
@@ -33,6 +34,7 @@ export default function ConsentPage() {
     // Store Prolific parameters in localStorage only if they exist
     if (prolificParams.prolificPid) {
       localStorage.setItem('prolificPid', prolificParams.prolificPid);
+      localStorage.setItem('participantId', prolificParams.prolificPid);
     }
     if (prolificParams.studyId) {
       localStorage.setItem('studyId', prolificParams.studyId);

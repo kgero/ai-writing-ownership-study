@@ -42,12 +42,11 @@ export default function FormPage() {
       data.aiToolsUsed = selectedTools;
     }
   
-    // Generate a unique participant ID if not stored already
+    // Get participant ID from loggingService
     const participantId = loggingService.getParticipantId();
 
-    // Generate a new session ID for this experiment session
-    const sessionId = `${participantId}_${Date.now()}`;
-    localStorage.setItem('sessionId', sessionId);
+    // Get session ID from loggingService
+    const sessionId = loggingService.getOrCreateSessionId();
 
     // Add metadata about the survey
     const surveyData = {

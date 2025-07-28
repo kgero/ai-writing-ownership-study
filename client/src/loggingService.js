@@ -26,15 +26,6 @@ class LoggingService {
 
   // Session management
   getOrCreateSessionId() {
-    // Check if Prolific session ID is available
-    if (this.hasProlificParams()) {
-      const prolificSessionId = localStorage.getItem('sessionId');
-      if (prolificSessionId && prolificSessionId !== 'null' && prolificSessionId !== '') {
-        return prolificSessionId;
-      }
-    }
-    
-    // Fall back to existing logic
     let sessionId = localStorage.getItem('sessionId');
     if (!sessionId) {
       sessionId = `${this.getParticipantId()}_${Date.now()}`;
@@ -44,15 +35,6 @@ class LoggingService {
   }
 
   getParticipantId() {
-    // Check if Prolific participant ID is available
-    if (this.hasProlificParams()) {
-      const prolificPid = localStorage.getItem('prolificPid');
-      if (prolificPid && prolificPid !== 'null' && prolificPid !== '') {
-        return prolificPid;
-      }
-    }
-    
-    // Fall back to existing logic
     let participantId = localStorage.getItem('participantId');
     if (participantId) {
       return participantId;
@@ -202,8 +184,8 @@ class LoggingService {
     }
 
     const logEntry = {
-      participant_id: this.participantId,
-      session_id: this.sessionId,
+      participant_id: this.getParticipantId(),
+      session_id: this.getOrCreateSessionId(),
       stage: this.currentStage,
       time_from_stage_start: this.getTimeFromStageStart(),
       ...logData

@@ -61,7 +61,8 @@ app.post('/api/openai', async (req, res) => {
 
 // Save Survey Data to Database
 app.post('/api/survey/submit', async (req, res) => {
-  console.log("Survey submission endpoint hit");
+  const pid = req.body.participant_id || 'unknown';
+  console.log(`Survey submission for participant ${pid}`);
 
   try {
     const { participant_id, session_id, survey_type, prompt_id, condition, responses, timestamp } = req.body;
@@ -81,7 +82,8 @@ app.post('/api/survey/submit', async (req, res) => {
 
 // Save Snapshot Data to Database
 app.post('/api/snapshot/submit', async (req, res) => {
-  console.log("Text snapshot submission endpoint hit");
+  const pid = req.body.participant_id || 'unknown';
+  console.log(`Text snapshot submission for participant ${pid}`);
 
   try {
     const { participant_id, session_id, stage, time_from_stage_start, text_content, created_at, type } = req.body;
@@ -103,11 +105,10 @@ app.post('/api/snapshot/submit', async (req, res) => {
 app.post('/api/log', async (req, res) => {
   const isBatch = Array.isArray(req.body);
   const logEntries = isBatch ? req.body : [req.body];
-  const fullSessionId = logEntries[0]?.session_id || 'unknown';
-  const sessionId = fullSessionId.length > 12 ? fullSessionId.substring(0, 12) + '...' : fullSessionId;
+  const pid = logEntries[0]?.participant_id || 'unknown';
   const eventTypes = logEntries.map(entry => entry.event_type).filter(Boolean);
   
-  console.log(`Interaction logging endpoint hit - ${sessionId}, ${isBatch ? 'batch' : 'single'}, ${logEntries.length}${eventTypes.length > 0 ? `, [${eventTypes.join(', ')}]` : ''}`);
+  console.log(`Interaction logging for participant ${pid}; ${isBatch ? 'batch' : 'single'}, ${logEntries.length}${eventTypes.length > 0 ? `, [${eventTypes.join(', ')}]` : ''}`);
 
   try {
     const results = [];
@@ -127,7 +128,7 @@ app.post('/api/log', async (req, res) => {
     // Return single result for single entry, array for batch
     res.json(Array.isArray(req.body) ? results : results[0]);
   } catch (error) {
-    console.error(`Database error for session ${sessionId}:`, error);
+    console.error(`Database error for participant ${pid}:`, error);
     res.status(500).json({ error: error.message });
   }
 });
