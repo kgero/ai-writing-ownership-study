@@ -79,7 +79,7 @@ export default function ConsentPage() {
                   <li>Write a 200‑300 word argumentative essay using our web interface. You may receive AI help at one or more stages of writing, or you may complete the task on your own.</li>
                   <li>Answer a brief post‑task survey about your experience.</li>
               </ol>
-              <p>The whole session will take about 45–60 minutes.</p>
+              <p>The whole session will take about 40 minutes.</p>
           </div>
           
           <div class="section">
@@ -109,7 +109,7 @@ export default function ConsentPage() {
           
           <div class="section">
               <h2>Will I be paid?</h2>
-              <p>Yes. Upon completing the study, you will receive $15.00 via Prolific. Payment may be prorated if you withdraw early or withheld/adjusted if you use external AI tools contrary to instructions.</p>
+              <p>Yes. Upon completing the study, you will receive $10.00 base payment via Prolific, with an addition $5.00 bonus provided for the top 5% of essays. Payment may be prorated if you withdraw early or withheld/adjusted if you use external AI tools contrary to instructions.</p>
           </div>
           
           <div class="section">
