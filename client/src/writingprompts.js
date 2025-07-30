@@ -6,7 +6,7 @@ export const writingPrompts = {
     { id: "a3", text: "Should large employers require workers to return to the office several days a week, or allow fully remote schedules by default?" }
   ],
   setB: [
-    { id: "b1", text: "Should parents have the right to genetically edit their unborn children to prevent diseases, or ban genetic modifications to preserve natural human diversity?" },
+    { id: "b1", text: "Should parents have the right to genetically edit their unborn children to prevent diseases, or should we ban genetic modifications to preserve natural human diversity?" },
     { id: "b2", text: "Should cities ban gas-powered leaf blowers to reduce noise and pollution, or leave equipment choices to homeowners and landscapers?" },
     { id: "b3", text: "Should the federal government broaden student-loan forgiveness programs, or prioritize other ways of addressing education debt?" }
   ],
