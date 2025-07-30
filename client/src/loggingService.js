@@ -92,6 +92,17 @@ class LoggingService {
     });
   }
 
+  logCopy(text, cursorPosition) {
+    this.log({
+      event_type: 'keystroke:copy',
+      event_data: {
+        text,
+        cursorPosition,
+        timestamp: Date.now()
+      }
+    });
+  }
+
   logDelete(deleteType, cursorPosition, deletedText = null) {
     this.log({
       event_type: `keystroke:${deleteType}`,

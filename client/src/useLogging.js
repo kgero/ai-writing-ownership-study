@@ -63,6 +63,14 @@ export const useLogging = (stage) => {
     loggingService.logCut(textSelection.selectedText, cursorPosition);
   };
 
+  // Log copy events
+  const logCopy = (event) => {
+    const cursorPosition = getCursorPosition();
+    const textSelection = getTextSelection();
+    
+    loggingService.logCopy(textSelection.selectedText, cursorPosition);
+  };
+
   // Log delete events (backspace, delete)
   const logDelete = (event) => {
     const cursorPosition = getCursorPosition();
@@ -131,6 +139,10 @@ export const useLogging = (stage) => {
       logCut(event);
     };
 
+    const handleCopy = (event) => {
+      logCopy(event);
+    };
+
     const handleSelect = () => {
       logTextSelection();
     };
@@ -139,6 +151,7 @@ export const useLogging = (stage) => {
     textareaElement.addEventListener('keypress', handleKeyPress);
     textareaElement.addEventListener('paste', handlePaste);
     textareaElement.addEventListener('cut', handleCut);
+    textareaElement.addEventListener('copy', handleCopy);
     textareaElement.addEventListener('select', handleSelect);
 
     // Return cleanup function
@@ -147,6 +160,7 @@ export const useLogging = (stage) => {
       textareaElement.removeEventListener('keypress', handleKeyPress);
       textareaElement.removeEventListener('paste', handlePaste);
       textareaElement.removeEventListener('cut', handleCut);
+      textareaElement.removeEventListener('copy', handleCopy);
       textareaElement.removeEventListener('select', handleSelect);
     };
   };
@@ -155,6 +169,7 @@ export const useLogging = (stage) => {
     logKeystroke,
     logPaste,
     logCut,
+    logCopy,
     logDelete,
     logTextSelection,
     logButtonClick,
