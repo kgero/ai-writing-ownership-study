@@ -274,7 +274,7 @@ export default function FormPage() {
             How often do you use AI tools <i>for writing</i> (e.g., ChatGPT, Google Gemini, Claude)?
           </p>
 
-          {["Never", "Rarely", "Occasionally", "Frequently"].map((option) => (
+          {["Never", "Less than once a month", "About once a month", "About once a week", "Almost every day"].map((option) => (
             <label key={option} style={{ display: "block", marginBottom: "0.25rem" }}>
               <input
                 type="radio"
