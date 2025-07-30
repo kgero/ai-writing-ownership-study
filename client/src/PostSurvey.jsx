@@ -14,11 +14,11 @@ export default function FormPage() {
 
   // For dev toggling "required" off, set devMode = true
   // Switch to false for production
-  const devMode = true;
+  const devMode = false;
 
   // Initialize React Hook Form
   // register => function to connect inputs to the form
-  // handleSubmit => handles the form’s onSubmit
+  // handleSubmit => handles the form's onSubmit
   // formState => object holding validation errors and other metadata
   const {
     register,
@@ -79,6 +79,12 @@ export default function FormPage() {
     "What percentage of the final text would you attribute to yourself versus AI?"
   ];
 
+  const freeResponseQuestions = [
+    "Optional: Why did you (or did you not) feel this essay was truly yours?",
+    "Optional: Why did you attribute that percentage of the text and ideas to yourself?",
+    "Optional: Is there anything else you'd like to share about the process, interface, or your thoughts on authorship and ownership of the text?"
+  ];
+
   return (
     <div style={{ maxWidth: "600px", margin: "2rem auto" }}>
       <h2>Post-Task Survey</h2>
@@ -119,6 +125,24 @@ export default function FormPage() {
               )}
             </div>
           ))}
+        </div>
+
+        {/* FREE RESPONSE AFTER LIKERT */}
+        <div style={{ marginBottom: "2rem" }}>
+          <p>{freeResponseQuestions[0]}</p>
+          <textarea
+            style={{
+              width: "100%",
+              minHeight: "120px",
+              padding: "0.75rem",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              fontFamily: "inherit",
+              fontSize: "14px",
+              resize: "vertical"
+            }}
+            {...register("free_response_1", { required: false })}
+          />
         </div>
 
         {/* PERCENTAGE SLIDERS */}
@@ -163,6 +187,41 @@ export default function FormPage() {
               )}
             </div>
           ))}
+        </div>
+
+        {/* FREE RESPONSE AFTER SLIDERS */}
+        <div style={{ marginBottom: "2rem" }}>
+          <p>{freeResponseQuestions[1]}</p>
+          <textarea
+            style={{
+              width: "100%",
+              minHeight: "120px",
+              padding: "0.75rem",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              fontFamily: "inherit",
+              fontSize: "14px",
+              resize: "vertical"
+            }}
+            {...register("free_response_2", { required: false })}
+          />
+        </div>
+
+        <div style={{ marginBottom: "2rem" }}>
+          <p>{freeResponseQuestions[2]}</p>
+          <textarea
+            style={{
+              width: "100%",
+              minHeight: "120px",
+              padding: "0.75rem",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              fontFamily: "inherit",
+              fontSize: "14px",
+              resize: "vertical"
+            }}
+            {...register("free_response_3", { required: false })}
+          />
         </div>
 
         {/* SUBMIT */}

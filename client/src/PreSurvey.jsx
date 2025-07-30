@@ -15,7 +15,7 @@ export default function FormPage() {
 
   // For dev toggling "required" off, set devMode = true
   // Switch to false for production
-  const devMode = true;
+  const devMode = false;
 
   // Initialize React Hook Form
   // register => function to connect inputs to the form
@@ -377,7 +377,7 @@ export default function FormPage() {
               </div>
 
               {/* If there's a validation error for this statement's likert */}
-              {errors[`writingEfficacy_$_${index}`] && (
+              {errors[`writingEfficacy_${index}`] && (
                 <p style={{ color: "red" }}>Please rate this statement.</p>
               )}
             </div>
