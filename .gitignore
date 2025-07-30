@@ -1,1 +1,4 @@
 .DS_Store
+analysis/.ipynb_checkpoints/
+analysis/.gitattributes
+analysis/.env
