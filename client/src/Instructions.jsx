@@ -100,21 +100,10 @@ export default function Instructions() {
             You will get to select a topic from several options.  
           </p>
           <p>
-            We are asking you to:
-            <ol>
-                <li>
-                  Write an outline ({stageConfig.stageTimes.outline} minutes)
-                  {config.outline && " - "}<i>{config.outline && "you will have AI support to help generate ideas"}</i>
-                </li>
-                <li>
-                  Write a draft based on your outline {!config.draft && `(${stageConfig.stageTimes.draft} minutes)`}
-                  {config.draft && " - "}<i>{config.draft && "AI will generate the draft for you based on your outline"}</i>
-                </li>
-                <li>
-                  Revise the essay ({stageConfig.stageTimes.revision} minutes)
-                  {config.revision && " - "}<i>{config.revision && "you will have AI tools to help with revision"}</i>
-                </li>
-            </ol>
+            {config.outline && "You will have AI support to help generate ideas for your outline. "}
+            {config.draft && "AI will generate an initial draft for you based on your outline. "}
+            {config.revision && "You will have AI tools to help with revision. "}
+            You may not use any external AI support. In addition to using custom AI detection software, we have implemented a variety of logging features to detect external AI use. If you use external AI support, we will return your submission.
           </p>
         </div>
 

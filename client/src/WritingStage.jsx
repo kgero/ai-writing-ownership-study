@@ -413,13 +413,28 @@ export default function WritingStage({ stageName, nextStage }) {
     }
   };
 
-  // Format instructions text to bold key terms instead of caps
+  // Format instructions text to bold key terms instead of caps and first sentence after each section
   const formatInstructions = (text) => {
-    return text
+    let formattedText = text
       .replace(/INSTRUCTIONS/g, '<strong>Instructions</strong>')
       .replace(/LENGTH/g, '<strong>Length</strong>')
       .replace(/TIME ALLOWED/g, '<strong>Time Allowed</strong>')
       .replace(/SUPPORT/g, '<strong>Support</strong>');
+    
+    // Bold the first sentence after each section header
+    const sections = ['Instructions', 'Length', 'Time Allowed', 'Support'];
+    
+    sections.forEach(section => {
+      const sectionRegex = new RegExp(`(<strong>${section}</strong>)([^.!?]*[.!?])`, 'g');
+      formattedText = formattedText.replace(sectionRegex, (match, header, firstSentence) => {
+        return header + '<strong>' + firstSentence + '</strong>';
+      });
+    });
+    
+    // Underline text wrapped in asterisks (e.g., *300 words*)
+    formattedText = formattedText.replace(/\*([^*]+)\*/g, '<u>$1</u>');
+    
+    return formattedText;
   };
 
   // Always use standard width for the editor (70%)
