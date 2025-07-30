@@ -1,17 +1,6 @@
 # Minimal React App for AI Writing and Ownership Exeriment
 
-This is a minimal React application for running an experiment on AI, writing, and ownership. It was developed on a Mac.
-
-## TODOs
-
-- revise post-survey to match IRB
-- set up interaction logging (create the table, add in all the hooks)
-- ensure that text is saved to the snapshots at the end of each stage, not just final submission
-  - this is done! but make sure AI generated draft is saved properly this way for consistency
-- think about if it's worth having a 'config' table that maps participants to experiment config details (e.g. stage max length, prompts, etc.) or having participant condition and prompt saved everywhere
-
-There are also many aesthetic fixes, as well as some prompt engineering for the LLM and crafting of the writing prompts for the participants.
-
+This is a minimal React application for running an experiment on AI, writing, and ownership. It was developed on a Mac by Katy Gero in mid-2025.
 
 ## Railway deployment
 
@@ -24,7 +13,6 @@ There are some environment variables that need to be set in Railway carefully:
 - `OPENAI_API_KEY` in the server must have the OpenAI key to make LLM requests
 
 The server must also have the variables for the PostgreSQL database; these should be reference variables as Railway is also setting the PostgreSQL details.
-
 
 
 ## App structure
@@ -58,7 +46,38 @@ minimal-react-app/
 
 ## .env
 
+The `/server/.env` file needs to have variables for connecting to the database and an API key for accessing OpenAI models. (Actually not sure if REACT_APP_API_URL does anything; that's the url for the server.) Something like this:
 
+```
+OPENAI_API_KEY=anapikeygoeshere
+DB_USER=writing_app_user
+DB_HOST=localhost
+DB_NAME=writing_app_db
+DB_PASSWORD=apasswordgoeshere
+DB_PORT=5432
+PORT=5001
+REACT_APP_API_URL=http://localhost:5001
+```
+
+The `/client/.env` file needs to point to the server. Something like:
+
+```
+VITE_API_URL=http://localhost:5001
+```
+
+For the `/analysis/.env` see below:
+
+## Connect to database via Jupyter notebook
+
+In the `/analysis` directory are jupyter notebooks for running analysis. To connect to the Postgres database, which is hosted on Railway, you need to set up the relevant environment variables in `/analysis/.env`. These variables can be found via the Railway dashboard, if you click on the Postgres service and look at how to connect via a public connection. This incurs some costs but I believe they will be quite low. The `.env` file should look something like:
+
+```
+DB_HOST=switchback.proxy.rlwy.net
+DB_PORT=port
+DB_USER=postgres
+DB_PASSWORD=password
+DB_NAME=railway
+```
 
 ## Run app locally
 
@@ -67,23 +86,7 @@ Ensure you have the following installed on your Mac:
 - [Homebrew](https://brew.sh/)
 - Node.js and npm (via Homebrew)
 
-  ```sh
-  brew install node
-  ```
-
-The `.env` file need to have an OpenAI key, as well as the credentials for the database. It should look something like:
-
-```
-OPENAI_API_KEY=sk-proj-bunchofrandomlettersandnumbersquitelong
-DB_USER=writing_app_user
-DB_HOST=localhost
-DB_NAME=writing_app_db
-DB_PASSWORD=putincorrectpasswordhere
-DB_PORT=5432
-PORT=5001
-```
-
-To run the app locally, you need to start up the backend and frontend separately.
+To run the app locally, you need to start up the backend (server) and frontend (client) separately.
 
 Start backend:
 
@@ -103,7 +106,7 @@ npm run dev
 
 ## PostgreSQL database
 
-For the app to store data to the database, you'll have to set up a local postgresql database.
+For the app to store data to the database during development, you'll have to set up a local postgresql database. In production, the app should connect to the Railway Postgres database automatically.
 
 Follow these steps to set up the database:
 
@@ -155,6 +158,8 @@ And then start the pgAdmin 4 application from your Applications folder or Spotli
   - Select "View/Edit Data" > "All Rows"
 
 
+## Analysis notebooks
 
+Follow [these instructions](https://gist.github.com/33eyes/431e3d432f73371509d176d0dfb95b6e) for removing the output of notebooks before committing. (This makes it possible to reasonably track changes in the Jupyter notebooks via commits.)
 
 
