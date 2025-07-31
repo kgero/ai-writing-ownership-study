@@ -58,7 +58,7 @@ TIME ALLOWED: You will have *10 minutes* to write the outline. You will be given
 
 LENGTH: Your final essay should be about *300 words*. A word count is in the bottom righthand corner of the textbox. You must have at least 300 words in the textbox to continue to the revision stage.
 
-TIME ALLOWED: You will have *10 minutes* to write the draft. You will be given warnings when you have 5 minutes left, 2 minutes left, and 30 seconds left, at which point you will not be able to continue writing. You may move to the next stage before your time is up, whenever you feel you are ready.`,
+TIME ALLOWED: You will have *15 minutes* to write the draft. You will be given warnings when you have 5 minutes left, 2 minutes left, and 30 seconds left, at which point you will not be able to continue writing. You may move to the next stage before your time is up, whenever you feel you are ready.`,
       noai: `SUPPORT: You are not allowed to use any kind of AI support.`,
       ai: `n/a`
     },
