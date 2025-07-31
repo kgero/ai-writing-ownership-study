@@ -8,6 +8,7 @@ h2 {
   font-size: 20px;
 }
 
+
 /* Enhanced idea item styles for grey sidebar */
 .ideas-list {
   list-style: none;
@@ -130,6 +131,17 @@ body {
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
+}
+
+.sidebar-outline {
+  font-size: 14px;
+  white-space: pre-wrap;
+  padding: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 /* Full width editor when sidebar is not displayed */

@@ -48,6 +48,7 @@ export default function WritingStage({ stageName, nextStage }) {
   const [revisionResults, setRevisionResults] = useState({});
   const [revisionLoading, setRevisionLoading] = useState(false);
   const [activeRevisionType, setActiveRevisionType] = useState("");
+  const [showOutline, setShowOutline] = useState(false); // For collapsible outline in condition 4
   const textareaRef = useRef(null);
 
   // Logging hook
@@ -223,6 +224,11 @@ export default function WritingStage({ stageName, nextStage }) {
     return "";
   };
 
+  // Get outline content for revision stage
+  const getOutlineContent = () => {
+    return localStorage.getItem("outline_content") || "";
+  };
+
   // GET IDEAS BUTTON HANDLER
   const fetchIdeas = async () => {
     const buttonClickTime = Date.now();
@@ -393,7 +399,7 @@ export default function WritingStage({ stageName, nextStage }) {
   const hasEnoughWords = wordCount >= wordCountRequirement;
 
   // Determine if this is the no support condition but still needs previous content display
-  const showPreviousContent = (stageName === "Draft");
+  const showPreviousContent = (stageName === "Draft" || (stageName === "Revision" && !hasAISupport));
 
   // Determine appropriate button text for next stage
   const getNextButtonText = () => {
@@ -792,16 +798,22 @@ export default function WritingStage({ stageName, nextStage }) {
         {/* Previous content display for "no support" condition */}
         {showPreviousContent && (
           <>
-            <h3>{stageName === "Draft" ? "Your Outline" : "Your Draft"}</h3>
-            <div style={{ 
-              marginTop: "1rem", 
-              whiteSpace: "pre-wrap",
-              padding: "10px",
-              backgroundColor: "white",
-              border: "1px solid #ccc",
-              borderRadius: "5px"
-            }}>
-              {previousContent}
+            <div style={{
+                  width: "100%",
+                  padding: "6px",
+                  marginBottom: "10px",
+                  backgroundColor: "#e3f2fd",
+                  border: "1px solid #2196F3",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  display: "block",
+                  color: "#1976D2",
+                  boxSizing: "border-box",
+                  textAlign: "center"
+                }}>{"Your Outline"}</div>
+            <div className="sidebar-outline">
+              {stageName === "Draft" ? previousContent : getOutlineContent() || "No outline found."}
             </div>
           </>
         )}
@@ -856,21 +868,54 @@ export default function WritingStage({ stageName, nextStage }) {
         
         {/* AI Revision support - USING NEW COMPONENT */}
         {hasAISupport && stageName === "Revision" && (
-          <RevisionTools 
-            input={input}
-            revisionResults={revisionResults}
-            setRevisionResults={setRevisionResults}
-            issueMap={issueMap}
-            setIssueMap={setIssueMap}
-            highlightedText={highlightedText}
-            setHighlightedText={setHighlightedText}
-            activeIssueId={activeIssueId}
-            setActiveIssueId={setActiveIssueId}
-            sidebarRef={sidebarRef}
-            textareaRef={textareaRef}
-            setInput={setInput} // <-- pass setInput here
-          />
+          <>
+            <RevisionTools 
+              input={input}
+              revisionResults={revisionResults}
+              setRevisionResults={setRevisionResults}
+              issueMap={issueMap}
+              setIssueMap={setIssueMap}
+              highlightedText={highlightedText}
+              setHighlightedText={setHighlightedText}
+              activeIssueId={activeIssueId}
+              setActiveIssueId={setActiveIssueId}
+              sidebarRef={sidebarRef}
+              textareaRef={textareaRef}
+              setInput={setInput} // <-- pass setInput here
+            />
+            
+            {/* Collapsible outline for condition 4 */}
+            <div style={{ marginTop: "20px", width: "100%" }}>
+              <button 
+                onClick={() => setShowOutline(!showOutline)}
+                style={{
+                  width: "100%",
+                  padding: "8px 12px",
+                  backgroundColor: "#e3f2fd",
+                  border: "1px solid #2196F3",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  color: "#1976D2"
+                }}
+              >
+                <span>{showOutline ? "Hide Outline" : "Show Outline"}</span>
+                <span style={{ fontSize: "16px" }}>{showOutline ? "−" : "+"}</span>
+              </button>
+              
+              {showOutline && (
+                <div class="sidebar-outline">
+                    {getOutlineContent() || "No outline found."}
+                </div>
+              )}
+            </div>
+          </>
         )}
+        
         {/* If no content, render nothing (blank sidebar) */}
         {!(showPreviousContent || hasAISupport) && <div style={{ width: '100%', height: '100%' }}></div>}
       </div>
