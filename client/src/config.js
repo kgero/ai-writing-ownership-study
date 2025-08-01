@@ -63,7 +63,7 @@ TIME ALLOWED: You will have *15 minutes* to write the draft. You will be given w
       ai: `n/a`
     },
     revision: {
-      base: `INSTRUCTIONS: Please review and revise your essay below. Your draft is in the textbox. You may want to consider the strength of your arguments, the clarity of your writing, and the overall structure of your essay.
+      base: `INSTRUCTIONS: Please review and revise your essay below. Your draft is in the textbox. You may want to consider the strength of your arguments, the clarity of your writing, and the overall structure of your essay. You are required to revise your essay in some way, for instance by adding, removing, rewriting, or reorganizing some sentences.
 
 LENGTH: Your final essay should be about *300 words*. A word count is in the bottom righthand corner of the textbox. You must have at least 250 words in the textbox to submit your essay.
 
