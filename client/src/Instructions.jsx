@@ -100,11 +100,23 @@ export default function Instructions() {
             You will get to select a topic from several options.  
           </p>
           <p>
-            {config.outline && "You will have AI support to help generate ideas for your outline. "}
-            {config.draft && "AI will generate an initial draft for you based on your outline. "}
-            {config.revision && "You will have AI tools to help with revision. "}
-            You may not use any external AI support. In addition to using custom AI detection software, we have implemented a variety of logging features to detect external AI use. If you use external AI support, we will return your submission.
+            {config.outline && "You will have AI support to help generate ideas for your outline. This support will be provided within the webpage. "}
+            {config.draft && "An AI system will generate an initial draft for you based on your outline. This support will be provided within the webpage. "}
+            {config.revision && "You will have AI tools to help with revision. This support will be provided within the webpage.  "}
+            You must do all your writing in the textbox provided; copy and pasting from external writing programs will result in your submission being returned.
           </p>
+          <div style={{
+            backgroundColor: "#fff3cd",
+            border: "1px solid #ffeaa7",
+            borderRadius: "6px",
+            padding: "8px 12px",
+            margin: "8px 0",
+            color: "#856404",
+            fontSize: "13px",
+            fontWeight: "500"
+          }}>
+            ⚠️ <strong>Note:</strong> You may not use any external AI support. You must do all your writing in the textbox provided on the webpage. We have implemented a variety of logging features to detect external AI use. <strong>If you use external AI support, we will return your submission.</strong>
+          </div>
         </div>
 
       <div style={{ marginBottom: "2rem" }}>

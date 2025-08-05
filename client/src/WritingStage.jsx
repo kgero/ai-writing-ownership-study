@@ -511,6 +511,22 @@ export default function WritingStage({ stageName, nextStage }) {
           </div>
         )}
         
+        {/* Warning for revision stage */}
+        {stageName === "Revision" && (
+          <div style={{
+            backgroundColor: "#fff3cd",
+            border: "1px solid #ffeaa7",
+            borderRadius: "6px",
+            padding: "8px 12px",
+            margin: "8px 0",
+            color: "#856404",
+            fontSize: "13px",
+            fontWeight: "500"
+          }}>
+            ⚠️ <strong>Note:</strong> You are required to revise your essay.
+          </div>
+        )}
+        
         {/* Compact Essay Topic */}
         <div style={{
           backgroundColor: "#e8f5e8",
