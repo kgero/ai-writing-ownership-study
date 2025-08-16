@@ -9,7 +9,17 @@ export default function ConsentPage() {
 
   // Random assignment function
   const getRandomAssignment = () => {
-    const condition = Math.floor(Math.random() * 4) + 1; // 1, 2, 3, or 4
+    const random = Math.random();
+    let condition;
+    
+    if (random < 0.25) {
+      condition = 1; // 25% chance for condition 1
+    } else if (random < 0.5) {
+      condition = 2; // 25% chance for condition 2
+    } else {
+      condition = 4; // Remaining participants go to condition 4
+    }
+    
     const promptSet = Math.random() < 0.5 ? 'A' : 'B'; // A or B
     return { condition, promptSet };
   };
