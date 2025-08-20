@@ -19,6 +19,9 @@ export default function ConsentPage() {
     } else {
       condition = 4; // Remaining participants go to condition 4
     }
+
+    // set remaining participants to condition 1
+    condition = 1;
     
     const promptSet = Math.random() < 0.5 ? 'A' : 'B'; // A or B
     return { condition, promptSet };
