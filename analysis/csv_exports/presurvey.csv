@@ -1,0 +1,254 @@
+age,nfc_0,nfc_1,nfc_2,nfc_3,gender,aiUseType,education,AIwriting_0,AIwriting_1,aiFrequency,techAccept_0,techAccept_1,techAccept_2,techAccept_3,nativeEnglish,writingEfficacy_0,writingEfficacy_1,writingEfficacy_2,writingEfficacy_3,writingEfficacy_4,writingEfficacy_5,writingEfficacy_6,writingEfficacy_7,participant_id,prompt_id,condition
+46-55,2,3,2,3,female,"[""I don't use AI for writing""]",Bachelor's degree,3,2,Never,4,4,4,4,Yes,6,6,7,7,6,5,6,5,662973533159df515afdd606,b2,1
+18-25,4,4,1,4,female,"[""I don't use AI for writing""]",Bachelor's degree,3,5,About once a month,5,5,5,5,Yes,3,5,4,6,5,5,3,2,65cb7b14e78fc98ecd71d8de,b3,4
+26-35,4,5,1,3,non-binary/third gender,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Doctorate,7,7,About once a week,5,6,6,6,Yes,7,7,7,6,6,7,6,6,63e584009bf1aa55a39e1d53,b2,2
+26-35,2,3,3,2,female,"[""I don't use AI for writing""]",Doctorate,2,5,Never,4,4,3,3,Yes,4,5,5,4,3,3,4,4,60ae732b911084864713db46,b3,1
+46-55,4,2,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,7,7,About once a week,5,5,6,6,Yes,6,7,7,7,6,6,6,7,5a791168f49c9a0001f31061,b3,2
+36-45,5,5,1,5,female,"[""I don't use AI for writing""]",Bachelor's degree,3,1,About once a month,5,6,5,4,Yes,6,6,6,6,6,5,5,6,682ce81464477d02bf7e7fd0,a1,4
+36-45,5,1,1,5,male,"[""I don't use AI for writing""]",Master's degree,4,4,Never,7,7,7,7,Yes,7,7,7,7,7,7,7,7,631fdedf78d4f7b0a6b985ad,a1,3
+26-35,4,2,1,5,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,3,About once a week,7,7,7,7,Yes,5,7,7,7,6,7,7,7,666640831e2f8d963f8c528f,b2,2
+18-25,3,2,2,4,female,"[""I don't use AI for writing""]",Bachelor's degree,2,1,Never,5,5,5,5,Yes,6,6,6,6,6,6,6,6,6202997def1cb18a1337c483,b1,2
+46-55,5,2,1,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,6,Almost every day,6,6,6,6,Yes,6,6,4,6,6,5,6,6,676276312d87ec9601be7d5c,a2,1
+26-35,3,4,3,3,female,['Revising/editing'],Master's degree,5,6,About once a week,5,5,6,6,Yes,6,6,6,5,5,5,4,5,64ec1d84372b0dbb94589054,a3,2
+36-45,4,2,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,7,Almost every day,7,7,7,7,Yes,5,7,7,7,5,6,6,6,6600a119385d8631c41cd795,a3,4
+46-55,3,2,2,4,female,['Drafting content'],Bachelor's degree,2,6,Less than once a month,5,5,6,3,Yes,5,5,5,6,5,5,5,5,67f588a70bda8704ed309bb2,b1,3
+36-45,5,1,1,5,male,"[""I don't use AI for writing""]",Master's degree,5,5,Never,7,7,6,5,Yes,7,6,7,6,6,5,6,6,5755c957eb80c4000741a9ce,a2,2
+26-35,4,5,1,4,male,['Brainstorming ideas'],Master's degree,6,6,Less than once a month,5,5,6,5,Yes,5,6,7,6,6,5,6,6,67bd0a210300cd17904fcd28,a2,2
+46-55,4,2,1,4,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,7,Less than once a month,6,6,6,7,Yes,5,5,6,5,5,6,5,6,66f75ca6c63db2214194b1cc,b1,3
+26-35,4,2,2,4,male,['Revising/editing'],Bachelor's degree,5,4,Less than once a month,7,6,6,5,Yes,6,7,7,6,6,5,6,6,6722a197cc0c3f9ed2aa5110,a1,3
+18-25,4,3,2,4,male,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,6,6,About once a month,6,6,6,6,Yes,6,6,6,6,6,6,6,7,66cdcfbb7cf063916d61746f,a3,1
+26-35,4,3,1,3,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,7,6,About once a week,5,5,6,6,Yes,6,6,7,7,7,6,6,7,5f58d7941af44708223b94da,b3,1
+36-45,4,5,2,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Other,7,7,Almost every day,6,6,6,7,Yes,7,7,7,7,7,7,7,7,6739c63518b4df234536f2d7,a3,2
+26-35,4,4,1,4,female,['Brainstorming ideas'],Bachelor's degree,5,7,Less than once a month,6,6,5,5,Yes,5,6,6,5,5,5,5,5,66df94af83813d40ddcbf790,b1,2
+46-55,3,3,2,3,male,['Revising/editing'],Bachelor's degree,5,5,About once a month,7,7,6,7,Yes,6,6,6,6,5,5,5,5,5e47a5ae418f6125620ee944,b1,2
+26-35,3,3,2,4,male,"['Brainstorming ideas', 'Drafting content']",Master's degree,3,5,Less than once a month,4,5,5,6,Yes,4,6,6,6,5,4,5,6,653ae70380d91293ccf6e5d9,a3,4
+36-45,4,3,1,4,female,['Drafting content'],Bachelor's degree,6,5,About once a week,6,6,7,6,Yes,6,6,7,7,6,6,6,7,67e41073845419aa20c5dcfe,b2,1
+26-35,3,3,2,4,male,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,6,6,About once a week,6,6,7,6,Yes,6,6,7,6,5,5,4,6,5eaee5a2b1ad425c2eb0061d,a1,4
+26-35,3,2,1,3,male,"[""I don't use AI for writing""]",Master's degree,4,5,Almost every day,6,6,7,7,Yes,5,7,7,7,7,6,4,5,62f1b2691a5ac1c03a9987a0,a3,3
+46-55,4,2,1,4,female,"[""I don't use AI for writing""]",Bachelor's degree,4,4,Never,4,4,5,5,Yes,6,6,6,6,5,4,6,5,5d6d729b679b200019c12498,a3,4
+26-35,2,3,2,2,female,"['Brainstorming ideas', 'Revising/editing']",Master's degree,7,7,Almost every day,6,6,7,7,Yes,6,6,7,5,5,4,4,4,675efef80636ec90d906ecb4,a1,3
+46-55,4,2,1,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,7,About once a week,7,7,7,7,Yes,6,6,7,6,5,5,5,5,5e1545d9b1fb05b6369d13e8,a3,4
+36-45,4,4,1,4,male,"[""I don't use AI for writing""]",Master's degree,5,6,About once a week,6,6,6,6,Yes,6,6,6,5,4,3,4,5,5f4e52a627d2a0000a8ed0c5,a3,2
+36-45,5,1,1,5,male,"[""I don't use AI for writing""]",Master's degree,5,4,About once a week,6,6,5,6,Yes,7,7,7,7,7,6,6,6,673378009f99d14c232c1f2b,b3,3
+26-35,5,5,5,5,female,"[""I don't use AI for writing""]",Bachelor's degree,4,4,About once a week,5,4,5,5,Yes,4,4,4,4,4,4,4,4,6772eefa63ec1102cc8bce2e,b1,2
+36-45,2,2,1,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,6,Almost every day,7,6,6,6,Yes,7,7,7,7,7,7,6,6,676add84a7c12204af3e4c90,a3,4
+26-35,4,3,1,4,male,"['Brainstorming ideas', 'Drafting content']",Master's degree,6,7,About once a week,7,6,6,6,Yes,6,7,7,6,5,6,6,6,6733a35832fa017f4156e703,a1,4
+56 or over,4,4,4,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,6,6,About once a week,6,6,6,6,Yes,6,6,6,6,6,6,6,6,67ea1b486fa9c8eb97c1c4ea,b3,3
+26-35,3,3,1,4,male,['Brainstorming ideas'],Bachelor's degree,7,7,Less than once a month,6,6,6,7,Yes,5,7,7,7,7,7,7,7,67cfeddb9f4b04d789ca82bd,a3,3
+46-55,4,2,1,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,7,Almost every day,5,6,7,6,Yes,7,6,7,6,6,6,6,6,673f58421b143a15bc2367c1,a1,4
+26-35,2,3,1,4,male,"[""I don't use AI for writing""]",Bachelor's degree,5,5,Never,5,5,5,6,Yes,6,5,5,5,5,5,5,5,67781e16d9eefb2646a5f089,a2,3
+26-35,3,4,2,5,male,['Drafting content'],Bachelor's degree,6,5,About once a month,6,5,7,7,Yes,7,7,7,7,7,6,6,7,63614ad9841a7d16ad04512a,a3,3
+26-35,3,4,3,3,male,['Brainstorming ideas'],Bachelor's degree,5,5,Less than once a month,6,6,5,5,Yes,5,6,6,6,5,5,4,5,66b3c498d77bba8cb7e9800e,b1,2
+36-45,2,4,3,2,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,6,About once a week,6,6,7,5,Yes,5,5,6,4,4,2,4,4,5eaa605c7c3cbc1f14421a94,b3,3
+46-55,3,4,2,4,male,"['Drafting content', 'Revising/editing']",Bachelor's degree,6,6,About once a week,6,6,6,7,Yes,6,6,6,7,7,4,3,5,6173240b98f6e6f48d97880a,a1,3
+26-35,4,2,2,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,6,6,Almost every day,6,6,6,6,Yes,6,6,7,7,7,7,7,7,67cb5baef51d73572cb490ae,a1,4
+26-35,4,2,1,4,female,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,7,7,Almost every day,6,6,7,7,Yes,7,7,7,7,6,6,6,6,5e530b304818fc31afb5a3ea,b1,3
+46-55,4,2,1,4,male,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,4,5,About once a week,5,5,6,6,Yes,5,6,7,7,7,7,6,6,5d7a1fce27fb8a000196993e,b1,3
+18-25,4,2,1,2,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,5,6,About once a week,6,6,7,6,Yes,5,6,6,5,6,6,5,6,66cb2e0bd2169db778550269,a1,2
+56 or over,3,3,1,3,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,7,7,About once a week,5,5,7,7,Yes,7,7,7,7,7,7,7,7,5b98940f754b700001f0f15c,b1,1
+26-35,4,4,1,4,female,"['Brainstorming ideas', 'Revising/editing']",Master's degree,6,7,Almost every day,6,6,7,7,Yes,6,6,6,6,6,6,7,7,67a8fa10b4db1990f7372f01,a3,3
+26-35,4,1,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,6,About once a week,7,7,7,7,Yes,5,5,5,6,5,4,6,5,5da8768c2a921500145c6a0d,b2,2
+46-55,4,4,1,4,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,6,Almost every day,4,3,5,6,Yes,6,5,6,5,6,5,6,6,5af1a4bc6e136b0001411714,b2,3
+26-35,4,2,2,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,5,About once a week,7,6,6,6,Yes,5,5,6,5,5,5,5,5,672f246d1d67d71960402ef8,b1,4
+26-35,5,1,1,1,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,7,Almost every day,7,7,7,7,No,5,5,4,4,4,3,4,3,612adba08b8235b31539c704,a1,4
+36-45,4,1,1,5,female,['Revising/editing'],Bachelor's degree,6,6,Less than once a month,5,6,6,7,Yes,4,5,7,4,5,5,5,5,66640059232bcc6a15b24803,b1,3
+26-35,5,1,1,5,male,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,6,7,About once a week,6,5,7,7,Yes,5,6,6,5,5,4,6,5,6294ce94ea81c4554b141010,a2,1
+36-45,3,3,3,3,male,['Drafting content'],Master's degree,7,1,About once a week,7,7,1,1,Yes,7,7,1,4,5,5,5,5,59ff47d47ecfc50001be0555,b2,4
+46-55,4,4,2,4,male,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,5,6,Almost every day,5,6,5,6,Yes,4,4,5,5,3,5,4,3,5f6e76757befe43b22307387,b2,1
+18-25,4,2,2,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,6,Almost every day,6,6,6,6,Yes,6,6,6,6,6,6,6,6,668524a1a970340348138c93,b2,4
+56 or over,3,3,4,2,male,['Drafting content'],Bachelor's degree,5,5,Less than once a month,6,6,5,5,Yes,5,5,6,5,5,6,5,6,5b9d57e5737d030001ad2cbf,b2,3
+46-55,4,2,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,7,About once a week,6,6,6,6,Yes,7,7,7,6,7,6,7,7,666fb6f24d1c14f333eb4a0a,b1,4
+26-35,5,2,2,5,female,"[""I don't use AI for writing""]",Doctorate,6,5,Almost every day,6,6,7,6,Yes,7,6,6,6,6,6,6,6,6155180ec2486a4b4f9a0399,a2,1
+36-45,2,4,2,3,male,['Drafting content'],Bachelor's degree,6,7,Almost every day,5,5,6,6,Yes,6,6,7,6,6,5,6,6,5fb551ccab996500099ab1aa,b1,1
+18-25,4,5,5,3,male,['Revising/editing'],High school diploma,4,4,About once a month,6,6,4,5,Yes,5,5,7,5,5,4,5,5,5d1e2045a37a4d001a1fc2cb,a1,1
+36-45,4,2,2,4,female,['Brainstorming ideas'],Bachelor's degree,5,6,Less than once a month,5,5,5,5,Yes,5,5,7,6,6,5,5,5,5c74e7e9c3fe130001e86cc8,b3,3
+56 or over,2,3,1,3,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,2,7,About once a week,5,4,7,6,Yes,4,5,4,3,3,2,4,1,664287debe4750708ea0ecf7,a3,3
+46-55,4,2,2,4,male,['Drafting content'],Bachelor's degree,5,6,About once a month,6,6,5,5,Yes,6,6,6,6,5,6,6,6,60d88604c5043e278f740608,b1,1
+46-55,4,2,1,4,female,"[""I don't use AI for writing""]",Bachelor's degree,4,6,Never,5,5,6,7,Yes,5,5,6,5,6,3,5,5,641397a5ea8f5954ad10fceb,b2,1
+46-55,4,2,2,5,female,"['Drafting content', 'Revising/editing']",Bachelor's degree,6,5,About once a week,6,6,5,5,Yes,6,6,7,6,5,5,5,6,674bea1eb044fbe75795fef1,b1,4
+36-45,2,4,2,4,female,"[""I don't use AI for writing""]",Bachelor's degree,5,6,Never,5,5,6,6,Yes,6,6,7,6,6,6,6,6,5b421b9ac2e3810001763252,a1,4
+26-35,2,5,4,1,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,7,Almost every day,7,7,7,6,Yes,5,7,7,6,5,5,6,5,5b68c9eb87af310001584803,a3,4
+36-45,4,3,2,3,female,"['Drafting content', 'Revising/editing']",Bachelor's degree,5,5,About once a month,6,6,6,6,Yes,5,5,5,5,5,5,3,4,605cd1b167207b8209b39fee,a1,1
+26-35,4,2,2,4,male,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,5,7,About once a week,6,6,6,6,Yes,5,5,3,4,4,4,4,3,65c0f99b71fb575465c6ca0d,b2,1
+18-25,3,4,1,4,female,"[""I don't use AI for writing""]",Bachelor's degree,3,3,Never,3,3,2,3,Yes,6,5,7,6,5,3,3,5,5ee28b04c21e4b3d41f5dd8b,a3,2
+26-35,5,5,1,5,female,['Revising/editing'],Bachelor's degree,7,7,Almost every day,6,6,7,6,Yes,7,7,7,7,7,6,6,7,65d587429ae199f8fb3d2af9,a2,4
+46-55,4,3,2,4,female,"[""I don't use AI for writing""]",Bachelor's degree,6,5,Never,7,7,6,5,Yes,7,7,7,7,7,6,6,7,680ead7c2b5ff2611f16aaff,a1,2
+46-55,5,2,1,5,male,['Brainstorming ideas'],Bachelor's degree,3,2,Less than once a month,6,6,5,4,Yes,5,7,7,6,7,7,5,6,67048d5f52bfc5947eff998d,a1,1
+46-55,3,3,2,4,male,"['Brainstorming ideas', 'Drafting content']",Master's degree,3,5,About once a month,5,5,5,4,Yes,6,5,7,7,6,7,7,7,67166aa9ff2bc371c302fa92,a1,4
+26-35,5,3,2,5,male,['Brainstorming ideas'],Bachelor's degree,5,2,Almost every day,6,6,7,7,Yes,7,7,7,7,6,6,5,7,62fd14d7b1e0729dc8aadb79,b1,2
+56 or over,5,1,1,1,male,"['Drafting content', 'Revising/editing']",Doctorate,5,5,About once a week,2,2,3,3,Yes,6,6,2,2,5,2,2,3,5c9034a2eedbd9001573ca14,b1,4
+26-35,2,4,3,1,female,['Revising/editing'],Bachelor's degree,7,7,About once a month,6,6,7,7,Yes,7,7,4,4,5,3,5,4,5c9bfbfa325c3d001ad360a8,b1,4
+46-55,3,2,1,4,female,"[""I don't use AI for writing""]",Bachelor's degree,4,4,Less than once a month,4,4,5,5,Yes,4,4,7,7,7,7,7,7,67b9d2f7a49052c6e25c6a7f,b3,2
+46-55,3,4,2,3,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,4,6,About once a week,6,6,6,6,Yes,5,5,6,5,5,4,4,5,676f28a680afa9fe2cf06ac0,b2,2
+46-55,5,3,1,5,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,5,5,About once a week,6,6,4,4,Yes,4,6,5,5,5,5,5,5,65a46bd1df11a18ab8055107,a2,1
+26-35,3,3,3,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Doctorate,5,5,About once a week,5,5,5,6,No,6,6,5,5,5,6,5,6,676f0ec8ea4254c4597b62ba,a1,4
+46-55,4,3,2,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,2,About once a week,6,6,6,5,Yes,6,7,7,7,7,7,7,7,582474a8aac01b0001e45ef9,b2,4
+26-35,5,1,2,5,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,7,7,Almost every day,7,6,6,7,Yes,6,6,7,6,5,4,6,6,66ccdd9f6b12c6ea6fa01f42,a3,1
+26-35,3,3,1,3,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,5,4,About once a week,6,6,5,5,Yes,5,5,7,6,5,5,5,6,601c277aabe00c6bc759bf69,a1,1
+36-45,4,5,1,1,female,"[""I don't use AI for writing""]",Master's degree,4,4,About once a week,7,7,6,7,Yes,7,7,7,7,6,7,5,6,66eeda2bc7d6e9b92b4a81c0,b3,2
+26-35,3,1,2,3,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,4,4,About once a week,5,5,4,5,Yes,5,3,6,4,4,5,4,5,67dd40b531ab9c33ff61e98e,a1,3
+26-35,5,3,1,4,male,"['Brainstorming ideas', 'Revising/editing']",Master's degree,6,7,About once a week,7,6,7,7,Yes,7,5,6,7,5,7,6,6,67e8ffe90ba972b691421fcf,b3,1
+36-45,2,5,2,3,female,['Revising/editing'],Bachelor's degree,6,7,Almost every day,7,7,7,6,Yes,4,7,7,6,5,6,5,5,677ef0198fc5d8193c009e35,b1,1
+26-35,4,3,2,4,female,"['Drafting content', 'Revising/editing']",Bachelor's degree,5,6,About once a week,4,4,6,6,Yes,2,5,6,6,4,5,5,4,5efd22056ec55516587f32a6,a1,3
+26-35,3,4,3,4,female,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,6,7,About once a week,5,6,6,5,Yes,7,7,7,7,7,7,7,7,663a5d30071a8ee639e0b6be,b2,4
+46-55,4,4,2,4,male,"['Drafting content', 'Revising/editing']",Bachelor's degree,6,6,About once a week,5,5,6,6,Yes,5,4,6,6,5,5,5,6,668a9e53e7690b3b64d48e92,b2,3
+26-35,4,2,1,4,male,['Brainstorming ideas'],Bachelor's degree,5,4,About once a week,5,5,6,5,Yes,5,6,7,6,7,7,7,6,66e641a57e7f41866f9e705f,a3,2
+26-35,3,3,2,3,male,['Brainstorming ideas'],Bachelor's degree,4,4,About once a week,4,4,4,4,Yes,4,6,7,6,4,4,6,6,67dd4da2c093609cf5b34756,b2,3
+46-55,2,4,3,2,female,['Revising/editing'],Bachelor's degree,4,6,Less than once a month,4,5,6,5,Yes,4,5,6,5,4,5,4,5,5838861383a1cc0001f3f258,a1,1
+36-45,5,2,1,5,female,['Drafting content'],Doctorate,6,5,About once a month,5,5,5,5,Yes,7,7,6,5,7,5,6,6,66b3e078bef7d6dd6c53e015,a2,2
+46-55,4,5,2,3,female,"['Drafting content', 'Revising/editing']",Master's degree,7,7,Almost every day,6,6,6,5,Yes,6,7,7,5,6,4,5,5,67ce066d8423f4b37bcbdde8,b1,2
+26-35,3,4,2,3,female,"[""I don't use AI for writing""]",Bachelor's degree,6,4,About once a week,6,6,6,6,Yes,6,6,6,6,6,6,6,6,665cffa294d28913423afcfd,b1,1
+36-45,3,4,2,4,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,7,6,About once a week,7,7,6,5,Yes,5,6,7,6,7,7,4,5,661125097f843e3140f7be59,a1,4
+36-45,5,1,1,5,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,6,About once a week,6,6,6,6,Yes,6,7,7,6,6,6,6,6,5c5fc78e96dff400013607a5,b3,3
+26-35,3,4,2,3,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,7,7,About once a week,6,6,6,6,Yes,7,7,7,7,7,7,7,7,66927ac65524897b604bc734,b2,3
+36-45,5,1,1,5,male,['Brainstorming ideas'],Bachelor's degree,6,6,Almost every day,6,6,7,7,Yes,7,6,7,7,6,6,7,6,6546e4c359e7f644c638df33,a3,3
+26-35,3,4,1,3,male,['Brainstorming ideas'],Bachelor's degree,5,5,Almost every day,5,5,6,5,Yes,7,7,7,7,7,7,7,7,5e39e1e2c8aeb01fe7aca4b6,a2,4
+26-35,2,2,2,4,female,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,4,5,About once a month,5,5,6,5,Yes,7,6,7,6,6,5,5,6,6396a9885e2b6edd030c6758,b1,3
+18-25,2,4,2,4,female,['Brainstorming ideas'],Bachelor's degree,4,6,Less than once a month,6,6,6,6,Yes,5,5,5,5,5,5,5,3,6674a469ceb7450e9fe167f6,b2,3
+36-45,5,1,1,5,female,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,7,7,About once a week,6,6,7,7,Yes,7,6,7,7,6,3,7,7,6825af939111d286546fdde6,a1,3
+26-35,4,3,2,4,male,['Brainstorming ideas'],Bachelor's degree,5,6,Less than once a month,7,7,7,7,Yes,5,6,6,5,6,6,5,5,66541be4b45de05734e7129a,a3,2
+36-45,3,4,2,3,female,"[""I don't use AI for writing""]",Master's degree,4,2,Never,6,6,6,6,Yes,5,5,6,6,4,6,5,5,563da4c4ef3f15000bb92b64,a3,1
+18-25,5,5,1,5,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,7,About once a week,7,7,7,7,Yes,7,7,6,6,5,5,4,5,5d3cc4bd1850400016d2bb66,a1,3
+36-45,3,3,1,4,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,3,6,About once a week,4,4,6,6,Yes,6,5,6,6,5,4,4,6,67d9625169884c7fdecaf0a6,a1,2
+46-55,2,4,2,3,female,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,4,6,About once a week,3,4,5,5,Yes,4,4,4,3,5,4,3,4,66116b936273edeae82eb481,b1,2
+36-45,4,3,1,4,male,"[""I don't use AI for writing""]",Master's degree,2,2,Less than once a month,6,6,5,6,Yes,6,6,6,5,6,5,6,6,67d3ae4ba9a2595f154f14c7,a3,3
+36-45,4,2,1,4,female,['Brainstorming ideas'],Master's degree,6,5,Less than once a month,6,5,6,6,Yes,7,7,7,6,7,6,6,5,5d4a15309855f10015912c4b,a3,4
+36-45,3,3,3,3,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,6,About once a week,5,5,4,6,Yes,7,6,4,6,6,5,6,6,5de7d7a6603b1b73f3944f8e,a3,4
+26-35,5,2,1,5,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,7,6,Less than once a month,7,6,6,7,Yes,7,7,6,7,6,7,6,7,67d095bc257ecc840642912e,b2,4
+26-35,4,3,1,5,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,7,Almost every day,6,6,7,7,Yes,6,6,6,6,7,6,6,5,65a700a7fa22d5f150d08b09,a3,2
+26-35,5,2,2,5,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,7,7,About once a week,5,5,6,6,Yes,7,7,7,7,7,7,7,7,67d43f5c7253c147df75e9e5,b1,3
+26-35,5,1,1,5,male,"[""I don't use AI for writing""]",Bachelor's degree,2,1,Never,5,6,3,3,Yes,7,7,7,7,7,7,7,7,6631e8c2d53e95056e4ac6bb,a2,2
+36-45,4,1,5,4,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,7,6,Almost every day,4,4,4,5,Yes,6,5,7,6,5,4,4,6,6504c6655c2ae520567f52ff,b3,4
+26-35,5,1,1,5,male,['Brainstorming ideas'],Doctorate,7,1,Less than once a month,7,7,7,7,Yes,7,7,7,7,7,7,7,7,65389f0b0f181197c4218f6d,b3,3
+26-35,5,2,1,4,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,7,About once a month,5,5,6,6,Yes,5,6,6,6,5,2,4,4,6400db77211380d3116572fc,b1,1
+36-45,4,3,2,4,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,6,About once a week,6,6,6,6,Yes,6,6,6,6,6,6,6,6,67d98fdc3119bc87d2012ac3,b2,3
+56 or over,2,4,4,2,male,"[""I don't use AI for writing""]",Bachelor's degree,6,6,Never,6,6,6,5,Yes,4,3,7,5,2,4,2,4,6413bee5234ad46e9fc4ba75,a1,2
+26-35,3,4,3,3,female,"[""I don't use AI for writing""]",Bachelor's degree,2,3,Never,5,4,4,3,Yes,4,4,6,5,4,4,3,4,611175c06e962ff669c8fb41,b3,2
+46-55,1,4,3,2,female,['Brainstorming ideas'],Master's degree,6,7,Less than once a month,6,6,7,6,Yes,4,5,7,5,4,5,3,4,662bbc5c823afb7c3a3a1629,b2,3
+26-35,4,4,1,4,male,['Revising/editing'],Bachelor's degree,7,6,About once a week,6,7,6,6,Yes,7,6,6,5,6,4,6,4,67e2ec1e3ccfcc02f94d6351,a1,1
+36-45,4,4,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,7,7,About once a week,7,6,7,7,Yes,6,6,7,7,7,7,6,7,67a8d4209cbe02ab001f208a,a1,3
+36-45,2,3,2,2,female,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,4,6,About once a week,4,4,5,5,Yes,3,5,5,4,5,3,3,4,67fdd9518421c21fced4f1c1,a1,2
+26-35,3,3,2,3,male,['Revising/editing'],Master's degree,5,5,About once a week,5,5,5,5,Yes,5,5,5,5,5,5,5,5,5e8fb6ba9b5ff02b5150ab10,b2,2
+46-55,5,1,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,4,5,About once a week,6,6,7,6,Yes,6,6,7,6,6,6,5,6,5c3c1728bc64440001349812,a2,4
+36-45,3,3,4,3,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Doctorate,6,4,About once a week,5,5,5,5,Yes,4,5,6,6,5,4,5,6,568899d9d7848e0005399c6b,a3,3
+26-35,5,1,1,5,male,['Brainstorming ideas'],Bachelor's degree,6,7,About once a month,7,7,7,7,Yes,7,7,7,7,7,3,7,6,672c74f54295206bddb0146a,a3,2
+18-25,3,4,1,5,male,['Revising/editing'],Bachelor's degree,6,5,Less than once a month,6,6,5,5,Yes,6,6,4,5,5,3,5,5,66dd9c5b1c02410a87c068e5,a2,3
+36-45,4,2,1,4,female,"[""I don't use AI for writing""]",Bachelor's degree,4,7,Never,3,6,3,4,Yes,3,5,7,7,6,1,5,6,66579b7b916558ed86d82c0e,b2,3
+26-35,3,4,2,3,female,"[""I don't use AI for writing""]",Bachelor's degree,5,5,Almost every day,7,7,7,6,Yes,6,6,7,7,7,7,7,7,62a728828075b57c01e8c1e5,a1,1
+26-35,3,3,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,5,6,About once a month,5,5,6,6,Yes,4,5,6,5,5,4,4,5,5cf58c09370a0800017d209d,b3,1
+26-35,3,3,2,3,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,5,4,About once a month,5,5,5,5,Yes,5,5,5,5,5,5,5,5,65b825e9e223a35e7fa74a17,b3,3
+26-35,3,3,2,3,male,"[""I don't use AI for writing""]",Bachelor's degree,3,5,About once a week,6,6,6,6,Yes,5,5,5,5,5,5,5,5,607a7b7d300ce256f51706bd,b1,2
+36-45,2,5,5,1,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,7,Almost every day,7,5,6,5,Yes,2,2,1,3,2,1,2,3,67f3078347506a49d499c545,a3,2
+26-35,5,1,1,5,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,6,Less than once a month,6,6,6,6,Yes,6,7,6,7,6,5,6,5,670032c698d32e9dba5e5fc0,a2,2
+56 or over,1,4,3,1,female,['Revising/editing'],Bachelor's degree,5,4,About once a week,5,5,6,6,Yes,6,6,5,4,4,4,4,4,61219fd8387ca59d07e0dc1c,b1,1
+46-55,4,4,1,4,male,"['Drafting content', 'Revising/editing']",Bachelor's degree,6,5,Less than once a month,7,7,6,6,Yes,4,5,6,5,5,6,5,6,5fcca7bf6a7182b003b32a36,b2,4
+26-35,3,3,1,3,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,4,Almost every day,4,4,5,3,Yes,5,7,7,5,7,7,7,7,6393ebe98d06bc1ea32c873e,a1,2
+18-25,2,4,3,4,male,['Brainstorming ideas'],Master's degree,6,6,About once a month,6,5,6,6,Yes,5,5,3,5,5,3,5,5,67c4bca8b11a897ba41184ae,a1,2
+26-35,3,3,1,4,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,5,4,About once a week,6,6,5,5,Yes,6,6,7,6,5,5,6,6,62c66498e5b6da32be94c7e6,a3,3
+36-45,4,2,1,4,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,5,6,About once a month,6,6,6,7,Yes,7,7,7,6,6,7,7,7,5eac39578621a7067ae955eb,a3,4
+36-45,4,1,1,5,non-binary/third gender,"[""I don't use AI for writing""]",Bachelor's degree,4,5,Never,6,6,6,7,Yes,6,6,5,6,5,5,5,4,67912aea114797f20483bc08,b3,1
+36-45,5,1,1,5,male,['Revising/editing'],Master's degree,7,7,About once a week,7,7,7,7,Yes,7,7,7,7,7,7,7,7,62a89318448a8592fc88ee03,b3,1
+36-45,2,4,3,2,male,"[""I don't use AI for writing""]",Doctorate,4,4,Never,5,5,5,5,Yes,3,5,7,5,5,6,4,4,630981b0f861918e8174a43e,a3,3
+36-45,2,4,2,3,male,"[""I don't use AI for writing""]",Bachelor's degree,1,3,Never,3,3,4,3,Yes,4,5,7,6,5,4,4,5,6697cf02d714e7ee3fdedcec,a3,2
+36-45,5,1,1,5,male,"[""I don't use AI for writing""]",Master's degree,6,3,Almost every day,5,5,7,7,Yes,6,7,7,6,7,6,6,6,60e5fa452bd56bda03990e27,b3,2
+36-45,3,4,3,4,female,['Drafting content'],Bachelor's degree,5,6,Almost every day,5,5,6,6,Yes,5,4,6,5,5,4,5,5,65ddeb426c748b12456eed89,a3,3
+36-45,3,4,5,4,male,"[""I don't use AI for writing""]",Master's degree,7,4,Never,5,5,6,5,Yes,3,7,7,7,7,7,7,7,66312361cf5d4099e1330532,a1,1
+26-35,4,2,1,4,male,"['Brainstorming ideas', 'Revising/editing']",Master's degree,5,5,About once a week,7,6,5,6,Yes,5,6,7,6,6,6,5,5,676afbdcf204d0ab9df03494,a1,2
+36-45,3,3,2,4,male,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,5,5,Almost every day,5,5,5,5,Yes,4,5,6,5,4,4,4,4,66a09fe785573924735fc76f,a3,3
+46-55,2,3,4,3,female,"[""I don't use AI for writing""]",Bachelor's degree,5,5,About once a month,6,5,6,5,Yes,4,4,6,4,4,4,5,4,66323f16b05df4403391861c,a1,1
+26-35,2,1,1,3,male,['Revising/editing'],Bachelor's degree,6,6,Almost every day,6,6,7,7,Yes,7,7,6,6,7,7,7,6,67e0870d582edce0a2764d1f,b2,1
+36-45,5,2,1,5,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,7,7,About once a week,7,7,7,7,Yes,7,6,6,4,5,5,6,5,67f22d9adc313d0ce5eafff4,a1,2
+36-45,4,2,1,4,female,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,7,7,About once a week,7,6,7,6,Yes,6,7,6,7,6,6,6,6,675d960e0a56f4fd3189d1b3,b3,1
+46-55,3,4,2,3,male,['Revising/editing'],Master's degree,6,6,Almost every day,7,6,6,6,Yes,5,6,6,5,6,6,5,6,67fffee26ec983c07f3a2abd,a3,1
+46-55,4,4,1,3,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,7,7,About once a month,5,5,6,5,Yes,6,6,7,4,5,4,4,4,62733b8ee687326d23d970ea,a3,1
+46-55,3,3,2,3,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,6,About once a week,4,4,5,6,Yes,5,5,5,5,5,4,5,5,674b1543144567181e0b91dd,a1,1
+18-25,4,2,2,3,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,7,5,About once a week,6,5,5,6,Yes,6,6,7,7,6,5,5,6,61338374ecef87bfdfd1c7bb,b2,3
+36-45,5,1,1,5,female,"[""I don't use AI for writing""]",Bachelor's degree,5,1,Less than once a month,6,6,4,5,Yes,7,7,7,7,7,5,7,7,5ff5ca8cd0b2850877119272,b3,3
+46-55,3,4,1,4,female,['Brainstorming ideas'],Bachelor's degree,4,5,About once a month,3,4,6,4,Yes,5,6,6,5,6,4,6,6,67e1c1545703160cb768ca81,b2,2
+26-35,1,5,4,1,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,7,Almost every day,7,7,7,7,Yes,6,6,6,5,3,1,6,4,58d62c1733fef30001189b75,b1,2
+18-25,3,4,2,3,male,"['Drafting content', 'Revising/editing']",Bachelor's degree,7,7,About once a week,7,7,6,7,Yes,5,7,7,7,6,6,7,6,67ef53cadb2da106db5e5705,b2,3
+36-45,4,2,1,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,5,6,About once a week,6,6,6,6,Yes,7,7,5,5,4,4,4,3,56b8de29e1d0a200051517f8,a2,3
+46-55,4,5,1,5,female,"['Brainstorming ideas', 'Drafting content']",Master's degree,7,7,About once a week,7,7,7,7,Yes,7,7,7,7,7,7,7,7,65c10fc4bfa12f9fbcfda656,a3,1
+26-35,3,3,2,4,female,"[""I don't use AI for writing""]",Bachelor's degree,2,2,Never,5,5,6,5,Yes,5,6,7,7,6,3,4,6,66c0df311f98d7c9661669d9,b3,2
+26-35,3,3,4,3,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,5,7,About once a month,6,6,4,3,Yes,4,5,6,5,4,4,3,4,63d1b680be452fa711f77f60,a1,1
+26-35,2,2,2,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,7,Almost every day,6,6,6,7,Yes,6,6,7,6,6,6,6,7,592a6246e1b21500015924ec,a1,2
+46-55,3,4,2,3,female,['Revising/editing'],Bachelor's degree,4,7,About once a week,5,5,6,6,Yes,5,5,5,5,5,4,5,5,6658b6838e28e3383feae335,b1,4
+26-35,4,1,1,4,female,"[""I don't use AI for writing""]",Master's degree,6,2,Never,6,6,6,6,Yes,6,6,7,7,7,6,6,6,61310222247b6dcdfd39bddf,b3,3
+26-35,3,3,1,3,male,['Brainstorming ideas'],Master's degree,4,5,Less than once a month,3,3,7,7,Yes,2,4,7,4,2,1,1,3,663e30d90403a7b041965a81,b1,2
+26-35,1,4,5,4,male,"['Drafting content', 'Revising/editing']",Bachelor's degree,7,7,About once a month,6,7,5,6,Yes,6,7,7,7,7,4,6,7,5cb62e9293342300017a72a1,a3,2
+26-35,4,4,2,5,male,['Revising/editing'],Master's degree,6,6,About once a week,6,6,6,6,Yes,7,7,5,6,7,7,7,6,5a0a7bc6ff266c0001d2009d,b3,3
+26-35,4,4,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,6,Almost every day,7,7,7,7,Yes,7,7,7,7,7,7,7,7,64136650748e4e17c18e1900,b1,4
+36-45,2,4,3,2,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,5,3,About once a week,4,3,4,2,Yes,5,6,5,4,5,6,5,4,5bf0b1ecaf38d100016bd609,a3,2
+26-35,3,4,1,3,female,"['Drafting content', 'Revising/editing']",Bachelor's degree,6,7,About once a week,5,5,7,7,Yes,5,5,7,6,6,6,5,6,675b41e1b943026fc6b83379,b1,3
+56 or over,5,1,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,7,7,About once a week,5,6,5,6,Yes,6,7,7,7,6,6,7,7,558a327cfdf99b2d75651681,b3,3
+36-45,2,4,4,3,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,6,Less than once a month,6,6,6,6,Yes,5,5,6,5,5,5,5,5,6669d0b650f615804a4d534f,b1,1
+26-35,3,3,2,3,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,6,Almost every day,6,7,7,6,Yes,6,6,6,7,7,7,6,7,63e51bdade16b861346088b4,b3,3
+36-45,4,1,1,4,female,"[""I don't use AI for writing""]",Master's degree,6,4,Less than once a month,6,6,6,4,Yes,5,5,5,5,5,4,5,5,651f877f99a86ed3d73471c5,a3,1
+26-35,3,4,3,4,male,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,6,6,Almost every day,5,5,6,5,Yes,5,6,6,7,7,6,7,6,67d070528f54dbfce58f90a2,b1,4
+46-55,4,3,2,4,female,"[""I don't use AI for writing""]",Bachelor's degree,2,1,Never,4,3,5,4,Yes,7,6,7,6,6,6,6,6,5ef07f0ba383185b3570273e,a1,1
+46-55,3,2,2,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,6,About once a week,5,5,6,6,Yes,7,6,7,6,6,6,6,6,5f4fb5c0ad48ba0ab9a454e5,a1,3
+56 or over,4,3,1,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,6,About once a week,5,5,6,7,Yes,4,6,7,6,5,7,5,5,6598524eff590951e558a42f,a1,1
+46-55,3,4,3,3,male,"[""I don't use AI for writing""]",Bachelor's degree,4,5,Never,3,4,4,4,Yes,6,7,6,6,6,5,6,6,5dc71b96d210e45213e92359,a1,3
+46-55,4,2,2,4,male,"['Drafting content', 'Revising/editing']",Bachelor's degree,4,6,About once a month,4,4,6,6,Yes,5,5,5,5,5,4,4,4,677b8e386966144d94556597,a1,3
+26-35,2,4,3,3,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,5,6,About once a week,5,5,6,6,Yes,6,6,6,6,6,6,6,6,5be9ce784f251d00015ce92e,a2,3
+26-35,4,2,1,5,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,7,7,Almost every day,7,6,7,7,Yes,7,5,7,5,6,5,4,6,5d23d88ba60539001ba16192,b1,4
+36-45,4,1,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,6,About once a week,6,6,6,6,Yes,7,6,7,7,7,7,7,7,646ff124ef129159bf5f08f7,b3,4
+26-35,3,3,2,4,male,"[""I don't use AI for writing""]",Bachelor's degree,2,3,Never,7,7,5,5,Yes,3,5,6,6,5,6,6,6,6674d22663a406047c933cb0,a3,1
+36-45,3,4,2,3,male,['Brainstorming ideas'],Bachelor's degree,4,5,Less than once a month,5,5,6,6,Yes,4,3,5,4,4,3,3,4,6658c03719546bf4a7e548d8,a2,3
+36-45,2,4,3,2,male,['Brainstorming ideas'],Bachelor's degree,5,4,About once a week,3,3,5,5,Yes,4,5,7,6,5,5,4,6,614e6f4f00a9e94b123316d3,a1,3
+26-35,1,4,5,1,male,['Revising/editing'],Bachelor's degree,5,7,About once a week,6,6,7,5,Yes,3,6,7,3,5,2,4,5,5f974c72a0ed8c0f9ce724ea,a3,4
+18-25,3,4,2,3,male,"['Brainstorming ideas', 'Revising/editing']",Master's degree,6,5,Almost every day,7,7,7,7,Yes,7,7,7,7,7,6,7,7,67e830b647b5346d37e9bc11,b3,3
+26-35,2,4,4,3,male,['Brainstorming ideas'],Bachelor's degree,4,5,Less than once a month,5,5,5,4,Yes,4,5,6,5,4,5,5,4,66467f5703bc98ffca9a248c,a1,2
+36-45,3,4,3,3,female,['Brainstorming ideas'],Master's degree,7,5,Less than once a month,7,7,7,7,Yes,5,6,6,7,6,7,7,6,652be55d3d99a68b56fe7d56,b2,2
+26-35,4,1,1,4,male,"[""I don't use AI for writing""]",Bachelor's degree,3,3,Never,5,5,4,4,Yes,5,6,7,5,5,6,4,6,6287f4819c5fc8c4d48cc885,a1,1
+36-45,4,2,2,4,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,6,Less than once a month,5,5,6,6,Yes,4,6,7,6,6,5,6,6,5c2e322b86f8be000162051d,a3,1
+18-25,4,2,2,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,7,Almost every day,6,5,7,6,Yes,6,6,6,6,6,5,6,6,66823a439b3e59a13b37a28f,b1,2
+36-45,5,1,1,5,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,7,7,Almost every day,7,7,7,7,Yes,7,7,7,7,7,7,7,7,67e1cbc7607f91fd502da9d2,b3,3
+26-35,4,2,2,5,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,6,About once a week,6,6,7,6,Yes,7,6,6,6,7,5,6,6,66cde7c1776904d08cb84fda,b2,3
+36-45,3,4,1,2,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,7,About once a week,6,6,6,6,Yes,5,5,5,6,4,3,4,4,6717b21c1e82990c9080d9bc,b3,4
+36-45,3,2,2,4,male,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,6,5,Less than once a month,6,6,5,5,Yes,6,6,6,5,6,6,5,6,5e7b779563c6dc05953e3669,b1,3
+36-45,3,3,2,3,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,3,5,About once a week,5,5,5,4,Yes,3,4,4,5,4,4,3,4,5721b3054d5b26001301f651,b3,4
+56 or over,3,2,2,3,female,['Brainstorming ideas'],Bachelor's degree,6,6,About once a week,6,6,6,6,Yes,6,6,6,6,6,6,6,6,67d18c20050ecfd766de3af3,b1,2
+36-45,3,3,2,3,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,4,5,Less than once a month,4,4,6,5,Yes,6,6,6,6,6,6,6,4,5fc4868e1e58465b64455779,a3,2
+26-35,4,2,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,7,4,Less than once a month,7,7,7,7,Yes,3,5,7,6,6,6,4,5,62c5d0cfdf443d24e054d302,a3,1
+46-55,3,3,1,3,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,4,About once a week,6,6,6,5,Yes,6,7,6,6,6,6,5,6,665e680164927b18554b66ec,a1,3
+18-25,2,4,2,3,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,5,5,Less than once a month,5,5,4,5,Yes,6,6,6,6,6,4,4,5,66a1fc85343b3affee39f729,a2,4
+56 or over,5,1,2,4,male,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,6,5,Almost every day,6,6,7,6,Yes,7,6,7,7,6,5,4,5,58462977d2be990001174ae3,b2,4
+46-55,2,4,4,2,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,7,About once a week,5,5,6,6,Yes,3,2,3,3,2,2,2,2,66926bdaacd865fc152ef5ff,b1,1
+36-45,1,3,1,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,5,6,Almost every day,6,6,7,7,Yes,6,7,7,7,7,7,7,7,67f1eb2d9ccd34a445b0e325,b3,4
+46-55,2,3,3,3,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Doctorate,5,6,Almost every day,5,5,6,6,Yes,5,5,5,5,4,4,4,4,677fbf2241c218ac3f28b1cb,a1,4
+56 or over,5,1,1,5,female,"[""I don't use AI for writing""]",Bachelor's degree,1,1,Never,5,5,5,4,Yes,7,7,7,7,7,7,7,7,63852fbf95d78ba25b99005e,a1,2
+36-45,4,2,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,5,6,About once a week,6,6,5,5,Yes,4,3,6,5,5,2,2,5,5928df79366dc80001d0b788,b1,4
+46-55,3,4,1,3,female,"[""I don't use AI for writing""]",Doctorate,7,1,Never,7,7,5,5,Yes,7,7,7,7,7,7,7,7,5de30dd39a9da5342d09f2e8,b1,2
+56 or over,4,4,1,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,6,6,Almost every day,5,6,6,6,Yes,6,6,6,6,5,5,6,6,67d41d29479463a26163080b,b1,4
+46-55,3,3,2,2,male,"[""I don't use AI for writing""]",Bachelor's degree,3,5,Never,5,6,4,4,Yes,7,6,6,7,5,5,4,6,65352328ddb089d098ab5d36,b1,2
+26-35,5,4,1,4,male,"[""I don't use AI for writing""]",Bachelor's degree,6,7,Less than once a month,6,7,6,6,Yes,6,7,7,7,7,6,7,7,66a65fa27457d9821eea23b6,b3,2
+26-35,4,1,2,4,male,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,7,Almost every day,6,7,6,6,Yes,6,7,7,6,7,7,6,7,67cdf158555dc24e9c13714a,b1,1
+46-55,1,4,4,1,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,6,About once a week,5,5,6,6,Yes,4,6,7,6,5,4,6,6,67e8aa454848956e5e32c19d,a1,2
+26-35,4,2,2,4,male,"[""I don't use AI for writing""]",Master's degree,3,4,Never,6,5,5,6,Yes,6,6,6,6,6,6,6,7,67eac4d6bf3d1c4df7bd65df,b3,4
+36-45,4,3,2,4,male,"['Drafting content', 'Revising/editing']",Doctorate,5,7,Almost every day,5,5,6,6,Yes,4,5,6,6,4,4,4,4,5bb756696322c5000159756c,b1,4
+18-25,2,4,2,3,male,"['Brainstorming ideas', 'Revising/editing']",Master's degree,6,6,About once a week,6,5,5,5,Yes,5,5,4,4,5,5,5,4,67f1384261cfa13f4b12db2d,a1,4
+18-25,4,3,1,4,male,"['Brainstorming ideas', 'Drafting content']",Bachelor's degree,4,5,About once a month,6,6,6,6,Yes,6,6,6,5,6,5,5,6,665a081994dc662744486887,b1,1
+26-35,1,3,1,3,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,7,7,About once a week,7,7,7,5,Yes,5,5,7,6,5,4,7,5,65c113f79050d9c2915d2e82,b1,1
+46-55,5,1,2,5,female,['Brainstorming ideas'],Bachelor's degree,4,4,Less than once a month,6,6,5,6,Yes,7,7,7,7,7,5,5,6,677edb96bb091e27806608b9,b2,2
+36-45,4,2,2,4,female,"[""I don't use AI for writing""]",Master's degree,5,4,Never,6,6,6,6,Yes,6,6,7,6,6,4,5,5,5a5f7c21ac56240001543340,b1,4
+26-35,4,1,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,7,7,Almost every day,6,6,7,7,Yes,7,7,7,7,7,4,7,7,664b530d4cf8b88b68548a11,b3,4
+26-35,4,2,1,4,female,"[""I don't use AI for writing""]",Master's degree,7,7,Never,6,6,7,7,No,7,6,3,5,5,5,7,7,5b126ec7c85dc400016220a4,b1,1
+46-55,1,5,3,1,male,"[""I don't use AI for writing""]",Bachelor's degree,1,2,Never,4,4,4,1,Yes,1,1,5,4,5,1,2,1,5980fff19bf4fe0001070984,b1,4
+46-55,2,4,1,3,female,['Brainstorming ideas'],Bachelor's degree,5,5,About once a week,4,4,5,5,Yes,6,6,6,6,5,6,5,5,663595186fd0c6f76c84f144,a1,4
+46-55,4,2,2,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,4,4,About once a week,3,3,4,4,Yes,6,6,7,6,6,6,5,6,5ce1f31a27efac0018821eed,a2,2
+26-35,4,3,2,3,non-binary/third gender,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,3,Less than once a month,6,6,5,5,Yes,6,7,7,7,7,7,7,7,66464354449c2d4c2de11537,a1,2
+56 or over,3,3,2,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,7,Almost every day,5,6,5,5,Yes,6,6,7,6,6,6,6,6,66aa83dd5d34973838c99ad3,b3,1
+46-55,4,3,2,4,female,['Brainstorming ideas'],Master's degree,6,7,About once a week,5,6,6,6,Yes,5,4,6,6,5,5,5,4,65ff13cac7dc7dc6c54458ce,b1,2
+26-35,2,4,4,2,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,6,7,About once a week,6,6,7,6,Yes,6,5,7,6,6,6,6,6,5fc2c0cfdb80f9025c6b4810,a3,4
+56 or over,4,3,1,4,non-binary/third gender,"[""I don't use AI for writing""]",Master's degree,5,3,Never,6,6,5,4,Yes,7,6,5,5,5,5,5,6,6729f313d7f4a118598bc4cf,a2,4
+26-35,4,1,1,5,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,6,5,About once a week,6,6,6,6,Yes,5,6,5,4,5,3,4,5,5f7542c93ea2c11ba1551c51,a2,1
+46-55,4,5,5,5,female,"['Drafting content', 'Revising/editing']",Bachelor's degree,7,7,Almost every day,7,7,7,7,Yes,5,6,6,6,6,6,6,6,67403de187ba0c277a19a258,a3,4
+36-45,5,5,1,2,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,7,7,Almost every day,6,6,6,7,Yes,7,7,7,7,7,7,7,7,67d41706b93041fcbe3c570b,a3,4
+36-45,3,4,2,2,female,"['Brainstorming ideas', 'Revising/editing']",Master's degree,6,6,About once a week,6,6,6,6,Yes,6,6,6,6,6,6,6,7,67208cb4db00974fb9050f5a,a1,2
+26-35,4,5,1,4,male,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,6,6,Almost every day,6,6,7,6,Yes,6,7,7,6,6,6,6,6,67df28916f79de47a12d35d9,b3,2
+56 or over,4,2,2,4,male,"[""I don't use AI for writing""]",Bachelor's degree,4,2,Almost every day,6,6,6,6,Yes,6,6,6,6,6,6,6,6,67b1e771274d3a16c4e32358,a1,4
+46-55,4,2,1,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Master's degree,7,7,About once a month,6,6,6,5,Yes,5,6,7,6,4,7,5,5,67d09ba717ec412519ebf44b,b1,1
+26-35,3,2,1,4,male,"['Drafting content', 'Revising/editing']",Master's degree,6,6,About once a week,6,6,5,6,Yes,6,6,6,5,6,4,6,5,67e71c9c4c220e0f0df2ef30,a2,1
+18-25,3,2,2,4,female,"['Brainstorming ideas', 'Revising/editing']",Bachelor's degree,5,5,About once a week,6,6,6,6,Yes,5,5,5,5,5,5,5,5,6779c8fd10ec19bf89b5f9d8,a1,1
+18-25,5,2,2,4,female,"['Brainstorming ideas', 'Drafting content', 'Revising/editing']",Bachelor's degree,6,5,About once a week,7,6,6,6,Yes,5,5,5,6,6,4,4,4,65e1f75ab3efd22e847cfbf0,b3,1
